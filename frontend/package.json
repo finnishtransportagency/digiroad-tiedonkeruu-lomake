@@ -1,5 +1,6 @@
 {
-	"name": "frontend",
+	"name": "dr-tiedonkeruu-frontend",
+  "description": "Web-client for DRTiedonkeruu. Sends form data to dr-tiedonkeruu-email-notification-service.",
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {

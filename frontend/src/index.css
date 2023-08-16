@@ -1,13 +1,19 @@
-body {
-	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-		sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+/*
+	Official colours from Finnish Transport Infrastructure Agency's 
+	graphic instructions: https://vayla.fi/tietoa-meista/medialle/graafinen-ohjeisto
+*/
+:root {
+	--main-bg-color: #fff;
+	--main-accent-color: #000;
+	--button-accent-color: #fff;
+	--main-button-color: #0064af;
+	--pos-button-color: #207a43;
+	--neg-button-color: #c73f00;
 }
 
-code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-		monospace;
+body {
+	margin: 0;
+	font-family: 'Exo 2', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
