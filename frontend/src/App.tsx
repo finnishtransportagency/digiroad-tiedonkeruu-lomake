@@ -1,11 +1,9 @@
-import { useTranslation } from 'react-i18next'
+import ComponentPalette from './pages/ComponentPalette'
 
-function App() {
-	const { t } = useTranslation()
+const App = () => {
 	return (
 		<div>
-			<h1>{t('title')}</h1>
-			<p>{t('hello')}</p>
+			<ComponentPalette />
 		</div>
 	)
 }

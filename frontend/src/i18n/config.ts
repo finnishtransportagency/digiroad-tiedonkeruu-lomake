@@ -31,6 +31,6 @@ i18next
 			escapeValue: false,
 		},
 	})
-	.catch((e) => {
+	.catch(e => {
 		console.log('Error while setting up translations: ', e)
 	})
