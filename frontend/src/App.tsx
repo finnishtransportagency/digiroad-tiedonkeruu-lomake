@@ -1,9 +1,11 @@
-import ComponentPalette from './pages/ComponentPalette'
+/* import ComponentPalette from './pages/ComponentPalette' */
+import FormPage from './pages/FormPage'
 
 const App = () => {
 	return (
 		<div>
-			<ComponentPalette />
+			{/* <ComponentPalette /> */}
+			<FormPage />
 		</div>
 	)
 }

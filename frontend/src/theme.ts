@@ -12,6 +12,7 @@ const theme = {
 	primaryColor: '#0064af',
 	positiveColor: '#207a43',
 	negativeColor: '#c73f00',
+	editableFontFamily: "'Tahoma', sans-serif",
 }
 
 export const GlobalStyle = createGlobalStyle`
