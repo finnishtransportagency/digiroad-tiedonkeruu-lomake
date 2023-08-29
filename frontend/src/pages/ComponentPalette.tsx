@@ -6,6 +6,8 @@ import { z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import FieldLabel from '../components/FieldLabel'
 import ErrorLabel from '../components/ErrorLabel'
+import Heading from '../components/Heading'
+import Container from '../components/Container'
 
 const TestSchema = z.object({
 	field: z.string({
@@ -19,9 +21,10 @@ const initialValues = {
 
 const ComponentPalette = () => {
 	const { t } = useTranslation()
+
 	return (
-		<div>
-			<h1>Title</h1>
+		<Container>
+			<Heading level='h1'>Title</Heading>
 			<p>Paragraph: {t('hello')}</p>
 			<Button>Main button</Button>
 			<br />
@@ -43,7 +46,7 @@ const ComponentPalette = () => {
 					</Form>
 				)}
 			</Formik>
-		</div>
+		</Container>
 	)
 }
 
