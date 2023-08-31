@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 
 type HeadingProps = {
-	level: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+	$level: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+	children: string
 }
 
-const getFontSize = (level: HeadingProps['level']) => {
-	switch (level) {
+const getFontSize = ($level: HeadingProps['$level']) => {
+	switch ($level) {
 		case 'h1':
 			return '2em'
 		case 'h2':
@@ -21,10 +22,17 @@ const getFontSize = (level: HeadingProps['level']) => {
 	}
 }
 
-const Heading = styled.h1<HeadingProps>`
+const StyledHeading = styled.h1<HeadingProps>`
 	margin-top: 0;
-	font-size: ${props => getFontSize(props.level)};
+	font-size: ${props => getFontSize(props.$level)};
 `
 
-export default Heading
+const Heading = (props: HeadingProps) => {
+	return (
+		<StyledHeading as={props.$level} $level={props.$level}>
+			{props.children}
+		</StyledHeading>
+	)
+}
 
+export default Heading

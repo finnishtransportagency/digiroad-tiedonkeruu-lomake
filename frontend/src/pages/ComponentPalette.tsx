@@ -24,7 +24,7 @@ const ComponentPalette = () => {
 
 	return (
 		<Container>
-			<Heading level='h1'>Title</Heading>
+			<Heading $level='h1'>Title</Heading>
 			<p>Paragraph: {t('hello')}</p>
 			<Button>Main button</Button>
 			<br />

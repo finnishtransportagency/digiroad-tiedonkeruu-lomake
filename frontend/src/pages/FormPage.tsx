@@ -14,7 +14,7 @@ const FormPage = () => {
 
 	return (
 		<Container>
-			<Heading level='h1'>{t('form.title')}</Heading>
+			<Heading $level='h1'>{t('form.title')}</Heading>
 			<Formik
 				onSubmit={values => {
 					// !!! TODO !!!
