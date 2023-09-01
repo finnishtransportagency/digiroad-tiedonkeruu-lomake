@@ -6,6 +6,7 @@ const fi = {
 		email: 'Ilmoittajan sähköposti',
 		project: 'Rakennushankkeen nimi',
 		municipality: 'Kunta',
+		opening_date: 'Liikenteelle avaamisajankohta',
 		reset: 'Tyhjennä lomake',
 		submit: 'Lähetä',
 	},
@@ -17,6 +18,11 @@ const fi = {
 		},
 		project: 'Rakennushankkeen nimi vaaditaan!',
 		municipality: 'Kunta vaaditaan!',
+		opening_date: {
+			required: 'Avaamisajankohta vaaditaan!',
+			value: 'Päivämäärän tulee olla muotoa dd/mm/yyyy',
+			min: 'Avaamisajankohdan tulee olla tulevaisuudessa!',
+		},
 	},
 } as const
 

@@ -1,13 +1,16 @@
 import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { useTranslation } from 'react-i18next'
+import DatePicker from 'react-datepicker'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
 import ErrorLabel from '../components/ErrorLabel'
 import schema, { defaultValues } from '../schema'
-import { useTranslation } from 'react-i18next'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import Heading from '../components/Heading'
+
+import 'react-datepicker/dist/react-datepicker.css'
 
 const FormPage = () => {
 	const { t } = useTranslation()
@@ -23,7 +26,7 @@ const FormPage = () => {
 				initialValues={defaultValues}
 				validationSchema={toFormikValidationSchema(schema)}
 			>
-				{({ errors, touched }) => (
+				{({ errors, touched, values, setFieldValue, setFieldTouched }) => (
 					<Form>
 						<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
 						<FormField name='reporter' placeholder={t('form.reporter')} />
@@ -45,6 +48,21 @@ const FormPage = () => {
 							<ErrorLabel>{errors.municipality}</ErrorLabel>
 						) : null}
 
+						<FieldLabel htmlFor='opening_date'>{t('form.opening_date')}</FieldLabel>
+						<FormField
+							as={DatePicker}
+							name='opening_date'
+							selected={new Date(values.opening_date)}
+							onChange={(date: string) => {
+								setFieldTouched('opening_date')
+								setFieldValue('opening_date', new Date(date))
+							}}
+							dateFormat='dd.MM.yyyy'
+						/>
+						{errors.opening_date && touched.opening_date ? (
+							<ErrorLabel>{errors.opening_date}</ErrorLabel>
+						) : null}
+
 						<br />
 						<Button type='reset' color='negative'>
 							{t('form.reset')}
@@ -60,4 +78,3 @@ const FormPage = () => {
 }
 
 export default FormPage
-
