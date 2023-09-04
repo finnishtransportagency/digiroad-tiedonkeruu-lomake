@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Field } from 'formik'
 
 const FormField = styled(Field)`
-	font-family: ${props => props.theme.editableFontFamily};
+	font-family: ${props => props.theme.editableFont};
 	font-size: 0.98em;
 	margin: 0.5em;
 	border: 1px solid silver;

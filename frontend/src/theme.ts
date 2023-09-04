@@ -12,7 +12,8 @@ const theme = {
 	primaryColor: '#0064af',
 	positiveColor: '#207a43',
 	negativeColor: '#c73f00',
-	editableFontFamily: "'Tahoma', sans-serif",
+	primaryFont: "'Exo 2', sans-serif",
+	editableFont: "'Tahoma', sans-serif",
 }
 
 export const GlobalStyle = createGlobalStyle`
@@ -20,10 +21,15 @@ export const GlobalStyle = createGlobalStyle`
 	  margin: 0;
 	  padding: 1em;
 		background-color: ${props => props.theme.bgColor};
-	  font-family: 'Exo 2', sans-serif;
+	  font-family: ${props => props.theme.primaryFont};
 	  -webkit-font-smoothing: antialiased;
 	  -moz-osx-font-smoothing: grayscale;
   }
+
+	#root {
+		display: flex;
+		flex-direction: column;
+	}
 `
 
 export default theme
