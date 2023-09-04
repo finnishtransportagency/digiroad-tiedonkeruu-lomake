@@ -14,6 +14,7 @@ const theme = {
 	negativeColor: '#c73f00',
 	primaryFont: "'Exo 2', sans-serif",
 	editableFont: "'Tahoma', sans-serif",
+	borderRadius: '0.3em',
 }
 
 export const GlobalStyle = createGlobalStyle`

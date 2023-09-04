@@ -1,11 +1,13 @@
 import styled from 'styled-components'
 
 const Container = styled.div`
+	flex-grow: 1;
+	max-width: 50em;
+	margin: 0.5em;
 	box-shadow: 1px 1px 2px silver;
 	border: 1px solid silver;
-	border-radius: 0.3em;
+	border-radius: ${props => props.theme.borderRadius};
 	padding: 1em;
 `
 
 export default Container
-

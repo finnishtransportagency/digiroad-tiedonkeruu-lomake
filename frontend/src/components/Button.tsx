@@ -19,9 +19,10 @@ const Button = styled.button<ButtonProps>`
 	background-color: ${props => buttonColor(props.color, props.theme)};
 	margin: 0.5em;
 	border: 2px solid ${props => buttonColor(props.color, props.theme)};
-	border-radius: 0.3em;
+	border-radius: ${props => props.theme.borderRadius};
 	padding: 0.75em 1.25em;
 	font-size: 1em;
+	cursor: pointer;
 
 	transition: 0.1s;
 	&:active {

@@ -6,7 +6,7 @@ const FormField = styled(Field)`
 	font-size: 0.98em;
 	margin: 0.5em;
 	border: 1px solid silver;
-	border-radius: 0.3em;
+	border-radius: ${props => props.theme.borderRadius};
 	padding: 0.75em 1em;
 
 	&:focus {
