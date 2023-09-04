@@ -25,9 +25,13 @@ const Button = styled.button<ButtonProps>`
 	cursor: pointer;
 
 	transition: 0.1s;
-	&:active {
+	&:active:enabled {
 		color: ${props => buttonColor(props.color, props.theme)};
 		background-color: ${props => props.theme.buttonAccentColor};
+	}
+	&:disabled {
+		filter: saturate(0.5) brightness(1.5);
+		cursor: auto;
 	}
 `
 

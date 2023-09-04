@@ -35,7 +35,7 @@ const LanguageSelector = () => {
 
 	const handleOptionChange = (value: string) => {
 		setSelected(value)
-		i18n.changeLanguage(value)
+		void i18n.changeLanguage(value)
 	}
 
 	return (
@@ -58,4 +58,3 @@ const LanguageSelector = () => {
 }
 
 export default LanguageSelector
-

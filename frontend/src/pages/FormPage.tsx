@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Formik, Form } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
@@ -26,26 +27,34 @@ const FormPage = () => {
 				initialValues={defaultValues}
 				validationSchema={toFormikValidationSchema(schema)}
 			>
-				{({ errors, touched, values, setFieldValue, setFieldTouched }) => (
+				{({ errors, touched, values, setFieldValue, setFieldTouched, isValid }) => (
 					<Form>
 						<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
 						<FormField name='reporter' placeholder={t('form.reporter')} />
 						{errors.reporter && touched.reporter ? (
-							<ErrorLabel>{errors.reporter}</ErrorLabel>
+							// @ts-ignore
+							<ErrorLabel>{t(errors.reporter)}</ErrorLabel>
 						) : null}
 
 						<FieldLabel htmlFor='email'>{t('form.email')}</FieldLabel>
 						<FormField name='email' placeholder={t('form.email')} />
-						{errors.email && touched.email ? <ErrorLabel>{errors.email}</ErrorLabel> : null}
+						{errors.email && touched.email ? (
+							// @ts-ignore
+							<ErrorLabel>{t(errors.email)}</ErrorLabel>
+						) : null}
 
 						<FieldLabel htmlFor='project'>{t('form.project')}</FieldLabel>
 						<FormField name='project' placeholder={t('form.project')} />
-						{errors.project && touched.project ? <ErrorLabel>{errors.project}</ErrorLabel> : null}
+						{errors.project && touched.project ? (
+							// @ts-ignore
+							<ErrorLabel>{t(errors.project)}</ErrorLabel>
+						) : null}
 
 						<FieldLabel htmlFor='municipality'>{t('form.municipality')}</FieldLabel>
 						<FormField name='municipality' placeholder={t('form.municipality')} />
 						{errors.municipality && touched.municipality ? (
-							<ErrorLabel>{errors.municipality}</ErrorLabel>
+							// @ts-ignore
+							<ErrorLabel>{t(errors.municipality)}</ErrorLabel>
 						) : null}
 
 						<FieldLabel htmlFor='opening_date'>{t('form.opening_date')}</FieldLabel>
@@ -54,20 +63,21 @@ const FormPage = () => {
 							name='opening_date'
 							selected={new Date(values.opening_date)}
 							onChange={(date: string) => {
-								setFieldTouched('opening_date')
-								setFieldValue('opening_date', new Date(date))
+								void setFieldTouched('opening_date')
+								void setFieldValue('opening_date', new Date(date))
 							}}
 							dateFormat='dd.MM.yyyy'
 						/>
 						{errors.opening_date && touched.opening_date ? (
-							<ErrorLabel>{errors.opening_date}</ErrorLabel>
+							// @ts-ignore
+							<ErrorLabel>{t(errors.opening_date)}</ErrorLabel>
 						) : null}
 
 						<br />
 						<Button type='reset' color='negative'>
 							{t('form.reset')}
 						</Button>
-						<Button type='submit' color='positive'>
+						<Button type='submit' color='positive' disabled={!isValid}>
 							{t('form.submit')}
 						</Button>
 					</Form>

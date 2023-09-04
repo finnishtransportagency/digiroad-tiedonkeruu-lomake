@@ -1,22 +1,21 @@
-import { t } from 'i18next'
 import { z } from 'zod'
 
 const schema = z.object({
 	reporter: z.string({
-		required_error: t('errors.reporter'),
+		required_error: 'errors.reporter',
 	}),
 	email: z
 		.string({
-			required_error: t('errors.email.required'),
+			required_error: 'errors.email.required',
 		})
 		.email({
-			message: t('errors.email.value'),
+			message: 'errors.email.value',
 		}),
 	project: z.string({
-		required_error: t('errors.reporter'),
+		required_error: 'errors.project',
 	}),
 	municipality: z.string({
-		required_error: t('errors.reporter'),
+		required_error: 'errors.municipality',
 	}),
 	opening_date: z
 		.date({
@@ -24,15 +23,15 @@ const schema = z.object({
 			errorMap: (issue, ctx) => {
 				// console.log(issue)
 				if (issue.code === 'invalid_type') {
-					return { message: t('errors.opening_date.required') }
+					return { message: 'errors.opening_date.required' }
 				}
 				if (issue.code === 'invalid_date') {
-					return { message: t('errors.opening_date.value') }
+					return { message: 'errors.opening_date.value' }
 				}
 				return { message: ctx.defaultError }
 			},
 		})
-		.min(new Date(new Date().setHours(0, 0, 0, 0)), t('errors.opening_date.min')),
+		.min(new Date(new Date().setHours(0, 0, 0, 0)), 'errors.opening_date.min'),
 })
 
 export const defaultValues = {
