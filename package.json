@@ -1,0 +1,15 @@
+{
+  "name": "dr-tiedonkeruu",
+  "description": "Digiroad Tiedonkeruu-lomake",
+  "version": "1.0.0",
+  "scripts": {
+    "build:ui": "cd frontend && npm ci && npm run build && cd ../serverless"
+  },
+  "keywords": [
+    "aws",
+    "serverless",
+    "Digiroad",
+    "DRTiedonkeruu",
+    "Tiedonkeruu-lomake"
+  ]
+}

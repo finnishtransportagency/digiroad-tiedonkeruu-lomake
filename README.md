@@ -15,7 +15,7 @@
 - makes formatting automatic on save
 - makes ESLint's auto-fix run on save
 - makes ESLint errors appear as warnings to make it easier to distinguish them from typescript errors
-- ensures that the typescript version of the project is used instead of the local installation
+- ensures that the typescript version of the project is used instead of a local installation
 
 ### Frontend
 
@@ -33,6 +33,9 @@
   - tabs as indentation
   - no semicolons
   - strings in single quotes
+  - single quotes in JSX elements
+  - no parentheses around a single argument in an arrow function
+  - line width max 100 characters
   - end of line sequence is CRLF
 
 `frontend/tsconfig.json`:

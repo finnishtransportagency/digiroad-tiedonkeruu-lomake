@@ -1,0 +1,37 @@
+service: dr-tiedonkeruu
+frameworkVersion: '3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${env:REGION}
+  vpc:
+    securityGroupIds:
+      - ${env:VPC_SECURITY_GROUP_ID}
+    subnetIds:
+      - ${env:VPC_SUBNET_ID_1}
+      - ${env:VPC_SUBNET_ID_2}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  ping:
+    handler: handler.ping
+    events:
+      - httpApi:
+          path: /ping
+          method: get
+
+resources:
+  Resources:
+    FrontendS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket
+        WebsiteConfiguration:
+          IndexDocument: ../frontend/build/index.html
+          ErrorDocument: ../frontend/build/error.html

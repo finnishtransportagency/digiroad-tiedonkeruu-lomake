@@ -1,0 +1,60 @@
+service: dr-tiedonkeruu
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${env:REGION}
+  
+vpc:
+  securityGoupIds: ${env:VPC_SECURITY_GROUP_IDS}
+  subnetIds: 
+    - ${env:VPC_SUBNET_IDS}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  ping:
+    handler: handler.ping
+    events:
+      - httpApi:
+          path: /ping
+          method: get
+    iamRoleStatements: # Mitä rooleja lambda tarvitsee?
+      # Ovatko nämä oikein/liian laajoja?
+      - Effect: Allow
+        Action:
+          - apigateway:*
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - ses:SendEmail
+        Resource: "*"
+        
+# Tarvitseeko SES resursseja määritellä resources kohdassa?
+resources:
+  Resources:
+    FrontendS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket
+        WebsiteConfiguration: 
+          IndexDocument: ../frontend/build/index.html
+          ErrorDocument: ../frontend/build/error.html
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket.s3-${env:REGION}.amazonaws.com
+              Id: S3Origin
+              # Pitäisikö tämän olla: S3OriginConfig?
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: https-only
+          Enabled: true
