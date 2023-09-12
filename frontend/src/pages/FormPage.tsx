@@ -1,29 +1,33 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Formik, Form } from 'formik'
+import { Formik, Form, FormikHelpers } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
 import ErrorLabel from '../components/ErrorLabel'
-import schema, { defaultValues } from '../schema'
+import schema, { defaultValues, FormValues } from '../schema'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import Heading from '../components/Heading'
+import httpService from '../services/httpService'
+import { apiURL } from '../config'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
 const FormPage = () => {
 	const { t } = useTranslation()
 
+	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+		console.log(await httpService.post(apiURL, values))
+		actions.resetForm()
+	}
+
 	return (
 		<Container>
 			<Heading $level='h1'>{t('form.title')}</Heading>
 			<Formik
-				onSubmit={values => {
-					// !!! TODO !!!
-					console.log(values)
-				}}
+				onSubmit={handleSubmit}
 				initialValues={defaultValues}
 				validationSchema={toFormikValidationSchema(schema)}
 			>

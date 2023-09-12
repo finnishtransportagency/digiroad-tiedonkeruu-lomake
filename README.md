@@ -1,5 +1,10 @@
 # DRTiedonkeruu
 
+## Guides
+
+- [Frontend](frontend/README.md)
+- [Backend](serverless/README.md)
+
 ## Dev environment config files
 
 ### Project

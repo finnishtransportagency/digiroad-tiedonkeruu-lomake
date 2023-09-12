@@ -3,6 +3,10 @@ frameworkVersion: '3'
 
 useDotenv: true
 
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
 provider:
   name: aws
   runtime: nodejs16.x
@@ -14,17 +18,19 @@ provider:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
 
-plugins:
-  - serverless-plugin-typescript
-  - serverless-offline
-
 functions:
   ping:
-    handler: handler.ping
+    handler: src/handler.ping
     events:
       - httpApi:
           path: /ping
           method: get
+  handlePost:
+    handler: src/handler.handlePost
+    events:
+      - httpApi:
+          path: /postData
+          method: post
 
 resources:
   Resources:
@@ -33,5 +39,19 @@ resources:
       Properties:
         BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket
         WebsiteConfiguration:
-          IndexDocument: ../frontend/build/index.html
-          ErrorDocument: ../frontend/build/error.html
+          IndexDocument: index.html
+          ErrorDocument: error.html
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket.s3.${env:REGION}.amazonaws.com
+              Id: S3Origin
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: https-only
+          Enabled: true

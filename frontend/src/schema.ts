@@ -42,4 +42,6 @@ export const defaultValues = {
 	opening_date: new Date().toString(),
 }
 
+export type FormValues = typeof defaultValues
+
 export default schema

@@ -3,7 +3,9 @@
   "description": "Digiroad Tiedonkeruu-lomake",
   "version": "1.0.0",
   "scripts": {
-    "build:ui": "cd frontend && npm ci && npm run build && cd ../serverless"
+    "build:ui": "cd frontend && npm ci && npm run build && cd ..",
+    "package:serverless": "cd serverless && npm run package",
+    "package:full": "npm run build:ui && npm run package:serverless"
   },
   "keywords": [
     "aws",

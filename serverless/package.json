@@ -3,12 +3,14 @@
   "description": "API for DRTiedonkeruu. Handles form data from DRTiedonkeruu web-client and sends verification email to the user and DR-operator.",
   "version": "1.0.0",
   "dependencies": {
-    "aws-sdk": "^2.1437.0"
+    "aws-sdk": "^2.1437.0",
+    "zod": "^3.22.2"
   },
   "scripts": {
     "ping": "serverless invoke local --function ping",
-    "offline": "serverless offline",
-    "package": "serverless package"
+    "offline": "serverless offline --httpPort 3003",
+    "cp:ui": "cp -r ../frontend/build ./build",
+    "package": "npm run cp:ui && serverless package && rm -r ./build"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",
