@@ -6,7 +6,7 @@
     "build:ui": "cd frontend && npm ci && npm run build && cd ..",
     "package:serverless": "cd serverless && npm run package && cd ..",
     "package:full": "npm run build:ui && npm run package:serverless",
-    "deploy:serverless": "cd serverless && npm ci && serverless deploy && cd .."
+    "deploy:serverless": "cd serverless && npm i && serverless deploy && cd .."
   },
   "keywords": [
     "aws",
