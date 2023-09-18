@@ -23,6 +23,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Build UI
         run: npm run build:ui
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE }}
+          role-session-name: ServerlessDeployment
+          aws-region: ${{ vars.REGION }}
       - name: Install serverless globally
         run: npm i -g serverless@3.x
       - name: Deploy to AWS
