@@ -5,11 +5,14 @@ on:
     branches:
       - development
 
+permissions:
+  id-token: write
+  contents: read
 jobs:
   devDeployment:
     name: development deploy
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: development
     strategy:
       matrix:
