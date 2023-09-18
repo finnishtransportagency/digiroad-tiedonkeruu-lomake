@@ -1,0 +1,34 @@
+name: Deploy development build to AWS
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  devDeployment:
+    name: development deploy
+    runs-on: ubuntu-latest
+    environment: 
+      name: development
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build UI
+        run: npm run build:ui
+      - name: Deploy to AWS
+        run: npm run deploy:serverless
+        env:
+          AWS_DEPLOYMENT_ROLE: ${{ secrets.AWS_DEPLOYMENT_ROLE }}
+          REGION: ${{ vars.REGION }}
+          STAGE_NAME: ${{ vars.STAGE_NAME }}
+          VPC_SECURITY_GROUP_ID: ${{ secrets.VPC_SECURITY_GROUP_ID }}
+          VPC_SUBNET_ID_1: ${{ secrets.VPC_SUBNET_ID_1 }}
+          VPC_SUBNET_ID_2: ${{ secrets.VPC_SUBNET_ID_2 }}

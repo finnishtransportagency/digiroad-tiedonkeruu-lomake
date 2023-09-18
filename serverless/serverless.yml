@@ -6,11 +6,22 @@ useDotenv: true
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket
+      localDir: build/
+
+package:
+  individually: true
 
 provider:
   name: aws
   runtime: nodejs16.x
   region: ${env:REGION}
+  iam:
+    deploymentRole: ${env:AWS_DEPLOYMENT_ROLE}
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
@@ -38,9 +49,24 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket
+        AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: error.html
+
+    S3AccessPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: FrontendS3Bucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: '*'
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting-bucket/*
 
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
@@ -51,6 +77,7 @@ resources:
               Id: S3Origin
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
+          DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             ViewerProtocolPolicy: https-only
