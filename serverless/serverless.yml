@@ -20,8 +20,6 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: ${env:REGION}
-  iam:
-    deploymentRole: ${env:AWS_DEPLOYMENT_ROLE}
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
