@@ -31,15 +31,15 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE }}
           role-session-name: ServerlessDeployment
-          aws-region: ${{ vars.REGION }}
+          aws-region: ${{ secrets.REGION }}
       - name: Install serverless globally
         run: npm i -g serverless@3.x
       - name: Deploy to AWS
         run: npm run deploy:serverless
         env:
           AWS_DEPLOYMENT_ROLE: ${{ secrets.AWS_DEPLOYMENT_ROLE }}
-          REGION: ${{ vars.REGION }}
-          STAGE_NAME: ${{ vars.STAGE_NAME }}
+          REGION: ${{ secrets.REGION }}
+          STAGE_NAME: ${{ secrets.STAGE_NAME }}
           VPC_SECURITY_GROUP_ID: ${{ secrets.VPC_SECURITY_GROUP_ID }}
           VPC_SUBNET_ID_1: ${{ secrets.VPC_SUBNET_ID_1 }}
           VPC_SUBNET_ID_2: ${{ secrets.VPC_SUBNET_ID_2 }}
