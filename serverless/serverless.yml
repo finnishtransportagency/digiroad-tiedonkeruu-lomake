@@ -15,8 +15,7 @@ provider:
   runtime: nodejs16.x
   region: ${env:REGION}
   iam:
-    deploymentRole:
-      Fn::Sub: 'arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole'
+    deploymentRole: arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
