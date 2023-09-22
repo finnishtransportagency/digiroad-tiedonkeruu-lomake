@@ -52,26 +52,12 @@ resources:
           IndexDocument: index.html
           ErrorDocument: error.html
 
-    S3AccessPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket:
-          Ref: FrontendS3Bucket
-        PolicyDocument:
-          Statement:
-            - Sid: PublicReadGetObject
-              Effect: Allow
-              Principal: '*'
-              Action:
-                - s3:GetObject
-              Resource: arn:aws:s3:::dr-tiedonkeruu-dev-frontend-hosting/*
-
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
           Origins:
-            - DomainName: dr-tiedonkeruu-dev-frontend-hosting.s3.${env:REGION}.amazonaws.com
+            - DomainName: dr-tiedonkeruu-dev-frontend-hosting.s3-${env:REGION}.amazonaws.com
               Id: S3Origin
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
