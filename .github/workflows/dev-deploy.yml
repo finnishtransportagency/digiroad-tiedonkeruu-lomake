@@ -37,6 +37,7 @@ jobs:
       - name: Deploy to AWS
         run: npm run deploy:serverless
         env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           REGION: ${{ secrets.REGION }}
           STAGE_NAME: ${{ secrets.STAGE_NAME }}
           VPC_SECURITY_GROUP_ID: ${{ secrets.VPC_SECURITY_GROUP_ID }}
