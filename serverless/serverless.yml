@@ -23,6 +23,14 @@ provider:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
 
+functions:
+  ping:
+    handler: src/handler.ping
+    events:
+      - httpApi:
+          path: /ping
+          method: get
+
 resources:
   Resources:
     FrontendS3Bucket:
