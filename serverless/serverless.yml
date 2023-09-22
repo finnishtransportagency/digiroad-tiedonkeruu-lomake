@@ -30,8 +30,3 @@ functions:
       - httpApi:
           path: /ping
           method: get
-
-resources:
-  Resources:
-    FrontendS3Bucket:
-      Type: AWS::S3::Bucket
