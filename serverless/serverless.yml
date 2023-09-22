@@ -51,6 +51,7 @@ resources:
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: error.html
+        Region: ${env:REGION}
 
     S3AccessPolicy:
       Type: AWS::S3::BucketPolicy
