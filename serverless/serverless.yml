@@ -16,7 +16,7 @@ provider:
   region: ${env:REGION}
   iam:
     deploymentRole:
-	    Fn::Sub: 'arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole'
+      Fn::Sub: 'arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole'
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
