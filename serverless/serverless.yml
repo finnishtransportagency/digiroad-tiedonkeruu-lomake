@@ -6,12 +6,6 @@ useDotenv: true
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
-  - serverless-s3-sync
-
-custom:
-  s3Sync:
-    - bucketName: dr-tiedonkeruu-dev-frontend-hosting
-      localDir: build/
 
 package:
   individually: true
@@ -20,6 +14,9 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: ${env:REGION}
+  iam:
+    deploymentRole:
+	    Fn::Sub: 'arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole'
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
