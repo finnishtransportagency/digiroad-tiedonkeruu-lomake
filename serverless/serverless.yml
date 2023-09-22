@@ -23,43 +23,7 @@ provider:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
 
-functions:
-  ping:
-    handler: src/handler.ping
-    events:
-      - httpApi:
-          path: /ping
-          method: get
-  handlePost:
-    handler: src/handler.handlePost
-    events:
-      - httpApi:
-          path: /postData
-          method: post
-
 resources:
   Resources:
     FrontendS3Bucket:
       Type: AWS::S3::Bucket
-      Properties:
-        BucketName: dr-tiedonkeruu-dev-frontend-hosting
-        AccessControl: PublicRead
-        WebsiteConfiguration:
-          IndexDocument: index.html
-          ErrorDocument: error.html
-
-    CloudFrontDistribution:
-      Type: AWS::CloudFront::Distribution
-      Properties:
-        DistributionConfig:
-          Origins:
-            - DomainName: dr-tiedonkeruu-dev-frontend-hosting.s3-${env:REGION}.amazonaws.com
-              Id: S3Origin
-              CustomOriginConfig:
-                OriginProtocolPolicy: https-only
-          DefaultRootObject: index.html
-          DefaultCacheBehavior:
-            TargetOriginId: S3Origin
-            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
-            ViewerProtocolPolicy: https-only
-          Enabled: true
