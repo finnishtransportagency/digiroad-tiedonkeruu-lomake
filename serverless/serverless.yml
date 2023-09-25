@@ -25,6 +25,7 @@ provider:
   httpApi:
     logging:
       accessLogging: true
+      accessLogDestinationArn: arn:aws:logs:${env:REGION}:${env:AWS_ACCOUNT_ID}:log-group:/aws/lambda/dr-tiedonkeruu-dev-ping:*
 
 functions:
   ping:
