@@ -22,6 +22,9 @@ provider:
     subnetIds:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
+  httpApi:
+    logging:
+      accessLogging: true
 
 functions:
   ping:
