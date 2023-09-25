@@ -15,6 +15,7 @@ export const handlePost = async (
       statusCode: 400,
       headers: {
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST',
       },
       body: JSON.stringify(
         {
@@ -33,6 +34,7 @@ export const handlePost = async (
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST',
     },
     body: JSON.stringify(
       {

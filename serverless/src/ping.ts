@@ -13,6 +13,7 @@ export const ping = async (
     statusCode: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'OPTIONS,GET',
     },
     body: JSON.stringify(
       {
