@@ -16,21 +16,12 @@ provider:
   region: ${env:REGION}
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - xray:PutTraceSegments
-        - xray:PutTelemetryRecords
-      Resource: "*"
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
     subnetIds:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
-  tracing:
-    apiGateway: true
-    lambda: true
 
 functions:
   ping:
@@ -39,3 +30,9 @@ functions:
       - httpApi:
           path: /ping
           method: get
+  handlePost:
+    handler: src/handler.handlePost
+    events:
+      - httpApi:
+          path: /postData
+          method: post
