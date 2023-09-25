@@ -30,9 +30,13 @@ functions:
       - httpApi:
           path: /ping
           method: get
+          cors:
+            origin: '*'
   handlePost:
     handler: src/handler.handlePost
     events:
       - httpApi:
           path: /postData
           method: post
+          cors:
+            origin: '*'
