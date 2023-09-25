@@ -30,13 +30,11 @@ functions:
       - httpApi:
           path: /ping
           method: get
-          cors:
-            origin: '*'
+          cors: true
   handlePost:
     handler: src/handler.handlePost
     events:
       - httpApi:
           path: /postData
           method: post
-          cors:
-            origin: '*'
+          cors: true
