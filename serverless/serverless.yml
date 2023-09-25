@@ -25,7 +25,7 @@ provider:
 
 functions:
   ping:
-    handler: src/handler.ping
+    handler: src/ping.ping
     events:
       - httpApi:
           path: /ping
