@@ -1,10 +1,21 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import {
+  APIGatewayProxyEvent,
+  APIGatewayEventRequestContext,
+  APIGatewayProxyCallback,
+} from 'aws-lambda'
 import validate from './validator'
 
-export const handlePost = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  if (event.body === null)
-    return {
+export const handlePost = async (
+  event: APIGatewayProxyEvent,
+  _context: APIGatewayEventRequestContext,
+  callback: APIGatewayProxyCallback
+) => {
+  if (event.body === null) {
+    callback(null, {
       statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
       body: JSON.stringify(
         {
           message: 'Bad Request: Missing body',
@@ -12,12 +23,17 @@ export const handlePost = async (event: APIGatewayProxyEvent): Promise<APIGatewa
         null,
         2
       ),
-    }
+    })
+    return
+  }
 
   const formData = validate(JSON.parse(event.body))
 
-  return {
+  callback(null, {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     body: JSON.stringify(
       {
         message: 'Form data received',
@@ -26,5 +42,5 @@ export const handlePost = async (event: APIGatewayProxyEvent): Promise<APIGatewa
       null,
       2
     ),
-  }
+  })
 }

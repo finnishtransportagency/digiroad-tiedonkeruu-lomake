@@ -1,8 +1,19 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import {
+  APIGatewayProxyEvent,
+  APIGatewayEventRequestContext,
+  APIGatewayProxyCallback,
+} from 'aws-lambda'
 
-export const ping = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  return {
+export const ping = async (
+  event: APIGatewayProxyEvent,
+  _context: APIGatewayEventRequestContext,
+  callback: APIGatewayProxyCallback
+) => {
+  const response = {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     body: JSON.stringify(
       {
         message: 'Pong!',
@@ -12,4 +23,6 @@ export const ping = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
       2
     ),
   }
+
+  callback(null, response)
 }
