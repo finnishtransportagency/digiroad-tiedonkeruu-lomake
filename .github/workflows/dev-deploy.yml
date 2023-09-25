@@ -31,7 +31,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE }}
           role-session-name: ServerlessDeployment
-          aws-region: ${{ secrets.REGION }}
+          aws-region: ${{ vars.REGION }}
       - name: Install serverless globally
         run: npm i -g serverless@3.x
       - name: Deploy to AWS

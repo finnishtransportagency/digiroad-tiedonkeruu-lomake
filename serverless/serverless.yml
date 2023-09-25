@@ -22,10 +22,9 @@ provider:
     subnetIds:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
-  httpApi:
-    logging:
-      accessLogging: true
-      accessLogDestinationArn: arn:aws:logs:${env:REGION}:${env:AWS_ACCOUNT_ID}:log-group:/aws/lambda/dr-tiedonkeruu-dev-ping:*
+  tracing:
+    apiGateway: true
+    lambda: true
 
 functions:
   ping:
