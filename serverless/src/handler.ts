@@ -10,31 +10,9 @@ export const handlePost = async (
   _context: APIGatewayEventRequestContext,
   callback: APIGatewayProxyCallback
 ) => {
-  if (event.httpMethod === 'OPTIONS') {
-    callback(null, {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST',
-      },
-      body: JSON.stringify(
-        {
-          message: 'CORS check passed',
-        },
-        null,
-        2
-      ),
-    })
-    return
-  }
-
   if (event.body === null) {
     callback(null, {
       statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST',
-      },
       body: JSON.stringify(
         {
           message: 'Bad Request: Missing body',
@@ -50,10 +28,6 @@ export const handlePost = async (
 
   callback(null, {
     statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'OPTIONS,POST',
-    },
     body: JSON.stringify(
       {
         message: 'Form data received',

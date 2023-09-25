@@ -11,10 +11,6 @@ export const ping = async (
 ) => {
   const response = {
     statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'OPTIONS,GET',
-    },
     body: JSON.stringify(
       {
         message: 'Pong!',

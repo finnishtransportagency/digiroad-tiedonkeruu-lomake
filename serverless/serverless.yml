@@ -22,6 +22,8 @@ provider:
     subnetIds:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
+  httpApi:
+    cors: true
 
 functions:
   ping:
@@ -30,19 +32,9 @@ functions:
       - httpApi:
           path: /ping
           method: get
-          cors: true
-      - httpApi:
-          path: /ping
-          method: options
-          cors: true
   handlePost:
     handler: src/handler.handlePost
     events:
       - httpApi:
           path: /postData
           method: post
-          cors: true
-      - httpApi:
-          path: /postData
-          method: options
-          cors: true
