@@ -47,11 +47,19 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting
-        PublicAccessBlockConfiguration:
-          BlockPublicAcls: false
-          BlockPublicPolicy: false
-          IgnorePublicAcls: false
-          RestrictPublicBuckets: false
-        WebsiteConfiguration:
-          IndexDocument: index.html
-          ErrorDocument: error.html
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting.s3-${env:REGION}.amazonaws.com
+              Id: S3Origin
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+          DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+            ViewerProtocolPolicy: https-only
+          Enabled: true
