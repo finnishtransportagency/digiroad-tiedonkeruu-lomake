@@ -30,7 +30,7 @@ functions:
     handler: src/handler.handlePost
     events:
       - httpApi:
-          path: /postData
+          path: /post
           method: post
 
 resources:
