@@ -41,6 +41,7 @@ functions:
           path: /postData
           method: post
 
-Resources:
-  FrontendS3Bucket:
-    Type: AWS::S3::Bucket
+resources:
+  Resources:
+    FrontendS3Bucket:
+      Type: AWS::S3::Bucket
