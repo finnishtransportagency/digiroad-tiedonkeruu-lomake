@@ -47,6 +47,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: error.html
