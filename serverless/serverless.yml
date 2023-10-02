@@ -47,7 +47,6 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting
-        AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: error.html
