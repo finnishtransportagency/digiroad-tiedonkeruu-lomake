@@ -52,7 +52,7 @@ resources:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: 'Origin Access Identity for frontend S3 bucket'
+          Comment: 'Frontend Origin Access Identity'
 
     FrontendS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
