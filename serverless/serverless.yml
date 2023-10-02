@@ -48,6 +48,33 @@ resources:
       Properties:
         BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting
 
+    FrontendS3OAI:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: 'Origin Access Identity for frontend S3 bucket'
+
+    FrontendS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: FrontendS3Bucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                CanonicalUser:
+                  Fn::GetAtt:
+                    - FrontendS3OAI
+                    - S3CanonicalUserId
+              Action: s3:GetObject
+              Resource:
+                Fn::Join:
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - Ref: FrontendS3Bucket
+                    - '/*'
+
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -56,7 +83,7 @@ resources:
             - Id: S3Origin
               DomainName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting.s3-${env:REGION}.amazonaws.com
               S3OriginConfig:
-                OriginAccessIdentity: ''
+                OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
