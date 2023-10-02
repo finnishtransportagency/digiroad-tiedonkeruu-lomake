@@ -85,8 +85,8 @@ resources:
           Origins:
             - Id: S3Origin
               DomainName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting.s3-website-${env:REGION}.amazonaws.com
-              CustomOriginConfig:
-                OriginProtocolPolicy: https-only
+              S3OriginConfig:
+                OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
