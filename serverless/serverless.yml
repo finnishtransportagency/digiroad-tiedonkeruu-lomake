@@ -14,8 +14,6 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: ${env:REGION}
-  iam:
-    deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
   vpc:
     securityGroupIds:
       - ${env:VPC_SECURITY_GROUP_ID}
@@ -24,17 +22,25 @@ provider:
       - ${env:VPC_SUBNET_ID_2}
   httpApi:
     cors: true
+  iam:
+    deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+            - ses:SendTemplatedEmail
+          Resource: '*'
 
 functions:
-  ping:
-    handler: src/ping.ping
-    events:
-      - httpApi:
-          path: /ping
-          method: get
   handlePost:
     handler: src/handler.handlePost
     events:
       - httpApi:
           path: /postData
           method: post
+
+Resources:
+  FrontendS3Bucket:
+    Type: AWS::S3::Bucket
