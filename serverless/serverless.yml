@@ -24,14 +24,6 @@ provider:
     cors: true
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - ses:SendEmail
-            - ses:SendRawEmail
-            - ses:SendTemplatedEmail
-          Resource: '*'
 
 functions:
   handlePost:
