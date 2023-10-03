@@ -6,6 +6,13 @@ useDotenv: true
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketNameKey: FrontendS3BucketNameOutputKey
+      localDir: ui
+      deleteRemoved: true
 
 package:
   individually: true
@@ -72,7 +79,7 @@ resources:
                 Fn::Join:
                   - ''
                   - - 'arn:aws:s3:::'
-                    - Ref: FrontendS3Bucket
+                    - !Ref FrontendS3Bucket
                     - '/*'
 
     CloudFrontDistribution:
@@ -81,7 +88,11 @@ resources:
         DistributionConfig:
           Origins:
             - Id: S3Origin
-              DomainName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting.s3-${env:REGION}.amazonaws.com
+              DomainName:
+                Fn::Join:
+                  - ''
+                  - - !Ref FrontendS3Bucket
+                    - '.s3-${env:REGION}.amazonaws.com'
               S3OriginConfig:
                 OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
           DefaultRootObject: index.html
@@ -90,3 +101,7 @@ resources:
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
             ViewerProtocolPolicy: https-only
           Enabled: true
+
+  Outputs:
+    FrontendS3BucketNameOutputKey:
+      Value: !Ref FrontendS3Bucket

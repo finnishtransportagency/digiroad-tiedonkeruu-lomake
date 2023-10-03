@@ -7,10 +7,8 @@
     "zod": "^3.22.2"
   },
   "scripts": {
-    "ping": "serverless invoke local --function ping",
-    "offline": "serverless offline --httpPort 3003",
-    "cp:ui": "cp -r ../frontend/build ./build",
-    "package": "npm run cp:ui && serverless package && rm -r ./build"
+    "handlePost": "serverless invoke local --function handlePost",
+    "offline": "serverless offline --httpPort 3003"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",

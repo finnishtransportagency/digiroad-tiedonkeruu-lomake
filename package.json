@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "build:ui": "cd frontend && npm ci && npm run build && cd ..",
-    "package:serverless": "cd serverless && npm run package && cd ..",
-    "package:full": "npm run build:ui && npm run package:serverless",
+    "cp:ui": "cp -r frontend/build serverless/ui",
     "deploy:serverless": "cd serverless && npm i && serverless deploy --verbose && cd .."
   },
   "keywords": [
