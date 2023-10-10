@@ -2,11 +2,12 @@
 import { Formik, Form, FormikHelpers } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
+import { useRef } from 'react'
 import DatePicker from 'react-datepicker'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
 import ErrorLabel from '../components/ErrorLabel'
-import schema, { defaultValues, FormValues } from '../schema'
+import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import Heading from '../components/Heading'
@@ -17,10 +18,22 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 const FormPage = () => {
 	const { t } = useTranslation()
+	const fileInputRef = useRef<HTMLInputElement>()
 
 	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
-		console.log(await httpService.post(apiURL, values))
-		actions.resetForm()
+		const formData = new FormData()
+
+		formData.append('reporter', values.reporter)
+		formData.append('email', values.email)
+		formData.append('project', values.project)
+		formData.append('municipality', values.municipality)
+		formData.append('opening_date', values.opening_date)
+		if (values.file) formData.append('files', values.file)
+
+		if (await httpService.post(apiURL, formData)) {
+			if (fileInputRef.current) fileInputRef.current.value = ''
+			actions.resetForm()
+		}
 	}
 
 	return (
@@ -77,7 +90,27 @@ const FormPage = () => {
 							<ErrorLabel>{t(errors.opening_date)}</ErrorLabel>
 						) : null}
 
+						<FieldLabel htmlFor='file'>{t('form.file')}</FieldLabel>
+						<FormField
+							as='input'
+							type='file'
+							ref={fileInputRef}
+							accept={ACCEPTED_FILE_TYPES.join(',')}
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								if (!event.currentTarget.files || event.currentTarget.files.length < 1) {
+									setFieldValue('file', null)
+								} else {
+									setFieldValue('file', event.currentTarget.files[0])
+								}
+							}}
+						/>
+						{errors.file ? (
+							// @ts-ignore
+							<ErrorLabel>{t(errors.file)}</ErrorLabel>
+						) : null}
+
 						<br />
+
 						<Button type='reset' color='negative'>
 							{t('form.reset')}
 						</Button>

@@ -7,6 +7,7 @@ const sv = {
 		project: 'TRANSLATE: Rakennushankkeen nimi',
 		municipality: 'TRANSLATE: Kunta',
 		opening_date: 'TRANSLATE: Liikenteelle avaamisajankohta',
+		file: 'TRANSLATE: Liitetiedosto',
 		reset: 'TRANSLATE: Tyhjennä lomake',
 		submit: 'TRANSLATE: Lähetä',
 	},
@@ -22,6 +23,10 @@ const sv = {
 			required: 'TRANSLATE: Avaamisajankohta vaaditaan!',
 			value: 'TRANSLATE: Päivämäärän tulee olla muotoa dd/mm/yyyy',
 			min: 'TRANSLATE: Avaamisajankohdan tulee olla tulevaisuudessa!',
+		},
+		file: {
+			size: 'TRANSLATE: Liitetiedoston koko saa olla enintään 39MB!',
+			type: 'TRANSLATE: Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
 	},
 } as const

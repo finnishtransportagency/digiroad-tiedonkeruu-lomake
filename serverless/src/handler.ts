@@ -3,15 +3,17 @@ import {
   APIGatewayEventRequestContext,
   APIGatewayProxyCallback,
 } from 'aws-lambda'
+import { parse as parseFormData } from 'lambda-multipart-parser'
 import validate from './validator'
 
 export const handlePost = async (
   event: APIGatewayProxyEvent,
   _context: APIGatewayEventRequestContext,
-  callback: APIGatewayProxyCallback
+  _callback: APIGatewayProxyCallback
 ) => {
   if (event.body === null) {
-    callback(null, {
+    console.log('Bad Request: Missing body')
+    return {
       statusCode: 400,
       body: JSON.stringify(
         {
@@ -20,21 +22,37 @@ export const handlePost = async (
         null,
         2
       ),
-    })
-    return
+    }
   }
 
-  const formData = validate(JSON.parse(event.body))
+  try {
+    const formData = await parseFormData(event)
+    const validated = validate(formData)
+    console.log('Validated form data:', validated)
 
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Form data received',
-        formData: formData,
-      },
-      null,
-      2
-    ),
-  })
+    return {
+      statusCode: 200,
+      body: JSON.stringify(
+        {
+          message: 'Form data received',
+          formData: validated,
+        },
+        null,
+        2
+      ),
+    }
+  } catch (error) {
+    console.log('Error validating form data:', error)
+    return {
+      statusCode: 400,
+      body: JSON.stringify(
+        {
+          message: 'Bad Request: Invalid form data',
+          error: JSON.parse(error.message),
+        },
+        null,
+        2
+      ),
+    }
+  }
 }

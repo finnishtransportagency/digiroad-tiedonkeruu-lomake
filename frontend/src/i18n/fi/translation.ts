@@ -7,6 +7,7 @@ const fi = {
 		project: 'Rakennushankkeen nimi',
 		municipality: 'Kunta',
 		opening_date: 'Liikenteelle avaamisajankohta',
+		file: 'Liitetiedosto',
 		reset: 'Tyhjennä lomake',
 		submit: 'Lähetä',
 	},
@@ -22,6 +23,10 @@ const fi = {
 			required: 'Avaamisajankohta vaaditaan!',
 			value: 'Päivämäärän tulee olla muotoa dd/mm/yyyy',
 			min: 'Avaamisajankohdan tulee olla tulevaisuudessa!',
+		},
+		file: {
+			size: 'Liitetiedoston koko saa olla enintään 39MB!',
+			type: 'Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
 	},
 } as const

@@ -12,6 +12,11 @@ const FormField = styled(Field)`
 	&:focus {
 		outline: 2px solid ${props => props.theme.primaryColor};
 	}
+
+	cursor: ${props => (props.type === 'file' ? 'pointer' : 'auto')};
+	&::file-selector-button {
+		display: none;
+	}
 `
 
 export default FormField

@@ -1,12 +1,12 @@
-import { FormValues } from '../schema'
 import axios from 'axios'
 
-const post = async (url: string, data: FormValues | string) => {
+const post = async (url: string, formData: FormData) => {
 	try {
-		return await axios.post(`${url}/postData`, data)
+		await axios.post(`${url}/postData`, formData)
+		return true
 	} catch (error) {
-		console.log(error)
-		return 'Error Occured'
+		console.error(error)
+		return false
 	}
 }
 

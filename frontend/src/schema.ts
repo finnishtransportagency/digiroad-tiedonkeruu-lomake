@@ -1,5 +1,18 @@
 import { z } from 'zod'
 
+// Remember to update error messages if you change these values
+const MAX_FILE_SIZE = 39000000 // Amazon SES now supports emails with a message size of up to 40MB
+export const ACCEPTED_FILE_TYPES = [
+	'application/pdf',
+	'application/acad',
+	'image/vnd.dwg',
+	'image/x-dwg',
+	'application/dxf',
+	'image/vnd.dxf',
+	'image/vnd.dgn',
+]
+// ^----------------------------------------------------------^
+
 const schema = z.object({
 	reporter: z.string({
 		required_error: 'errors.reporter',
@@ -32,6 +45,10 @@ const schema = z.object({
 			},
 		})
 		.min(new Date(new Date().setHours(0, 0, 0, 0)), 'errors.opening_date.min'),
+	file: z
+		.any()
+		.refine(file => !file || file.size <= MAX_FILE_SIZE, 'errors.file.size')
+		.refine(file => !file || ACCEPTED_FILE_TYPES.includes(file.type), 'errors.file.type'),
 })
 
 export const defaultValues = {
@@ -40,6 +57,7 @@ export const defaultValues = {
 	project: '',
 	municipality: '',
 	opening_date: new Date().toString(),
+	file: null as File | null,
 }
 
 export type FormValues = typeof defaultValues
