@@ -5,6 +5,8 @@ import {
 } from 'aws-lambda'
 import { parse as parseFormData } from 'lambda-multipart-parser'
 import validate from './validator'
+import { ZodError } from 'zod'
+import sendEmail from './emailer'
 
 export const handlePost = async (
   event: APIGatewayProxyEvent,
@@ -30,6 +32,9 @@ export const handlePost = async (
     const validated = validate(formData)
     console.log('Validated form data:', validated)
 
+    // TESTING
+    await sendEmail()
+
     return {
       statusCode: 200,
       body: JSON.stringify(
@@ -41,18 +46,32 @@ export const handlePost = async (
         2
       ),
     }
-  } catch (error) {
-    console.log('Error validating form data:', error)
-    return {
-      statusCode: 400,
-      body: JSON.stringify(
-        {
-          message: 'Bad Request: Invalid form data',
-          error: JSON.parse(error.message),
-        },
-        null,
-        2
-      ),
+  } catch (error: unknown) {
+    if (error instanceof ZodError) {
+      console.log('Error validating form data:', error)
+      return {
+        statusCode: 400,
+        body: JSON.stringify(
+          {
+            message: 'Bad Request: Invalid form data',
+            error: JSON.parse(error.message),
+          },
+          null,
+          2
+        ),
+      }
+    } else {
+      console.log('Error parsing form data:', error)
+      return {
+        statusCode: 500,
+        body: JSON.stringify(
+          {
+            message: 'Internal Server Error',
+          },
+          null,
+          2
+        ),
+      }
     }
   }
 }
