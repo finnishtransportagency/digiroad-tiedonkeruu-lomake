@@ -6,7 +6,7 @@ import {
 import { parse as parseFormData } from 'lambda-multipart-parser'
 import { ZodError } from 'zod'
 import validate from './validator'
-import sendEmail from './emailer'
+import emailer from './emailer'
 
 export const handlePost = async (
   event: APIGatewayProxyEvent,
@@ -33,7 +33,7 @@ export const handlePost = async (
     console.log('Validated form data:', validated)
 
     // TESTING
-    await sendEmail()
+    await emailer.sendEmail()
 
     return {
       statusCode: 200,

@@ -6,4 +6,4 @@ const sendEmail = async () => {
   console.log(credentials)
 }
 
-export default sendEmail
+export default { sendEmail }

@@ -43,6 +43,9 @@ provider:
 functions:
   handlePost:
     handler: src/handler.handlePost
+    environment:
+      REGION: ${env:REGION}
+      SES_CREDENTIALS_NAME: ${env:SES_CREDENTIALS_NAME}
     events:
       - httpApi:
           path: /postData
