@@ -4,8 +4,8 @@ import {
   APIGatewayProxyCallback,
 } from 'aws-lambda'
 import { parse as parseFormData } from 'lambda-multipart-parser'
-import validate from './validator'
 import { ZodError } from 'zod'
+import validate from './validator'
 import sendEmail from './emailer'
 
 export const handlePost = async (
