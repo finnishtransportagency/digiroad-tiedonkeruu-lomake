@@ -13,7 +13,7 @@ jobs:
     name: ${{ vars.STAGE_NAME }} deploy
     runs-on: ubuntu-latest
     environment:
-      name: ${{ vars.STAGE_NAME }}
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
     strategy:
       matrix:
         node-version: [16.x]
