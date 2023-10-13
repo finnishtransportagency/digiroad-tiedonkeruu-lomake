@@ -19,6 +19,7 @@ package:
 
 provider:
   name: aws
+  stage: ${env:STAGE_NAME}
   runtime: nodejs16.x
   region: ${env:REGION}
   vpc:
@@ -35,10 +36,10 @@ provider:
       statements:
         - Effect: Allow
           Action:
-            - ses:SendEmail
-            - ses:SendRawEmail
-            - ses:SendTemplatedEmail
-          Resource: '*'
+            - ssm:GetParameter
+            - ssm:GetParameters
+          Resource:
+            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SES_CREDENTIALS_NAME}
 
 functions:
   handlePost:
