@@ -39,14 +39,15 @@ provider:
             - ssm:GetParameter
             - ssm:GetParameters
           Resource:
-            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SES_CREDENTIALS_NAME}
+            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
 
 functions:
   handlePost:
     handler: src/handler.handlePost
     environment:
       REGION: ${env:REGION}
-      SES_CREDENTIALS_NAME: ${env:SES_CREDENTIALS_NAME}
+      SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
+      SMTP_ENDPOINT: ${env:SMTP_ENDPOINT}
     events:
       - httpApi:
           path: /postData

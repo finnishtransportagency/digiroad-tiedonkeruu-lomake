@@ -1,26 +1,27 @@
-import { getParameter } from './utils'
-
-const getCredentials = async () => {
-  const credentialsString = await getParameter(process.env.SES_CREDENTIALS_NAME || '')
-
-  const usernameRegex = /SMTP user name\s*([\s\S]+?)\r?\n/
-  const passwordRegex = /SMTP password\s*([\s\S]+)/
-  const usernameMatch = credentialsString.match(usernameRegex)
-  const passwordMatch = credentialsString.match(passwordRegex)
-
-  if (usernameMatch && passwordMatch) {
-    const username = usernameMatch[1].trim()
-    const password = passwordMatch[1].trim()
-
-    return { username, password }
-  } else {
-    throw new Error('Unable to parse credentials from SecureString')
-  }
-}
+import nodemailer from 'nodemailer'
+import ssmService from './ssmService'
 
 const sendEmail = async () => {
-  const SMTP_credentials = await getCredentials()
-  console.log(SMTP_credentials.username, SMTP_credentials.password)
+  const SMTP_credentials = await ssmService.getSMTPCredentials()
+
+  const transporter = nodemailer.createTransport({
+    pool: true,
+    host: process.env.SMTP_ENDPOINT,
+    port: 465,
+    secure: true,
+    auth: {
+      user: SMTP_credentials.username,
+      pass: SMTP_credentials.password,
+    },
+  })
+
+  transporter.verify(function (error, _success) {
+    if (error) {
+      console.log(error)
+    } else {
+      console.log('Server is ready to take our messages')
+    }
+  })
 }
 
 export default { sendEmail }
