@@ -22,13 +22,8 @@ const sendEmail = async (info: Report) => {
     html: '<b>Hello Email World from AWS Lambda!</b>',
   }
 
-  transporter.sendMail(mailContent, (error, info) => {
-    if (error) {
-      console.error(error)
-    } else {
-      console.log('Email sent: ' + info.response)
-    }
-  })
+  const sentMessageInfo = await transporter.sendMail(mailContent)
+  console.log('SMTP response: ', sentMessageInfo.response)
 }
 
 export default { sendEmail }
