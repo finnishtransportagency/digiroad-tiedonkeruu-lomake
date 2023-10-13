@@ -27,7 +27,9 @@ const schema = z.object({
   ),
 })
 
-const validate = (input: unknown) => {
+export type Report = z.infer<typeof schema>
+
+const validate = (input: unknown): Report => {
   return schema.parse(input)
 }
 

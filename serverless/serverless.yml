@@ -48,6 +48,7 @@ functions:
       REGION: ${env:REGION}
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
       SMTP_ENDPOINT: ${env:SMTP_ENDPOINT}
+      SMTP_SENDER: ${env:SMTP_SENDER}
     events:
       - httpApi:
           path: /postData

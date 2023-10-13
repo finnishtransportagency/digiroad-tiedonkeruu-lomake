@@ -29,18 +29,18 @@ export const handlePost = async (
 
   try {
     const formData = await parseFormData(event)
-    const validated = validate(formData)
-    console.log('Validated form data:', validated)
+    const report = validate(formData)
+    console.log('Validated form data:', report)
 
     // TESTING
-    await emailer.sendEmail()
+    await emailer.sendEmail(report)
 
     return {
       statusCode: 200,
       body: JSON.stringify(
         {
           message: 'Form data received',
-          formData: validated,
+          formData: report,
         },
         null,
         2
