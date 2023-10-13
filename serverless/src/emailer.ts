@@ -5,16 +5,16 @@ const sendEmail = async () => {
   const SMTP_credentials = await ssmService.getSMTPCredentials()
 
   const transporter = nodemailer.createTransport({
-    pool: true,
     host: process.env.SMTP_ENDPOINT,
-    port: 465,
-    secure: true,
+    port: 587,
     auth: {
       user: SMTP_credentials.username,
       pass: SMTP_credentials.password,
     },
   })
 
+  console.log('Transporter created')
+  
   transporter.verify(function (error, _success) {
     if (error) {
       console.log(error)
