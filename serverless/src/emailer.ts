@@ -1,10 +1,10 @@
-import nodemailer from 'nodemailer'
+import { createTransport } from 'nodemailer'
 import ssmService from './ssmService'
 
 const sendEmail = async () => {
   const SMTP_credentials = await ssmService.getSMTPCredentials()
 
-  const transporter = nodemailer.createTransport({
+  const transporter = createTransport({
     host: process.env.SMTP_ENDPOINT,
     port: 587,
     auth: {
@@ -14,8 +14,8 @@ const sendEmail = async () => {
   })
 
   console.log('Transporter created')
-  
-  transporter.verify(function (error, _success) {
+
+  transporter.verify((error, _success) => {
     if (error) {
       console.log(error)
     } else {

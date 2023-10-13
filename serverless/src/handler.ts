@@ -48,7 +48,7 @@ export const handlePost = async (
     }
   } catch (error: unknown) {
     if (error instanceof ZodError) {
-      console.log('Error validating form data:', error)
+      console.error('Error validating form data:', error)
       return {
         statusCode: 400,
         body: JSON.stringify(
@@ -61,7 +61,7 @@ export const handlePost = async (
         ),
       }
     } else {
-      console.log('Error parsing form data:', error)
+      console.error('Error parsing form data:', error)
       return {
         statusCode: 500,
         body: JSON.stringify(
