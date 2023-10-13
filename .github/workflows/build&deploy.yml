@@ -1,4 +1,4 @@
-name: Deploy to AWS
+name: Build & deploy to AWS
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   BuildAndDeploy:
-    name: ${{ vars.STAGE_NAME }} deploy
+    name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }} deploy
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
