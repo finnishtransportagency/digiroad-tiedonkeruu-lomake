@@ -43,7 +43,7 @@ provider:
 
 functions:
   handlePost:
-    handler: src/handler.handlePost
+    handler: src/handler.handler
     environment:
       REGION: ${env:REGION}
       SES_CREDENTIALS_NAME: ${env:SES_CREDENTIALS_NAME}

@@ -7,7 +7,7 @@ import { parse as parseFormData } from 'lambda-multipart-parser'
 import validate from './validator'
 import { ZodError } from 'zod'
 
-export const handlePost = async (
+export const handler = async (
   event: APIGatewayProxyEvent,
   _context: APIGatewayEventRequestContext,
   _callback: APIGatewayProxyCallback
