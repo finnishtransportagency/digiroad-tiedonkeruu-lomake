@@ -6,8 +6,9 @@ import Button from './Button'
 const languages = [
 	{ label: 'suomeksi', value: 'fi' },
 	{ label: 'på svenska', value: 'sv' },
-]
+] as const
 
+type LanguageValues = (typeof languages)[number]['value']
 type LanguageButtonProps = { $first: boolean; $last: boolean; $selected: boolean }
 
 const LanguageButton = styled(Button)<LanguageButtonProps>`
@@ -31,9 +32,9 @@ const LanguageButton = styled(Button)<LanguageButtonProps>`
 
 const LanguageSelector = () => {
 	const { i18n } = useTranslation()
-	const [selectedOption, setSelected] = useState(languages[0].value)
+	const [selectedOption, setSelected] = useState<LanguageValues>(languages[0].value)
 
-	const handleOptionChange = (value: string) => {
+	const handleOptionChange = (value: LanguageValues) => {
 		setSelected(value)
 		void i18n.changeLanguage(value)
 	}

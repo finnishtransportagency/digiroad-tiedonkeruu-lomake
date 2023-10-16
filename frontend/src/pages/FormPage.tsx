@@ -17,12 +17,13 @@ import { apiURL } from '../config'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const FormPage = () => {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const fileInputRef = useRef<HTMLInputElement>()
 
 	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
 		const formData = new FormData()
 
+		formData.append('lang', i18n.language)
 		formData.append('reporter', values.reporter)
 		formData.append('email', values.email)
 		formData.append('project', values.project)
