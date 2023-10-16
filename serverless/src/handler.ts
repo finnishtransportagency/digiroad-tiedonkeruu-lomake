@@ -4,8 +4,8 @@ import {
   APIGatewayProxyCallback,
 } from 'aws-lambda'
 import { parse as parseFormData } from 'lambda-multipart-parser'
-import validate from './validator'
 import { ZodError } from 'zod'
+import schema from './schema'
 import emailer from './emailer'
 
 export const handlePost = async (
@@ -29,11 +29,11 @@ export const handlePost = async (
 
   try {
     const formData = await parseFormData(event)
-    const report = validate(formData)
+    const report = schema.validate(formData)
     console.log('Validated form data:', report)
 
-    // TESTING
-    await emailer.sendEmail(report)
+    const response = await emailer.sendEmail(report)
+    console.log('SMTP response:' + response)
 
     return {
       statusCode: 200,
