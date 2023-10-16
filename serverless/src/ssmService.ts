@@ -23,7 +23,7 @@ const getSMTPCredentials = async () => {
 
     return { username, password }
   } else {
-    throw new Error('Unable to parse credentials from SecureString')
+    throw new Error('Unable to parse SMTP credentials from SecureString')
   }
 }
 

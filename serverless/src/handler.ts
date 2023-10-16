@@ -40,7 +40,14 @@ export const handlePost = async (
       body: JSON.stringify(
         {
           message: 'Form data received',
-          formData: report,
+          formData: {
+            ...report,
+            files: report.files.map(file => {
+              return {
+                filename: file.filename,
+              }
+            }),
+          },
         },
         null,
         2
