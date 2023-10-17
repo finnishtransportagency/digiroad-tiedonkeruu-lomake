@@ -7,50 +7,39 @@ const renderEmailContents = (report: Report, translations: Translations) => {
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap"
-        rel="stylesheet"
-      />
       <style>
         body {
-          font-family: 'Exo 2', sans-serif;
-          background-color: #f4f4f4;
+          font-family: Arial, sans-serif;
           margin: 0;
           padding: 0;
         }
-
-        div {
-          max-width: 700px;
-          margin: 20px auto;
-          background-color: #ffffff;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        #email-content {
+          max-width: 45em;
+          margin: 1em auto;
+          background-color: #eeeeee;
+          padding: 1em;
+          border-radius: 0.3em;
         }
-
         h1 {
           color: #333333;
         }
-
         table {
           width: 100%;
-          margin-top: 20px;
+          margin-top: 1em;
           border-collapse: collapse;
         }
-
         th,
         td {
-          padding: 10px;
-          border-bottom: 1px solid #dddddd;
+          padding: 0.75em;
+          border-bottom: 1px solid #c9c9c9;
           text-align: left;
         }
-
-        th {
-          background-color: #f2f2f2;
+        td {
+          background-color: #fefefe;
         }
-
+        th {
+          background-color: #f5f5f5;
+        }
         b {
           color: #0064af;
         }
@@ -60,7 +49,7 @@ const renderEmailContents = (report: Report, translations: Translations) => {
   // ACTUAL CONTENT OF THE EMAIL
   const body = `
     <body>
-      <div>
+      <div id="email-content">
         <h1>${translations.title}</h1>
         <table>
           <tr>
@@ -95,12 +84,13 @@ const renderEmailContents = (report: Report, translations: Translations) => {
     </html>`
 
   // TEXT VERSION OF THE EMAIL
-  const text = `${translations.title}
-    ${translations.reporter}: ${report.reporter}
-    ${translations.email}: ${report.email}
-    ${translations.project}: ${report.project}
-    ${translations.municipality}: ${report.municipality}
-    ${translations.opening_date}: ${report.opening_date.toLocaleDateString(report.lang)}`
+  const text =
+    `${translations.title}\n` +
+    `${translations.reporter}: ${report.reporter}\n` +
+    `${translations.email}: ${report.email}\n` +
+    `${translations.project}: ${report.project}\n` +
+    `${translations.municipality}: ${report.municipality}\n` +
+    `${translations.opening_date}: ${report.opening_date.toLocaleDateString(report.lang)}`
 
   return { html, text }
 }

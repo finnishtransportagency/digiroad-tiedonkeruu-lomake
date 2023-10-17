@@ -6,7 +6,7 @@ import {
 import { parse as parseFormData } from 'lambda-multipart-parser'
 import { ZodError } from 'zod'
 import schema from './schema'
-import emailer from './emailer'
+import emailService from './emailService'
 
 export const handlePost = async (
   event: APIGatewayProxyEvent,
@@ -32,7 +32,7 @@ export const handlePost = async (
     const report = schema.validate(formData)
     console.log('Validated form data:', report)
 
-    const response = await emailer.sendEmail(report)
+    const response = await emailService.sendEmail(report)
     console.log('SMTP response:' + response)
 
     return {
