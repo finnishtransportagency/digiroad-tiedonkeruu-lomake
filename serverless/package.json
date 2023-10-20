@@ -5,6 +5,7 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.427.0",
     "aws-sdk": "^2.1472.0",
+    "axios": "^1.5.1",
     "lambda-multipart-parser": "^1.0.1",
     "nodemailer": "^6.9.6",
     "zod": "^3.22.2"

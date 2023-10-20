@@ -3,31 +3,69 @@ import {
   APIGatewayEventRequestContext,
   APIGatewayProxyCallback,
 } from 'aws-lambda'
+import axios from 'axios'
 import { parse as parseFormData } from 'lambda-multipart-parser'
 import { ZodError } from 'zod'
 import schema from './schema'
 import emailService from './emailService'
+import { reCaptchaSecret, reCaptchaVerifyURL } from './config'
 
 export const handlePost = async (
   event: APIGatewayProxyEvent,
   _context: APIGatewayEventRequestContext,
   _callback: APIGatewayProxyCallback
 ) => {
-  if (event.body === null) {
-    console.log('Bad Request: Missing body')
-    return {
-      statusCode: 400,
-      body: JSON.stringify(
-        {
-          message: 'Bad Request: Missing body',
-        },
-        null,
-        2
-      ),
-    }
-  }
-
   try {
+    if (event.body === null) {
+      console.error('Bad Request: Missing body')
+      return {
+        statusCode: 400,
+        body: JSON.stringify(
+          {
+            message: 'Bad Request: Missing body',
+          },
+          null,
+          2
+        ),
+      }
+    }
+    if (!event.headers['g-recaptcha-response']) {
+      console.error('Bad Request: Missing reCaptcha token')
+      return {
+        statusCode: 400,
+        body: JSON.stringify(
+          {
+            message: 'Bad Request: Missing reCaptcha token',
+          },
+          null,
+          2
+        ),
+      }
+    }
+
+    // Verify reCaptcha token
+    if (
+      (
+        await axios.post(
+          `${reCaptchaVerifyURL}?secret=${reCaptchaSecret}&response=${event.headers['g-recaptcha-response']}`
+        )
+      ).data.success
+    ) {
+      console.log('reCaptcha token verified')
+    } else {
+      console.error('Bad Request: Invalid reCaptcha token')
+      return {
+        statusCode: 400,
+        body: JSON.stringify(
+          {
+            message: 'Bad Request: Invalid reCaptcha token',
+          },
+          null,
+          2
+        ),
+      }
+    }
+
     const formData = await parseFormData(event)
     const report = schema.validate(formData)
     console.log('Validated form data:', report)

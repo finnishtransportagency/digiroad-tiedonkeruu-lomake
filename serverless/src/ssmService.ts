@@ -1,7 +1,14 @@
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm'
+import { awsRegion, smtpCredentialsName } from './config'
 
+/**
+ * Fetches a parameter from AWS SSM Parameter Store
+ *
+ * @param name name of the parameter to fetch
+ * @returns the value of the parameter
+ */
 const getParameter = async (name: string): Promise<string> => {
-  const ssm = new SSMClient({ region: process.env.REGION || 'eu-west-1' })
+  const ssm = new SSMClient({ region: awsRegion })
 
   const { Parameter } = await ssm.send(
     new GetParameterCommand({ Name: name, WithDecryption: true })
@@ -9,8 +16,15 @@ const getParameter = async (name: string): Promise<string> => {
   return Parameter?.Value || ''
 }
 
+/**
+ * Fetches and parses SMTP credentials from AWS SSM Parameter Store
+ *
+ * @example const { username, password } = await getSMTPCredentials()
+ * @throws Error if unable to parse credentials from SecureString
+ * @returns SMTP credentials
+ */
 const getSMTPCredentials = async () => {
-  const credentialsString = await getParameter(process.env.SMTP_CREDENTIALS_NAME || '')
+  const credentialsString = await getParameter(smtpCredentialsName)
 
   const usernameRegex = /SMTP user name\s*([\s\S]+?)\r?\n/
   const passwordRegex = /SMTP password\s*([\s\S]+)/
@@ -27,4 +41,8 @@ const getSMTPCredentials = async () => {
   }
 }
 
+/**
+ * @property getParameter fetches a parameter from AWS SSM Parameter Store
+ * @property getSMTPCredentials fetches and parses SMTP credentials from AWS SSM Parameter Store
+ */
 export default { getParameter, getSMTPCredentials }

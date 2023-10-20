@@ -47,6 +47,8 @@ jobs:
           VPC_SECURITY_GROUP_ID: ${{ secrets.VPC_SECURITY_GROUP_ID }}
           VPC_SUBNET_ID_1: ${{ secrets.VPC_SUBNET_ID_1 }}
           VPC_SUBNET_ID_2: ${{ secrets.VPC_SUBNET_ID_2 }}
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+          RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
           SMTP_CREDENTIALS_NAME: ${{ secrets.SMTP_CREDENTIALS_NAME }}
           SMTP_ENDPOINT: ${{ secrets.SMTP_ENDPOINT }}
           SMTP_SENDER: ${{ vars.SMTP_SENDER }}

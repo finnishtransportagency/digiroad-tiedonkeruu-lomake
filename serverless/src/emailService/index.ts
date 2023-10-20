@@ -4,6 +4,7 @@ import { ACCEPTED_FILE_TYPES, Report } from '../schema'
 import ssmService from '../ssmService'
 import t from '../translations'
 import template from './template'
+import { emailSender, smtpEndpoint } from '../config'
 
 type EmailOptions = Mail.Options & {
   attachments?: Array<{
@@ -18,7 +19,7 @@ const constructEmail = (report: Report) => {
   const emailContents = template.renderEmailContents(report, translations)
 
   const emailOptions: EmailOptions = {
-    from: process.env.SMTP_SENDER ?? '',
+    from: emailSender,
     to: report.email,
     subject: `${translations.title}: ${report.project}, ${report.municipality}`,
     text: emailContents.text,
@@ -40,7 +41,7 @@ const sendEmail = async (report: Report) => {
   const SMTP_credentials = await ssmService.getSMTPCredentials()
 
   const transporter = createTransport({
-    host: process.env.SMTP_ENDPOINT,
+    host: smtpEndpoint,
     port: 587,
     auth: {
       user: SMTP_credentials.username,

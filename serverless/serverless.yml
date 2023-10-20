@@ -29,7 +29,14 @@ provider:
       - ${env:VPC_SUBNET_ID_1}
       - ${env:VPC_SUBNET_ID_2}
   httpApi:
-    cors: true
+    cors:
+      allowedOrigins:
+        - ${env:FRONTEND_URL}
+      allowedHeaders:
+        - g-recaptcha-response
+      allowedMethods:
+        - OPTIONS
+        - POST
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
     role:
@@ -45,6 +52,7 @@ functions:
   handlePost:
     handler: src/handler.handlePost
     environment:
+      RECAPTCHA_SECRET: ${env:RECAPTCHA_SECRET}
       REGION: ${env:REGION}
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
       SMTP_ENDPOINT: ${env:SMTP_ENDPOINT}

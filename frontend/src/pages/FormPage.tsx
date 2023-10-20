@@ -2,8 +2,9 @@
 import { Formik, Form, FormikHelpers } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
-import { useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
+import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
 import ErrorLabel from '../components/ErrorLabel'
@@ -19,6 +20,12 @@ import 'react-datepicker/dist/react-datepicker.css'
 const FormPage = () => {
 	const { t, i18n } = useTranslation()
 	const fileInputRef = useRef<HTMLInputElement>()
+	const [reCaptchaToken, setReCaptchaToken] = useState('')
+	const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
+
+	const verifyReCaptcha = useCallback((token: string) => {
+		setReCaptchaToken(token)
+	}, [])
 
 	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
 		const formData = new FormData()
@@ -31,9 +38,10 @@ const FormPage = () => {
 		formData.append('opening_date', values.opening_date)
 		if (values.file) formData.append('files', values.file)
 
-		if (await httpService.post(apiURL, formData)) {
+		if (await httpService.post(apiURL, formData, reCaptchaToken)) {
 			if (fileInputRef.current) fileInputRef.current.value = ''
 			actions.resetForm()
+			setRefreshReCaptcha(r => !r)
 		}
 	}
 
@@ -109,6 +117,8 @@ const FormPage = () => {
 							// @ts-ignore
 							<ErrorLabel>{t(errors.file)}</ErrorLabel>
 						) : null}
+
+						<GoogleReCaptcha onVerify={verifyReCaptcha} refreshReCaptcha={refreshReCaptcha} />
 
 						<br />
 

@@ -11,6 +11,15 @@ export type Translations = {
   opening_date: string
 }
 
+/**
+ * Returns object with translations for the given language
+ *
+ * @example
+ * const translations = t('fi');
+ * translations.title // => 'Ilmoitus tieprojektista'
+ * @param lang language to use
+ * @returns translations for the given language
+ */
 const t = (lang: (typeof SUPPORTED_LANGUAGES)[number]) => {
   const translations = {
     fi,
