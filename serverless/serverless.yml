@@ -38,7 +38,7 @@ provider:
         - OPTIONS
         - POST
   iam:
-    deploymentRole: arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole
+    deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
     role:
       statements:
         - Effect: Allow
@@ -46,7 +46,7 @@ provider:
             - ssm:GetParameter
             - ssm:GetParameters
           Resource:
-            - arn:aws:ssm:${env:REGION}:${AWS::AccountId}:parameter/${env:SMTP_CREDENTIALS_NAME}
+            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
 
 functions:
   handlePost:
