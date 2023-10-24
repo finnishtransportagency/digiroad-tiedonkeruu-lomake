@@ -24,10 +24,10 @@ provider:
   region: ${env:REGION}
   vpc:
     securityGroupIds:
-      - ${env:VPC_SECURITY_GROUP_ID}
+      - ${ssm:${env:SECURITY_GROUP_ID}}
     subnetIds:
-      - ${env:VPC_SUBNET_ID_1}
-      - ${env:VPC_SUBNET_ID_2}
+      - ${ssm:${env:SUBNET_ID_1}}
+      - ${ssm:${env:SUBNET_ID_2}}
   httpApi:
     cors:
       allowedOrigins:
@@ -38,7 +38,7 @@ provider:
         - OPTIONS
         - POST
   iam:
-    deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/dr-tiedonkeruu-CloudFormationExecutionRole
+    deploymentRole: arn:aws:iam::${AWS::AccountId}:role/dr-tiedonkeruu-CloudFormationExecutionRole
     role:
       statements:
         - Effect: Allow
@@ -46,16 +46,16 @@ provider:
             - ssm:GetParameter
             - ssm:GetParameters
           Resource:
-            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
+            - arn:aws:ssm:${env:REGION}:${AWS::AccountId}:parameter/${env:SMTP_CREDENTIALS_NAME}
 
 functions:
   handlePost:
     handler: src/handler.handlePost
     environment:
-      RECAPTCHA_SECRET: ${env:RECAPTCHA_SECRET}
+      RECAPTCHA_SECRET: ${ssm:${env:RECAPTCHA_SECRET}}
       REGION: ${env:REGION}
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
-      SMTP_ENDPOINT: ${env:SMTP_ENDPOINT}
+      SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
       SMTP_SENDER: ${env:SMTP_SENDER}
     events:
       - httpApi:

@@ -42,14 +42,12 @@ jobs:
       - name: Deploy to AWS
         run: npm run deploy:serverless
         env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           REGION: ${{ vars.REGION }}
           STAGE_NAME: ${{ vars.STAGE_NAME }}
-          VPC_SECURITY_GROUP_ID: ${{ secrets.VPC_SECURITY_GROUP_ID }}
-          VPC_SUBNET_ID_1: ${{ secrets.VPC_SUBNET_ID_1 }}
-          VPC_SUBNET_ID_2: ${{ secrets.VPC_SUBNET_ID_2 }}
+          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}
+          SUBNET_ID_1: ${{ secrets.SUBNET_ID_1 }}
+          SUBNET_ID_2: ${{ secrets.SUBNET_ID_2 }}
           FRONTEND_URL: ${{ vars.FRONTEND_URL }}
           RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
           SMTP_CREDENTIALS_NAME: ${{ secrets.SMTP_CREDENTIALS_NAME }}
-          SMTP_ENDPOINT: ${{ secrets.SMTP_ENDPOINT }}
           SMTP_SENDER: ${{ vars.SMTP_SENDER }}

@@ -106,7 +106,7 @@ export const handlePost = async (
         ),
       }
     } else {
-      console.error('Error parsing form data:', error)
+      console.error('Unhandled error:', error)
       return {
         statusCode: 500,
         body: JSON.stringify(

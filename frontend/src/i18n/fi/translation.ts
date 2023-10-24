@@ -1,13 +1,13 @@
 const fi = {
 	hello: 'Hei käännös!',
 	form: {
-		title: 'PLACEHOLDER Lomakkeen otsikko',
+		title: 'DIGIROAD, Ilmoita kadun rakentamisen aloittamisesta',
 		reporter: 'Ilmoittajan nimi',
 		email: 'Ilmoittajan sähköposti',
 		project: 'Rakennushankkeen nimi',
 		municipality: 'Kunta',
 		opening_date: 'Liikenteelle avaamisajankohta',
-		file: 'Liitetiedosto',
+		file: 'Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
 		reset: 'Tyhjennä lomake',
 		submit: 'Lähetä',
 	},
@@ -21,7 +21,7 @@ const fi = {
 		municipality: 'Kunta vaaditaan!',
 		opening_date: {
 			required: 'Avaamisajankohta vaaditaan!',
-			value: 'Päivämäärän tulee olla muotoa dd/mm/yyyy',
+			value: 'Päivämäärän tulee olla muotoa dd.mm.yyyy',
 			min: 'Avaamisajankohdan tulee olla tulevaisuudessa!',
 		},
 		file: {
