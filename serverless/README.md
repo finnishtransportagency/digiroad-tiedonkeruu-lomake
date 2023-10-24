@@ -10,7 +10,7 @@
 1. Install dependencies by running
    `npm install`
 2. Provide environment variables in `.env`-file
-   ```json
+   ```
    AWS_DEPLOYMENT_ROLE=""
    REGION=""
    VPC_SECURITY_GROUP_ID=""
