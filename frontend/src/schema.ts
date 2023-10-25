@@ -1,7 +1,11 @@
 import { z } from 'zod'
 
 // Remember to update error messages if you change these values
-const MAX_FILE_SIZE = 39_000_000 // Amazon SES now supports emails with a message size of up to 40MB
+/**
+ * Amazon SES supports emails with a message size of up to 40MB but
+ * lambda function has a limit of 6MB for the invocation payload.
+ */
+const MAX_FILE_SIZE = 5_900_000
 export const ACCEPTED_FILE_TYPES = [
 	'application/pdf',
 	'application/acad',
