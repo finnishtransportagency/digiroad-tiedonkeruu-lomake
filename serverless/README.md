@@ -11,17 +11,16 @@
    `npm install`
 2. Provide environment variables in `.env`-file
    ```
-   AWS_DEPLOYMENT_ROLE=""
-   REGION=""
-   VPC_SECURITY_GROUP_ID=""
-   VPC_SUBNET_ID_1=""
-   VPC_SUBNET_ID_2=""
    FRONTEND_URL=<your-frontend-url>
-   STAGE_NAME="development"
-   AWS_ACCOUNT_ID=""
    RECAPTCHA_SECRET=<reCaptcha-secret-key>
+   STAGE_NAME="development"
+   REGION=""
+   SECURITY_GROUP_ID=""
+   SUBNET_ID_1=""
+   SUBNET_ID_2=""
+   AWS_ACCOUNT_ID=""
+   AWS_CLOUDFORMATION_ROLE=""
    SMTP_CREDENTIALS_NAME=""
-   SMTP_ENDPOINT=""
    SMTP_SENDER=""
    ```
 3. Start API in development mode by running
