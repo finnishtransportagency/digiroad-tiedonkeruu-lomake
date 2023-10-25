@@ -9,6 +9,7 @@ const fi = {
 		opening_date: 'Liikenteelle avaamisajankohta',
 		file: 'Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
 		reset: 'Tyhjennä lomake',
+		reset_confirm: 'Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'Lähetä',
 	},
 	errors: {

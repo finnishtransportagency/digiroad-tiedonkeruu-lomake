@@ -45,11 +45,19 @@ const FormPage = () => {
 		}
 	}
 
+	const handleReset = (_values: FormValues, actions: FormikHelpers<FormValues>) => {
+		if (confirm(t('form.reset_confirm'))) {
+			if (fileInputRef.current) fileInputRef.current.value = ''
+			actions.resetForm()
+		}
+	}
+
 	return (
 		<Container>
 			<Heading $level='h1'>{t('form.title')}</Heading>
 			<Formik
 				onSubmit={handleSubmit}
+				onReset={handleReset}
 				initialValues={defaultValues}
 				validationSchema={toFormikValidationSchema(schema)}
 			>

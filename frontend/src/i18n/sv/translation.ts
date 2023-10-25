@@ -9,6 +9,7 @@ const sv = {
 		opening_date: 'TRANSLATE: Liikenteelle avaamisajankohta',
 		file: 'TRANSLATE: Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
 		reset: 'TRANSLATE: Tyhjennä lomake',
+		reset_confirm: 'TRANSLATE: Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'TRANSLATE: Lähetä',
 	},
 	errors: {
