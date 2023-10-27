@@ -45,10 +45,10 @@ const FormPage = () => {
 		}
 	}
 
-	const handleReset = (_values: FormValues, actions: FormikHelpers<FormValues>) => {
+	const handleReset = (resetForm: () => void) => {
 		if (confirm(t('form.reset_confirm'))) {
 			if (fileInputRef.current) fileInputRef.current.value = ''
-			actions.resetForm()
+			resetForm()
 		}
 	}
 
@@ -57,11 +57,10 @@ const FormPage = () => {
 			<Heading $level='h1'>{t('form.title')}</Heading>
 			<Formik
 				onSubmit={handleSubmit}
-				onReset={handleReset}
 				initialValues={defaultValues}
 				validationSchema={toFormikValidationSchema(schema)}
 			>
-				{({ errors, touched, values, setFieldValue, setFieldTouched, isValid }) => (
+				{({ errors, touched, values, setFieldValue, setFieldTouched, isValid, resetForm }) => (
 					<Form>
 						<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
 						<FormField name='reporter' placeholder={t('form.reporter')} />
@@ -130,7 +129,7 @@ const FormPage = () => {
 
 						<br />
 
-						<Button type='reset' color='negative'>
+						<Button type='button' onClick={() => handleReset(resetForm)} color='negative'>
 							{t('form.reset')}
 						</Button>
 						<Button type='submit' color='positive' disabled={!isValid}>

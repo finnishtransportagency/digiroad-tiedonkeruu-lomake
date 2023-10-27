@@ -26,7 +26,7 @@ const sv = {
 			min: 'TRANSLATE: Avaamisajankohdan tulee olla tulevaisuudessa!',
 		},
 		file: {
-			size: 'TRANSLATE: Liitetiedoston koko saa olla enintään 39MB!',
+			size: 'TRANSLATE: Liitetiedoston koko saa olla enintään 5MB!',
 			type: 'TRANSLATE: Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
 	},

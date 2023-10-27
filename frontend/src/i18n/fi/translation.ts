@@ -26,7 +26,7 @@ const fi = {
 			min: 'Avaamisajankohdan tulee olla tulevaisuudessa!',
 		},
 		file: {
-			size: 'Liitetiedoston koko saa olla enintään 39MB!',
+			size: 'Liitetiedoston koko saa olla enintään 5MB!',
 			type: 'Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
 	},
