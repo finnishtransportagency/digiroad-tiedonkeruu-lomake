@@ -68,10 +68,10 @@ export const handlePost = async (
 
     const formData = await parseFormData(event)
     const report = schema.validate(formData)
-    console.log('Validated form data:', report)
+    console.log('Validated form data:\n', report)
 
     const response = await emailService.sendEmail(report)
-    console.log('SMTP response:' + response)
+    console.log('SMTP response:\n' + response)
 
     return {
       statusCode: 200,
@@ -106,7 +106,7 @@ export const handlePost = async (
         ),
       }
     } else {
-      console.error('Unhandled error:', error)
+      console.error('Unhandled error:\n', error)
       return {
         statusCode: 500,
         body: JSON.stringify(

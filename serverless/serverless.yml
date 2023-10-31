@@ -9,6 +9,13 @@ plugins:
   - serverless-s3-sync
 
 custom:
+  stage: ${opt:stage, 'dev'}
+  serverless-offline:
+    httpPort: 3003
+  securityGroupId: ${env:offline.SECURITY_GROUP_ID, ssm:${env:SECURITY_GROUP_ID}}
+  subnetId1: ${env:offline.SUBNET_ID_1, ssm:${env:SUBNET_ID_1}}
+  subnetId2: ${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}
+  recaptchaSecret: ${env:offline.RECAPTCHA_SECRET, ssm:${env:RECAPTCHA_SECRET}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketNameOutputKey
       localDir: ui
@@ -19,15 +26,15 @@ package:
 
 provider:
   name: aws
-  stage: ${env:STAGE_NAME}
+  stage: ${self:custom.stage}
   runtime: nodejs16.x
   region: ${env:REGION}
   vpc:
     securityGroupIds:
-      - ${ssm:${env:SECURITY_GROUP_ID}}
+      - ${self:custom.securityGroupId}
     subnetIds:
-      - ${ssm:${env:SUBNET_ID_1}}
-      - ${ssm:${env:SUBNET_ID_2}}
+      - ${self:custom.subnetId1}
+      - ${self:custom.subnetId2}
   httpApi:
     cors:
       allowedOrigins:
@@ -52,7 +59,7 @@ functions:
   handlePost:
     handler: src/handler.handlePost
     environment:
-      RECAPTCHA_SECRET: ${ssm:${env:RECAPTCHA_SECRET}}
+      RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
       REGION: ${env:REGION}
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
       SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
@@ -67,7 +74,7 @@ resources:
     FrontendS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: dr-tiedonkeruu-${env:STAGE_NAME}-frontend-hosting
+        BucketName: dr-tiedonkeruu-${self:custom.stage}-frontend-hosting
 
     FrontendS3OAI:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity

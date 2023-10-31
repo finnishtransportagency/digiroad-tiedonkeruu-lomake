@@ -1,3 +1,4 @@
+export const offline = process.env.IS_OFFLINE || false
 export const reCaptchaVerifyURL = 'https://www.google.com/recaptcha/api/siteverify'
 export const reCaptchaSecret = process.env.RECAPTCHA_SECRET || ''
 export const awsRegion = process.env.REGION || 'eu-west-1'

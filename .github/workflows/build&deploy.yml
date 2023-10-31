@@ -40,9 +40,8 @@ jobs:
       - name: Copy UI build to serverless folder
         run: npm run cp:ui
       - name: Deploy to AWS
-        run: npm run deploy:serverless
+        run: npm run deploy:serverless -- --stage ${{ vars.STAGE_NAME }}
         env:
-          STAGE_NAME: ${{ vars.STAGE_NAME }}
           REGION: ${{ vars.REGION }}
           FRONTEND_URL: ${{ vars.FRONTEND_URL }}
           SMTP_SENDER: ${{ vars.SMTP_SENDER }}

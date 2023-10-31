@@ -2,22 +2,26 @@
 
 ## Running locally
 
-| Since this is a serverless backend, running it locally can be a bit challenging. It is recommended to comment out any calls to the `emailService.sendEmail`-function and test things related to sending e-mails only in the cloud development environment. |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Since this is a serverless backend, running it locally can be a bit challenging. It is recommended to check in the code that the `IS_OFFLINE` variable is `false` before any calls to other AWS service. |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
-### commands
+### Prerequisites
+
+You must have a site registered in the reCAPTCHA v3 Admin Console: https://www.google.com/recaptcha/admin
+
+### Commands
 
 1. Install dependencies by running
    `npm install`
-2. Provide environment variables in `.env`-file
+2. Provide the following environment variables in `.env`-file and remember to replace values between `<` and `>` with your own values
    ```
+   IS_OFFLINE=true
    FRONTEND_URL=<your-frontend-url>
-   RECAPTCHA_SECRET=<reCaptcha-secret-key>
-   STAGE_NAME="development"
+   offline.RECAPTCHA_SECRET=<reCaptcha-secret-key>
+   offline.SECURITY_GROUP_ID=""
+   offline.SUBNET_ID_1=""
+   offline.SUBNET_ID_2=""
    REGION=""
-   SECURITY_GROUP_ID=""
-   SUBNET_ID_1=""
-   SUBNET_ID_2=""
    AWS_ACCOUNT_ID=""
    AWS_CLOUDFORMATION_ROLE=""
    SMTP_CREDENTIALS_NAME=""
@@ -25,21 +29,5 @@
    ```
 3. Start API in development mode by running
    `npm run offline`
-
-#### possible errors
-
-```bash
-Cannot resolve serverless.yml: Variables resolution errored with:
-  - Cannot resolve variable at "provider.stage": Value not found at "env" source
-```
-
-**Solution**: change `provider.stage` in `serverless.yml` manually to `development`
-
-```yml
-provider:
-  stage: development
-```
-
-> Be sure to change it back before trying to do a production release
 
 ---

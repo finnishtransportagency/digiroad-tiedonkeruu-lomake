@@ -4,7 +4,7 @@ import { ACCEPTED_FILE_TYPES, Report } from '../schema'
 import ssmService from '../ssmService'
 import t from '../translations'
 import template from './template'
-import { emailSender, smtpEndpoint } from '../config'
+import { emailSender, offline, smtpEndpoint } from '../config'
 
 type EmailOptions = Mail.Options & {
   attachments?: Array<{
@@ -37,7 +37,13 @@ const constructEmail = (report: Report) => {
   return emailOptions
 }
 
-const sendEmail = async (report: Report) => {
+const sendEmail = async (report: Report): Promise<string> => {
+  if (offline) {
+    return new Promise(resolve =>
+      setTimeout(() => resolve('Offline mode, not sending email'), 1000)
+    )
+  }
+
   const SMTP_credentials = await ssmService.getSMTPCredentials()
 
   const transporter = createTransport({
