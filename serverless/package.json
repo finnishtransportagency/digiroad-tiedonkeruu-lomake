@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.427.0",
-    "aws-sdk": "^2.1472.0",
+    "aws-sdk": "^2.1484.0",
     "axios": "^1.5.1",
-    "lambda-multipart-parser": "^1.0.1",
+    "busboy": "^1.6.0",
     "nodemailer": "^6.9.6",
     "zod": "^3.22.2"
   },
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",
+    "@types/busboy": "^1.5.2",
     "@types/nodemailer": "^6.4.11",
     "serverless": "^3.36.0",
     "serverless-offline": "^9.3.1",

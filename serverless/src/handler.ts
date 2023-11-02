@@ -4,7 +4,7 @@ import {
   APIGatewayProxyCallback,
 } from 'aws-lambda'
 import axios from 'axios'
-import { parse as parseFormData } from 'lambda-multipart-parser'
+import parseFormData from './lambda-multipart-parser'
 import { ZodError } from 'zod'
 import schema from './schema'
 import emailService from './emailService'
@@ -16,6 +16,7 @@ export const handlePost = async (
   _callback: APIGatewayProxyCallback
 ) => {
   try {
+    // Verify body exists
     if (event.body === null) {
       console.error('Bad Request: Missing body')
       return {
@@ -29,6 +30,7 @@ export const handlePost = async (
         ),
       }
     }
+    // Verify reCaptcha token exists
     if (!event.headers['g-recaptcha-response']) {
       console.error('Bad Request: Missing reCaptcha token')
       return {
@@ -42,7 +44,6 @@ export const handlePost = async (
         ),
       }
     }
-
     // Verify reCaptcha token
     if (
       (
@@ -66,8 +67,7 @@ export const handlePost = async (
       }
     }
 
-    const formData = await parseFormData(event)
-    const report = schema.validate(formData)
+    const report = schema.validate(await parseFormData(event))
     console.log('Validated form data:\n', report)
 
     const response = await emailService.sendEmail(report)
@@ -92,31 +92,35 @@ export const handlePost = async (
       ),
     }
   } catch (error: unknown) {
-    if (error instanceof ZodError) {
-      console.error('Error validating form data:', error)
-      return {
-        statusCode: 400,
-        body: JSON.stringify(
-          {
-            message: 'Bad Request: Invalid form data',
-            error: JSON.parse(error.message),
-          },
-          null,
-          2
-        ),
-      }
-    } else {
-      console.error('Unhandled error:\n', error)
-      return {
-        statusCode: 500,
-        body: JSON.stringify(
-          {
-            message: 'Internal Server Error',
-          },
-          null,
-          2
-        ),
-      }
+    return errorHandlers(error)
+  }
+}
+
+const errorHandlers = (error: unknown) => {
+  if (error instanceof ZodError) {
+    console.error('Error validating form data:\n', error)
+    return {
+      statusCode: 400,
+      body: JSON.stringify(
+        {
+          message: 'Bad Request: Invalid form data',
+          error: JSON.parse(error.message),
+        },
+        null,
+        2
+      ),
+    }
+  } else {
+    console.error('Unhandled error:\n', error)
+    return {
+      statusCode: 500,
+      body: JSON.stringify(
+        {
+          message: 'Internal Server Error',
+        },
+        null,
+        2
+      ),
     }
   }
 }
