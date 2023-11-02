@@ -21,7 +21,15 @@ export const ACCEPTED_FILE_TYPES = [
 // ^----------------------------------------------------------^
 
 const schema = z.object({
-  lang: z.enum(SUPPORTED_LANGUAGES),
+  lang: z
+    .string()
+    .optional()
+    .transform(value => {
+      if (!SUPPORTED_LANGUAGES.includes(value as (typeof SUPPORTED_LANGUAGES)[number])) {
+        return 'fi'
+      }
+      return value
+    }),
   reporter: z.string({ required_error: 'Missing reporter' }),
   email: z.string({ required_error: 'Missing email' }).email({ message: 'Invalid email' }),
   project: z.string({ required_error: 'Missing project' }),
