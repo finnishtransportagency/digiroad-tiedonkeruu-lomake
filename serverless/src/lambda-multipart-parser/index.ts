@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from 'aws-lambda'
-import * as busboy from 'busboy'
+import busboy from 'busboy'
 
 interface File {
   filename: string

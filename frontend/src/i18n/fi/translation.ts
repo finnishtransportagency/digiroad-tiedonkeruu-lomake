@@ -25,8 +25,8 @@ const fi = {
 			value: 'Päivämäärän tulee olla muotoa dd.mm.yyyy',
 			min: 'Avaamisajankohdan tulee olla tulevaisuudessa!',
 		},
-		file: {
-			size: 'Liitetiedoston koko saa olla enintään 5MB!',
+		files: {
+			size: 'Liitetiedostojen yhteiskoko saa olla enintään 5,9MB!',
 			type: 'Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
 	},

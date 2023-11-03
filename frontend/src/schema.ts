@@ -5,7 +5,7 @@ import { z } from 'zod'
  * Amazon SES supports emails with a message size of up to 40MB but
  * lambda function has a limit of 6MB for the invocation payload.
  */
-const MAX_FILE_SIZE = 5_900_000
+const MAX_TOTAL_FILE_SIZE = 5_900_000
 export const ACCEPTED_FILE_TYPES = [
 	'application/pdf',
 	'application/acad',
@@ -49,10 +49,33 @@ const schema = z.object({
 			},
 		})
 		.min(new Date(new Date().setHours(0, 0, 0, 0)), 'errors.opening_date.min'),
-	file: z
+	files: z
+		// This could maybe be improved by using z.record(...) or something similar
 		.any()
-		.refine(file => !file || file.size <= MAX_FILE_SIZE, 'errors.file.size')
-		.refine(file => !file || ACCEPTED_FILE_TYPES.includes(file.type), 'errors.file.type'),
+		.refine(filesObject => {
+			if (!filesObject) return true
+			if (filesObject instanceof Object) {
+				const filesArray = Object.values(filesObject)
+				return (
+					filesArray.reduce((totalSize: number, file) => {
+						return totalSize + (file instanceof File ? file.size : 0)
+					}, 0) <= MAX_TOTAL_FILE_SIZE
+				)
+			}
+			return false
+		}, 'errors.files.size')
+		.refine(filesObject => {
+			if (!filesObject) return true
+			if (filesObject instanceof Object) {
+				const filesArray = Object.values(filesObject)
+				return filesArray.reduce((onlyAcceptedFiles: boolean, file) => {
+					return (
+						onlyAcceptedFiles && file instanceof File && ACCEPTED_FILE_TYPES.includes(file.type)
+					)
+				}, true)
+			}
+			return false
+		}, 'errors.files.type'),
 })
 
 export const defaultValues = {
@@ -61,7 +84,7 @@ export const defaultValues = {
 	project: '',
 	municipality: '',
 	opening_date: new Date().toString(),
-	file: null as File | null,
+	files: {} as { [number: number]: File },
 }
 
 export type FormValues = typeof defaultValues

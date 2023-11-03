@@ -36,7 +36,11 @@ const FormPage = () => {
 		formData.append('project', values.project)
 		formData.append('municipality', values.municipality)
 		formData.append('opening_date', values.opening_date)
-		if (values.file) formData.append('files', values.file)
+		const filesArray = Object.values(values.files)
+		if (filesArray.length > 0)
+			filesArray.forEach(file => {
+				formData.append(`file/${file.name}`, file)
+			})
 
 		if (await httpService.post(apiURL, formData, reCaptchaToken)) {
 			if (fileInputRef.current) fileInputRef.current.value = ''
@@ -110,19 +114,20 @@ const FormPage = () => {
 						<FormField
 							as='input'
 							type='file'
+							multiple
 							ref={fileInputRef}
 							accept={ACCEPTED_FILE_TYPES.join(',')}
 							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 								if (!event.currentTarget.files || event.currentTarget.files.length < 1) {
-									setFieldValue('file', null)
+									setFieldValue('files', null)
 								} else {
-									setFieldValue('file', event.currentTarget.files[0])
+									setFieldValue('files', event.currentTarget.files)
 								}
 							}}
 						/>
-						{errors.file ? (
+						{errors.files ? (
 							// @ts-ignore
-							<ErrorLabel>{t(errors.file)}</ErrorLabel>
+							<ErrorLabel>{t(errors.files)}</ErrorLabel>
 						) : null}
 
 						<GoogleReCaptcha onVerify={verifyReCaptcha} refreshReCaptcha={refreshReCaptcha} />

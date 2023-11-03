@@ -8,7 +8,7 @@ import { SUPPORTED_LANGUAGES } from './translations'
  * Backend has a limit of 39MB incase the invocation payload somehow
  * contains file larger than 6MB.
  */
-const MAX_FILE_SIZE = 39_000_000
+const MAX_TOTAL_FILE_SIZE = 39_000_000
 export const ACCEPTED_FILE_TYPES = [
   'application/pdf',
   'application/acad',
@@ -17,19 +17,16 @@ export const ACCEPTED_FILE_TYPES = [
   'application/dxf',
   'image/vnd.dxf',
   'image/vnd.dgn',
-] as const
+] as [string, ...string[]]
 // ^----------------------------------------------------------^
 
 const schema = z.object({
-  lang: z
-    .string()
-    .optional()
-    .transform(value => {
-      if (!SUPPORTED_LANGUAGES.includes(value as (typeof SUPPORTED_LANGUAGES)[number])) {
-        return 'fi'
-      }
-      return value
-    }),
+  lang: z.enum(SUPPORTED_LANGUAGES).transform(value => {
+    if (!SUPPORTED_LANGUAGES.includes(value as (typeof SUPPORTED_LANGUAGES)[number])) {
+      return 'fi'
+    }
+    return value
+  }),
   reporter: z.string({ required_error: 'Missing reporter' }),
   email: z.string({ required_error: 'Missing email' }).email({ message: 'Invalid email' }),
   project: z.string({ required_error: 'Missing project' }),
@@ -44,13 +41,17 @@ const schema = z.object({
         contentType: z
           .enum(ACCEPTED_FILE_TYPES)
           .refine(contentType => contentType !== undefined, { message: 'Invalid file type' }),
-        content: z
-          .instanceof(Buffer)
-          .refine(content => !content || content.length <= MAX_FILE_SIZE, `File size too large`),
+        content: z.instanceof(Buffer),
         encoding: z.string(),
       })
     )
-    .refine(files => files.length <= 1, 'Too many files'),
+    .refine(
+      files =>
+        files.reduce((totalSize: number, file) => {
+          return totalSize + file.content.length
+        }, 0) <= MAX_TOTAL_FILE_SIZE,
+      `File size too large`
+    ),
 })
 
 export type Report = z.infer<typeof schema>
