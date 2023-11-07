@@ -1,5 +1,4 @@
 const fi = {
-	hello: 'Hei käännös!',
 	form: {
 		title: 'DIGIROAD, Ilmoita kadun rakentamisen aloittamisesta',
 		reporter: 'Ilmoittajan nimi',
@@ -11,6 +10,8 @@ const fi = {
 		reset: 'Tyhjennä lomake',
 		reset_confirm: 'Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'Lähetä',
+		submitting: 'Lähetetään...',
+		submit_success: 'Lomake lähetetty onnistuneesti!',
 	},
 	errors: {
 		reporter: 'Ilmoittajan nimi vaaditaan!',
@@ -29,6 +30,7 @@ const fi = {
 			size: 'Liitetiedostojen yhteiskoko saa olla enintään 5,9MB!',
 			type: 'Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
+		submit: 'Lomakkeen lähetys epäonnistui!',
 	},
 } as const
 

@@ -1,5 +1,4 @@
 const sv = {
-	hello: 'Hej översättning!',
 	form: {
 		title: 'TRANSLATE: DIGIROAD, Ilmoita kadun rakentamisen aloittamisesta',
 		reporter: 'TRANSLATE: Ilmoittajan nimi',
@@ -11,6 +10,8 @@ const sv = {
 		reset: 'TRANSLATE: Tyhjennä lomake',
 		reset_confirm: 'TRANSLATE: Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'TRANSLATE: Lähetä',
+		submitting: 'TRANSLATE: Lähetetään...',
+		submit_success: 'TRANSLATE: Lomake lähetetty onnistuneesti!',
 	},
 	errors: {
 		reporter: 'TRANSLATE: Ilmoittajan nimi vaaditaan!',
@@ -29,6 +30,7 @@ const sv = {
 			size: 'TRANSLATE: Liitetiedostojen yhteiskoko saa olla enintään 5,9MB!',
 			type: 'TRANSLATE: Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
+		submit: 'TRANSLATE: Lomakkeen lähetys epäonnistui!',
 	},
 } as const
 

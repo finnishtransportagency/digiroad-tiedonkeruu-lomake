@@ -2,9 +2,10 @@
 import { Formik, Form, FormikHelpers } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
-import { useCallback, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { ToastProps } from '../components/Toast'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
 import ErrorLabel from '../components/ErrorLabel'
@@ -17,7 +18,11 @@ import { apiURL } from '../config'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
-const FormPage = () => {
+type FormPageProps = {
+	setToastProps: Dispatch<SetStateAction<ToastProps>>
+}
+
+const FormPage = ({ setToastProps }: FormPageProps) => {
 	const { t, i18n } = useTranslation()
 	const fileInputRef = useRef<HTMLInputElement>()
 	const [reCaptchaToken, setReCaptchaToken] = useState('')
@@ -28,6 +33,7 @@ const FormPage = () => {
 	}, [])
 
 	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+		setToastProps({ $visible: true, message: t('form.submitting'), type: 'loading' })
 		const formData = new FormData()
 
 		formData.append('lang', i18n.language)
@@ -43,9 +49,20 @@ const FormPage = () => {
 			})
 
 		if (await httpService.post(apiURL, formData, reCaptchaToken)) {
+			// Successfull submit
 			if (fileInputRef.current) fileInputRef.current.value = ''
 			actions.resetForm()
 			setRefreshReCaptcha(r => !r)
+			setToastProps({ $visible: true, message: t('form.submit_success'), type: 'success' })
+			setTimeout(() => {
+				setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+			}, 3000)
+		} else {
+			// Failed submit
+			setToastProps({ $visible: true, message: t('errors.submit'), type: 'error' })
+			setTimeout(() => {
+				setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+			}, 3000)
 		}
 	}
 
@@ -64,7 +81,16 @@ const FormPage = () => {
 				initialValues={defaultValues}
 				validationSchema={toFormikValidationSchema(schema)}
 			>
-				{({ errors, touched, values, setFieldValue, setFieldTouched, isValid, resetForm }) => (
+				{({
+					errors,
+					touched,
+					values,
+					setFieldValue,
+					setFieldTouched,
+					isValid,
+					isSubmitting,
+					resetForm,
+				}) => (
 					<Form>
 						<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
 						<FormField name='reporter' placeholder={t('form.reporter')} />
@@ -134,10 +160,15 @@ const FormPage = () => {
 
 						<br />
 
-						<Button type='button' onClick={() => handleReset(resetForm)} color='negative'>
+						<Button
+							type='button'
+							onClick={() => handleReset(resetForm)}
+							color='negative'
+							disabled={isSubmitting}
+						>
 							{t('form.reset')}
 						</Button>
-						<Button type='submit' color='positive' disabled={!isValid}>
+						<Button type='submit' color='positive' disabled={!isValid || isSubmitting}>
 							{t('form.submit')}
 						</Button>
 					</Form>
