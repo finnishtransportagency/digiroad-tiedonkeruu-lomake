@@ -5,7 +5,8 @@
 - [Frontend](frontend/README.md)
 - [Backend](serverless/README.md)
 
-## Dev environment config files
+<details>
+  <summary><strong>Dev environment config files</strong></summary>
 
 ### Project
 
@@ -46,3 +47,4 @@
 `frontend/tsconfig.json`:
 
 - defines typescript configuration
+</details>

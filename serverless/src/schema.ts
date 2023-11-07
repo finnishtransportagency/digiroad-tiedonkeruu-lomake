@@ -21,12 +21,7 @@ export const ACCEPTED_FILE_TYPES = [
 // ^----------------------------------------------------------^
 
 const schema = z.object({
-  lang: z.enum(SUPPORTED_LANGUAGES).transform(value => {
-    if (!SUPPORTED_LANGUAGES.includes(value as (typeof SUPPORTED_LANGUAGES)[number])) {
-      return 'fi'
-    }
-    return value
-  }),
+  lang: z.enum(SUPPORTED_LANGUAGES),
   reporter: z.string({ required_error: 'Missing reporter' }),
   email: z.string({ required_error: 'Missing email' }).email({ message: 'Invalid email' }),
   project: z.string({ required_error: 'Missing project' }),
@@ -56,8 +51,12 @@ const schema = z.object({
 
 export type Report = z.infer<typeof schema>
 
-const validate = (input: unknown): Report => {
-  return schema.parse(input)
+const validate = (input: Object): Report => {
+  const safeParseResult = schema.safeParse(input)
+  if (safeParseResult.success) return safeParseResult.data
+  if (safeParseResult.error.issues.filter(issue => issue.path[0] === 'lang').length > 0)
+    return schema.parse({ ...input, lang: SUPPORTED_LANGUAGES[0] })
+  throw safeParseResult.error
 }
 
 export default { validate }
