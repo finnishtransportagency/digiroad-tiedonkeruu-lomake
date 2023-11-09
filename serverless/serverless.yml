@@ -71,6 +71,11 @@ functions:
 
 resources:
   Resources:
+    HandlePostLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        RetentionInDays: 180
+
     FrontendS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
