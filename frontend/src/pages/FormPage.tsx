@@ -8,7 +8,7 @@ import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { ToastProps } from '../components/Toast'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
-import ErrorLabel from '../components/ErrorLabel'
+import ErrorLabel, { ErrorLabelPlaceholder } from '../components/ErrorLabel'
 import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
 import Button from '../components/Button'
 import Container from '../components/Container'
@@ -104,28 +104,36 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 						{errors.reporter && touched.reporter ? (
 							// @ts-ignore
 							<ErrorLabel>{t(errors.reporter)}</ErrorLabel>
-						) : null}
+						) : (
+							<ErrorLabelPlaceholder />
+						)}
 
 						<FieldLabel htmlFor='email'>{t('form.email')}</FieldLabel>
 						<FormField name='email' placeholder={t('form.email')} />
 						{errors.email && touched.email ? (
 							// @ts-ignore
 							<ErrorLabel>{t(errors.email)}</ErrorLabel>
-						) : null}
+						) : (
+							<ErrorLabelPlaceholder />
+						)}
 
 						<FieldLabel htmlFor='project'>{t('form.project')}</FieldLabel>
 						<FormField name='project' placeholder={t('form.project')} />
 						{errors.project && touched.project ? (
 							// @ts-ignore
 							<ErrorLabel>{t(errors.project)}</ErrorLabel>
-						) : null}
+						) : (
+							<ErrorLabelPlaceholder />
+						)}
 
 						<FieldLabel htmlFor='municipality'>{t('form.municipality')}</FieldLabel>
 						<FormField name='municipality' placeholder={t('form.municipality')} />
 						{errors.municipality && touched.municipality ? (
 							// @ts-ignore
 							<ErrorLabel>{t(errors.municipality)}</ErrorLabel>
-						) : null}
+						) : (
+							<ErrorLabelPlaceholder />
+						)}
 
 						<FieldLabel htmlFor='opening_date'>{t('form.opening_date')}</FieldLabel>
 						<FormField
@@ -141,7 +149,9 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 						{errors.opening_date && touched.opening_date ? (
 							// @ts-ignore
 							<ErrorLabel>{t(errors.opening_date)}</ErrorLabel>
-						) : null}
+						) : (
+							<ErrorLabelPlaceholder />
+						)}
 
 						<FieldLabel htmlFor='file'>{t('form.file')}</FieldLabel>
 						<FormField
@@ -161,7 +171,9 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 						{errors.files ? (
 							// @ts-ignore
 							<ErrorLabel>{t(errors.files)}</ErrorLabel>
-						) : null}
+						) : (
+							<ErrorLabelPlaceholder />
+						)}
 
 						<FieldLabel htmlFor='description'>{t('form.description')}</FieldLabel>
 						<FormField
