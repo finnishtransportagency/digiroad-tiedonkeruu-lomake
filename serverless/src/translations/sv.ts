@@ -7,6 +7,7 @@ const sv: Translations = {
   project: 'TRANSLATE: Rakennushankkeen nimi',
   municipality: 'TRANSLATE: Kunta',
   opening_date: 'TRANSLATE: Liikenteelle avaamisajankohta',
+  description: 'TRANSLATE: Lisätietoja',
 } as const
 
 export default sv

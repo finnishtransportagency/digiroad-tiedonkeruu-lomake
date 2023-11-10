@@ -47,6 +47,7 @@ const schema = z.object({
         }, 0) <= MAX_TOTAL_FILE_SIZE,
       `File size too large`
     ),
+  description: z.string().optional(),
 })
 
 export type Report = z.infer<typeof schema>

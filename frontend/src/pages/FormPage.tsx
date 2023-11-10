@@ -25,6 +25,7 @@ type FormPageProps = {
 const FormPage = ({ setToastProps }: FormPageProps) => {
 	const { t, i18n } = useTranslation()
 	const fileInputRef = useRef<HTMLInputElement>()
+	const descriptionInputRef = useRef<HTMLTextAreaElement>()
 	const [reCaptchaToken, setReCaptchaToken] = useState('')
 	const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
 
@@ -47,11 +48,11 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 			filesArray.forEach(file => {
 				formData.append(`file/${file.name}`, file)
 			})
+		formData.append('description', values.description)
 
 		if (await httpService.post(apiURL, formData, reCaptchaToken)) {
 			// Successfull submit
-			if (fileInputRef.current) fileInputRef.current.value = ''
-			actions.resetForm()
+			resetAllInputs(actions.resetForm)
 			setRefreshReCaptcha(r => !r)
 			setToastProps({ $visible: true, message: t('form.submit_success'), type: 'success' })
 			setTimeout(() => {
@@ -67,10 +68,16 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	}
 
 	const handleReset = (resetForm: () => void) => {
+		setRefreshReCaptcha(r => !r)
 		if (confirm(t('form.reset_confirm'))) {
-			if (fileInputRef.current) fileInputRef.current.value = ''
-			resetForm()
+			resetAllInputs(resetForm)
 		}
+	}
+
+	const resetAllInputs = (resetForm: () => void) => {
+		if (fileInputRef.current) fileInputRef.current.value = ''
+		if (descriptionInputRef.current) descriptionInputRef.current.value = ''
+		resetForm()
 	}
 
 	return (
@@ -155,6 +162,17 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 							// @ts-ignore
 							<ErrorLabel>{t(errors.files)}</ErrorLabel>
 						) : null}
+
+						<FieldLabel htmlFor='description'>{t('form.description')}</FieldLabel>
+						<FormField
+							as='textarea'
+							name='description'
+							ref={descriptionInputRef}
+							placeholder={t('form.description')}
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+								setFieldValue('description', event.currentTarget.value)
+							}
+						/>
 
 						<GoogleReCaptcha onVerify={verifyReCaptcha} refreshReCaptcha={refreshReCaptcha} />
 

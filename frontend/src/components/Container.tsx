@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 const Container = styled.div`
-	flex-grow: 1;
 	max-width: 50em;
 	margin: 0.5em;
 	box-shadow: 1px 1px 2px silver;

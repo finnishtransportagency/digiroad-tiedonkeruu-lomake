@@ -9,6 +9,7 @@ export type Translations = {
   project: string
   municipality: string
   opening_date: string
+  description: string
 }
 
 /**

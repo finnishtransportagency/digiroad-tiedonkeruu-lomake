@@ -76,6 +76,7 @@ const schema = z.object({
 			}
 			return false
 		}, 'errors.files.type'),
+	description: z.string().optional(),
 })
 
 export const defaultValues = {
@@ -85,6 +86,7 @@ export const defaultValues = {
 	municipality: '',
 	opening_date: new Date().toString(),
 	files: {} as { [number: number]: File },
+	description: '',
 }
 
 export type FormValues = typeof defaultValues

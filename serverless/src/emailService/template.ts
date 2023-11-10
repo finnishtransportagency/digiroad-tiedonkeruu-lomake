@@ -72,6 +72,15 @@ const renderEmailContents = (report: Report, translations: Translations) => {
             <th><b>${translations.opening_date}</b></th>
             <td>${report.opening_date.toLocaleDateString(report.lang)}</td>
           </tr>
+          ${
+            report.description
+              ? `
+          <tr>
+            <th><b>${translations.description}</b></th>
+            <td>${report.description}</td>
+          </tr>`
+              : ''
+          }
         </table>
       </div>
     </body>`

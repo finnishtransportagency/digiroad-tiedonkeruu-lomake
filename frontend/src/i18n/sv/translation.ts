@@ -7,6 +7,7 @@ const sv = {
 		municipality: 'TRANSLATE: Kunta',
 		opening_date: 'TRANSLATE: Liikenteelle avaamisajankohta',
 		file: 'TRANSLATE: Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
+		description: 'TRANSLATE: Lisätietoja',
 		reset: 'TRANSLATE: Tyhjennä lomake',
 		reset_confirm: 'TRANSLATE: Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'TRANSLATE: Lähetä',

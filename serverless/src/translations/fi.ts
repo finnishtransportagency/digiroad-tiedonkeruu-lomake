@@ -7,6 +7,7 @@ const fi: Translations = {
   project: 'Rakennushankkeen nimi',
   municipality: 'Kunta',
   opening_date: 'Liikenteelle avaamisajankohta',
+  description: 'Lisätietoja',
 } as const
 
 export default fi

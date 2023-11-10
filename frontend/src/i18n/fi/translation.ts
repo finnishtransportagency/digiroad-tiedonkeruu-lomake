@@ -7,6 +7,7 @@ const fi = {
 		municipality: 'Kunta',
 		opening_date: 'Liikenteelle avaamisajankohta',
 		file: 'Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
+		description: 'Lisätietoja',
 		reset: 'Tyhjennä lomake',
 		reset_confirm: 'Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'Lähetä',
