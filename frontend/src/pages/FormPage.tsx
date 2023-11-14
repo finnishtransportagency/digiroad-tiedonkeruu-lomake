@@ -2,7 +2,7 @@
 import { Formik, FormikHelpers } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
-import { Dispatch, SetStateAction, useCallback, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
 import Form from '../components/Form'
@@ -31,6 +31,14 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	const descriptionInputRef = useRef<HTMLTextAreaElement>()
 	const [reCaptchaToken, setReCaptchaToken] = useState('')
 	const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
+
+	// Refresh reCaptcha token every 110 seconds (token expires after 120 seconds)
+	useEffect(() => {
+		const interval: NodeJS.Timer = setInterval(() => {
+			setRefreshReCaptcha(r => !r)
+		}, 1000 * 110)
+		return () => clearInterval(interval)
+	}, [])
 
 	const verifyReCaptcha = useCallback((token: string) => {
 		setReCaptchaToken(token)
