@@ -1,6 +1,6 @@
 const sv = {
 	form: {
-		title: 'TRANSLATE: DIGIROAD, Ilmoita kadun rakentamisen aloittamisesta',
+		title: 'TRANSLATE: Ilmoita kadun rakentamisen aloittamisesta Digiroadiin',
 		reporter: 'TRANSLATE: Ilmoittajan nimi',
 		email: 'TRANSLATE: Ilmoittajan sähköposti',
 		project: 'TRANSLATE: Rakennushankkeen nimi',

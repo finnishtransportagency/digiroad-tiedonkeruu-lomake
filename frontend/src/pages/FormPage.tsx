@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Formik, Form, FormikHelpers } from 'formik'
+import { Formik, FormikHelpers } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { useTranslation } from 'react-i18next'
 import { Dispatch, SetStateAction, useCallback, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
+import Form from '../components/Form'
+import VerticalGroup from '../components/VericalGroup'
+import HorizontalGroup from '../components/HorizontalGroup'
 import { ToastProps } from '../components/Toast'
 import FieldLabel from '../components/FieldLabel'
 import FormField from '../components/FormField'
@@ -82,7 +85,10 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 
 	return (
 		<Container>
-			<Heading $level='h1'>{t('form.title')}</Heading>
+			<HorizontalGroup>
+				<Heading $level='h1'>{t('form.title')}</Heading>
+				<img src='/vayla_alla_fi_sv_rgb.png' alt='Väylä-logo' width='35%' height='35%' />
+			</HorizontalGroup>
 			<Formik
 				onSubmit={handleSubmit}
 				initialValues={defaultValues}
@@ -99,108 +105,123 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					resetForm,
 				}) => (
 					<Form>
-						<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
-						<FormField name='reporter' placeholder={t('form.reporter')} />
-						{errors.reporter && touched.reporter ? (
-							// @ts-ignore
-							<ErrorLabel>{t(errors.reporter)}</ErrorLabel>
-						) : (
-							<ErrorLabelPlaceholder />
-						)}
+						<VerticalGroup>
+							<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
+							<FormField name='reporter' placeholder={t('form.reporter')} />
+							{errors.reporter && touched.reporter ? (
+								// @ts-ignore
+								<ErrorLabel>{t(errors.reporter)}</ErrorLabel>
+							) : (
+								<ErrorLabelPlaceholder />
+							)}
+						</VerticalGroup>
 
-						<FieldLabel htmlFor='email'>{t('form.email')}</FieldLabel>
-						<FormField name='email' placeholder={t('form.email')} />
-						{errors.email && touched.email ? (
-							// @ts-ignore
-							<ErrorLabel>{t(errors.email)}</ErrorLabel>
-						) : (
-							<ErrorLabelPlaceholder />
-						)}
+						<VerticalGroup>
+							<FieldLabel htmlFor='email'>{t('form.email')}</FieldLabel>
+							<FormField name='email' placeholder={t('form.email')} />
+							{errors.email && touched.email ? (
+								// @ts-ignore
+								<ErrorLabel>{t(errors.email)}</ErrorLabel>
+							) : (
+								<ErrorLabelPlaceholder />
+							)}
+						</VerticalGroup>
 
-						<FieldLabel htmlFor='project'>{t('form.project')}</FieldLabel>
-						<FormField name='project' placeholder={t('form.project')} />
-						{errors.project && touched.project ? (
-							// @ts-ignore
-							<ErrorLabel>{t(errors.project)}</ErrorLabel>
-						) : (
-							<ErrorLabelPlaceholder />
-						)}
+						<VerticalGroup>
+							<FieldLabel htmlFor='project'>{t('form.project')}</FieldLabel>
+							<FormField name='project' placeholder={t('form.project')} />
+							{errors.project && touched.project ? (
+								// @ts-ignore
+								<ErrorLabel>{t(errors.project)}</ErrorLabel>
+							) : (
+								<ErrorLabelPlaceholder />
+							)}
+						</VerticalGroup>
 
-						<FieldLabel htmlFor='municipality'>{t('form.municipality')}</FieldLabel>
-						<FormField name='municipality' placeholder={t('form.municipality')} />
-						{errors.municipality && touched.municipality ? (
-							// @ts-ignore
-							<ErrorLabel>{t(errors.municipality)}</ErrorLabel>
-						) : (
-							<ErrorLabelPlaceholder />
-						)}
+						<VerticalGroup>
+							<FieldLabel htmlFor='municipality'>{t('form.municipality')}</FieldLabel>
+							<FormField name='municipality' placeholder={t('form.municipality')} />
+							{errors.municipality && touched.municipality ? (
+								// @ts-ignore
+								<ErrorLabel>{t(errors.municipality)}</ErrorLabel>
+							) : (
+								<ErrorLabelPlaceholder />
+							)}
+						</VerticalGroup>
 
-						<FieldLabel htmlFor='opening_date'>{t('form.opening_date')}</FieldLabel>
-						<FormField
-							as={DatePicker}
-							name='opening_date'
-							selected={new Date(values.opening_date)}
-							onChange={(date: string) => {
-								void setFieldTouched('opening_date')
-								void setFieldValue('opening_date', new Date(date))
-							}}
-							dateFormat='dd.MM.yyyy'
-						/>
-						{errors.opening_date && touched.opening_date ? (
-							// @ts-ignore
-							<ErrorLabel>{t(errors.opening_date)}</ErrorLabel>
-						) : (
-							<ErrorLabelPlaceholder />
-						)}
+						<VerticalGroup>
+							<FieldLabel htmlFor='opening_date'>{t('form.opening_date')}</FieldLabel>
+							<FormField
+								as={DatePicker}
+								name='opening_date'
+								selected={new Date(values.opening_date)}
+								onChange={(date: string) => {
+									void setFieldTouched('opening_date')
+									void setFieldValue('opening_date', new Date(date))
+								}}
+								dateFormat='dd.MM.yyyy'
+							/>
+							{errors.opening_date && touched.opening_date ? (
+								// @ts-ignore
+								<ErrorLabel>{t(errors.opening_date)}</ErrorLabel>
+							) : (
+								<ErrorLabelPlaceholder />
+							)}
+						</VerticalGroup>
 
-						<FieldLabel htmlFor='file'>{t('form.file')}</FieldLabel>
-						<FormField
-							as='input'
-							type='file'
-							multiple
-							ref={fileInputRef}
-							accept={ACCEPTED_FILE_TYPES.join(',')}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-								if (!event.currentTarget.files || event.currentTarget.files.length < 1) {
-									setFieldValue('files', null)
-								} else {
-									setFieldValue('files', event.currentTarget.files)
+						<VerticalGroup>
+							<FieldLabel htmlFor='file'>{t('form.file')}</FieldLabel>
+							<FormField
+								as='input'
+								type='file'
+								multiple
+								$maxWidth='15.5em'
+								ref={fileInputRef}
+								accept={ACCEPTED_FILE_TYPES.join(',')}
+								onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+									if (!event.currentTarget.files || event.currentTarget.files.length < 1) {
+										setFieldValue('files', null)
+									} else {
+										setFieldValue('files', event.currentTarget.files)
+									}
+								}}
+							/>
+							{errors.files ? (
+								// @ts-ignore
+								<ErrorLabel>{t(errors.files)}</ErrorLabel>
+							) : (
+								<ErrorLabelPlaceholder />
+							)}
+						</VerticalGroup>
+
+						<VerticalGroup>
+							<FieldLabel htmlFor='description'>{t('form.description')}</FieldLabel>
+							<FormField
+								as='textarea'
+								name='description'
+								ref={descriptionInputRef}
+								placeholder={t('form.description')}
+								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+									setFieldValue('description', event.currentTarget.value)
 								}
-							}}
-						/>
-						{errors.files ? (
-							// @ts-ignore
-							<ErrorLabel>{t(errors.files)}</ErrorLabel>
-						) : (
-							<ErrorLabelPlaceholder />
-						)}
+							/>
 
-						<FieldLabel htmlFor='description'>{t('form.description')}</FieldLabel>
-						<FormField
-							as='textarea'
-							name='description'
-							ref={descriptionInputRef}
-							placeholder={t('form.description')}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-								setFieldValue('description', event.currentTarget.value)
-							}
-						/>
+							<GoogleReCaptcha onVerify={verifyReCaptcha} refreshReCaptcha={refreshReCaptcha} />
 
-						<GoogleReCaptcha onVerify={verifyReCaptcha} refreshReCaptcha={refreshReCaptcha} />
-
-						<br />
-
-						<Button
-							type='button'
-							onClick={() => handleReset(resetForm)}
-							color='negative'
-							disabled={isSubmitting}
-						>
-							{t('form.reset')}
-						</Button>
-						<Button type='submit' color='positive' disabled={!isValid || isSubmitting}>
-							{t('form.submit')}
-						</Button>
+							<HorizontalGroup>
+								<Button
+									type='button'
+									onClick={() => handleReset(resetForm)}
+									color='negative'
+									disabled={isSubmitting}
+								>
+									{t('form.reset')}
+								</Button>
+								<Button type='submit' color='positive' disabled={!isValid || isSubmitting}>
+									{t('form.submit')}
+								</Button>
+							</HorizontalGroup>
+						</VerticalGroup>
 					</Form>
 				)}
 			</Formik>

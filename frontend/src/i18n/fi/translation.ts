@@ -1,6 +1,6 @@
 const fi = {
 	form: {
-		title: 'DIGIROAD, Ilmoita kadun rakentamisen aloittamisesta',
+		title: 'Ilmoita kadun rakentamisen aloittamisesta Digiroadiin',
 		reporter: 'Ilmoittajan nimi',
 		email: 'Ilmoittajan sähköposti',
 		project: 'Rakennushankkeen nimi',

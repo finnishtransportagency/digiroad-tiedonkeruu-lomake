@@ -8,7 +8,7 @@ type HeadingProps = {
 const getFontSize = ($level: HeadingProps['$level']) => {
 	switch ($level) {
 		case 'h1':
-			return '2em'
+			return '1.9em'
 		case 'h2':
 			return '1.5em'
 		case 'h3':
@@ -25,6 +25,9 @@ const getFontSize = ($level: HeadingProps['$level']) => {
 const StyledHeading = styled.h1<HeadingProps>`
 	margin-top: 0;
 	font-size: ${props => getFontSize(props.$level)};
+	@media only screen and (max-width: 560px) {
+		font-size: 1.7em;
+	}
 `
 
 const Heading = (props: HeadingProps) => {
