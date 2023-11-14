@@ -23,7 +23,7 @@ const toastColor = (type: ToastProps['type'], theme: DefaultTheme) => {
 
 const StyledToast = styled.div<Omit<ToastProps, 'message'>>`
 	position: fixed;
-	top: 15%;
+	top: 25%;
 	left: 50%;
 	transform: translate(-50%, ${props => (props.$visible ? '-50%' : '-100%')});
 	padding: 1em;
@@ -39,6 +39,7 @@ const StyledToast = styled.div<Omit<ToastProps, 'message'>>`
 const Message = styled.div`
 	display: flex;
 	align-items: center;
+	text-align: center;
 	gap: 0.5em;
 	color: ${props => props.theme.buttonAccentColor};
 `
