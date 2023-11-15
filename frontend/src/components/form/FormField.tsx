@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Field } from 'formik'
 
-const FormField = styled(Field)<{ $maxWidth: string }>`
+const FormField = styled(Field)<{ $errors: boolean; $maxWidth: string }>`
 	flex-grow: 1;
 	${props => (props.$maxWidth ? `max-width: ${props.$maxWidth};` : '')}
 	font-family: ${props => props.theme.editableFont};
@@ -15,6 +15,8 @@ const FormField = styled(Field)<{ $maxWidth: string }>`
 	&:focus {
 		outline: 2px solid ${props => props.theme.primaryColor};
 	}
+
+	${props => (props.$errors ? `border: 1px solid ${props.theme.negativeColor};` : '')}
 
 	cursor: ${props => (props.type === 'file' ? 'pointer' : 'auto')};
 	&::file-selector-button {

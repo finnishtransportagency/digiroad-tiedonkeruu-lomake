@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 const ErrorLabel = styled.div`
+	max-width: 17em;
 	margin-top: -0.5em;
 	margin-left: 0.5em;
 	font-size: 1em;

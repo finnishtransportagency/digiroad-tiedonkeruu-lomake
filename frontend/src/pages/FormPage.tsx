@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
-import Form from '../components/Form'
+import Form from '../components/form/Form'
+import FieldLabel from '../components/form/FieldLabel'
+import FormField from '../components/form/FormField'
+import ErrorLabel, { ErrorLabelPlaceholder } from '../components/form/ErrorLabel'
 import VerticalGroup from '../components/VericalGroup'
 import HorizontalGroup from '../components/HorizontalGroup'
 import { ToastProps } from '../components/Toast'
-import FieldLabel from '../components/FieldLabel'
-import FormField from '../components/FormField'
-import ErrorLabel, { ErrorLabelPlaceholder } from '../components/ErrorLabel'
 import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
 import Button from '../components/Button'
 import Container from '../components/Container'
@@ -115,7 +115,11 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					<Form>
 						<VerticalGroup>
 							<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
-							<FormField name='reporter' placeholder={t('form.reporter')} />
+							<FormField
+								name='reporter'
+								placeholder={t('form.reporter')}
+								$errors={errors.reporter && touched.reporter}
+							/>
 							{errors.reporter && touched.reporter ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.reporter)}</ErrorLabel>
@@ -126,7 +130,11 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 
 						<VerticalGroup>
 							<FieldLabel htmlFor='email'>{t('form.email')}</FieldLabel>
-							<FormField name='email' placeholder={t('form.email')} />
+							<FormField
+								name='email'
+								placeholder={t('form.email')}
+								$errors={errors.email && touched.email}
+							/>
 							{errors.email && touched.email ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.email)}</ErrorLabel>
@@ -137,7 +145,11 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 
 						<VerticalGroup>
 							<FieldLabel htmlFor='project'>{t('form.project')}</FieldLabel>
-							<FormField name='project' placeholder={t('form.project')} />
+							<FormField
+								name='project'
+								placeholder={t('form.project')}
+								$errors={errors.project && touched.project}
+							/>
 							{errors.project && touched.project ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.project)}</ErrorLabel>
@@ -148,7 +160,11 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 
 						<VerticalGroup>
 							<FieldLabel htmlFor='municipality'>{t('form.municipality')}</FieldLabel>
-							<FormField name='municipality' placeholder={t('form.municipality')} />
+							<FormField
+								name='municipality'
+								placeholder={t('form.municipality')}
+								$errors={errors.municipality && touched.municipality}
+							/>
 							{errors.municipality && touched.municipality ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.municipality)}</ErrorLabel>
@@ -162,6 +178,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 							<FormField
 								as={DatePicker}
 								name='opening_date'
+								$errors={errors.opening_date && touched.opening_date}
 								selected={new Date(values.opening_date)}
 								onChange={(date: string) => {
 									void setFieldTouched('opening_date')
@@ -183,6 +200,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 								as='input'
 								type='file'
 								multiple
+								$errors={errors.files}
 								$maxWidth='15.5em'
 								ref={fileInputRef}
 								accept={ACCEPTED_FILE_TYPES.join(',')}
