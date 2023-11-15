@@ -6,7 +6,7 @@ const sv = {
 		project: 'TRANSLATE: Rakennushankkeen nimi',
 		municipality: 'TRANSLATE: Kunta',
 		opening_date: 'TRANSLATE: Liikenteelle avaamisajankohta',
-		file: 'TRANSLATE: Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
+		file: 'TRANSLATE: Liitetiedosto',
 		description: 'TRANSLATE: Lisätietoja',
 		reset: 'TRANSLATE: Tyhjennä lomake',
 		reset_confirm: 'TRANSLATE: Haluatko varmasti tyhjentää lomakkeen?',

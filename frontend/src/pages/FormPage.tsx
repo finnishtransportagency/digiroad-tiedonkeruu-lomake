@@ -13,10 +13,11 @@ import FormikPersist from '../components/form/FormikPersist'
 import VerticalGroup from '../components/VericalGroup'
 import HorizontalGroup from '../components/HorizontalGroup'
 import { ToastProps } from '../components/Toast'
-import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
+import Tooltip from '../components/Tooltip'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import Heading from '../components/Heading'
+import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
 import httpService from '../services/httpService'
 import { apiURL } from '../config'
 
@@ -197,16 +198,20 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 						</VerticalGroup>
 
 						<VerticalGroup>
-							<FieldLabel htmlFor='file'>{t('form.file')}</FieldLabel>
+							<HorizontalGroup>
+								<FieldLabel htmlFor='file'>{t('form.file')}</FieldLabel>
+								<Tooltip message={t('tooltips.file')} />
+							</HorizontalGroup>
 							<FormField
 								as='input'
 								type='file'
 								multiple
-								$errors={errors.files}
+								$errors={errors.files && touched.files}
 								$maxWidth='15.5em'
 								ref={fileInputRef}
 								accept={ACCEPTED_FILE_TYPES.join(',')}
 								onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+									void setFieldTouched('files')
 									if (!event.currentTarget.files || event.currentTarget.files.length < 1) {
 										setFieldValue('files', null)
 									} else {
@@ -214,7 +219,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 									}
 								}}
 							/>
-							{errors.files ? (
+							{errors.files && touched.files ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.files)}</ErrorLabel>
 							) : (
