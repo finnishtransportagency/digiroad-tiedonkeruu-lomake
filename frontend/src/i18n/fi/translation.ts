@@ -6,13 +6,16 @@ const fi = {
 		project: 'Rakennushankkeen nimi',
 		municipality: 'Kunta',
 		opening_date: 'Liikenteelle avaamisajankohta',
-		file: 'Liitetiedosto (.pdf, .dwg, .dxf, .dgn)',
+		file: 'Liitetiedosto',
 		description: 'Lisätietoja',
 		reset: 'Tyhjennä lomake',
 		reset_confirm: 'Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'Lähetä',
 		submitting: 'Lähetetään...',
 		submit_success: 'Lomake lähetetty onnistuneesti!',
+	},
+	tooltips: {
+		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 5,9MB',
 	},
 	errors: {
 		reporter: 'Ilmoittajan nimi vaaditaan!',

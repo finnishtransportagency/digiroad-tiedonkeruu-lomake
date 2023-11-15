@@ -14,6 +14,9 @@ const sv = {
 		submitting: 'TRANSLATE: Lähetetään...',
 		submit_success: 'TRANSLATE: Lomake lähetetty onnistuneesti!',
 	},
+	tooltips: {
+		file: 'TRANSLATE: Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 5,9MB',
+	},
 	errors: {
 		reporter: 'TRANSLATE: Ilmoittajan nimi vaaditaan!',
 		email: {

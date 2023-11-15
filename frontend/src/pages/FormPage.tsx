@@ -9,6 +9,7 @@ import Form from '../components/form/Form'
 import FieldLabel from '../components/form/FieldLabel'
 import FormField from '../components/form/FormField'
 import ErrorLabel, { ErrorLabelPlaceholder } from '../components/form/ErrorLabel'
+import FormikPersist from '../components/form/FormikPersist'
 import VerticalGroup from '../components/VericalGroup'
 import HorizontalGroup from '../components/HorizontalGroup'
 import { ToastProps } from '../components/Toast'
@@ -113,6 +114,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					resetForm,
 				}) => (
 					<Form>
+						<FormikPersist name='form-values' />
 						<VerticalGroup>
 							<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
 							<FormField
