@@ -47,7 +47,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 			setRefreshReCaptcha(r => !r)
 		}, 1000 * 110)
 		return () => clearInterval(interval)
-	}, [])
+	}, [i18n])
 
 	useEffect(() => {
 		setMunicipalitySuggestions(municipalities[i18n.language as keyof typeof resources])
