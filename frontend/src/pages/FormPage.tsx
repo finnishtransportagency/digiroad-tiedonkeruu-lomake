@@ -20,6 +20,8 @@ import Heading from '../components/Heading'
 import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
 import httpService from '../services/httpService'
 import { apiURL } from '../config'
+import { resources } from '../i18n/config'
+import municipalities from '../i18n/municipalities'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -33,14 +35,23 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	const descriptionInputRef = useRef<HTMLTextAreaElement>()
 	const [reCaptchaToken, setReCaptchaToken] = useState('')
 	const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
+	const [municipalitySuggestions, setMunicipalitySuggestions] = useState<string[]>([])
 
-	// Refresh reCaptcha token every 110 seconds (token expires after 120 seconds)
 	useEffect(() => {
+		if (!(i18n.language in resources)) {
+			console.error(`Language ${i18n.language} not supported! Defaulting to Finnish.`)
+			i18n.changeLanguage('fi')
+		}
+		// Refresh reCaptcha token every 110 seconds (token expires after 120 seconds)
 		const interval: NodeJS.Timer = setInterval(() => {
 			setRefreshReCaptcha(r => !r)
 		}, 1000 * 110)
 		return () => clearInterval(interval)
 	}, [])
+
+	useEffect(() => {
+		setMunicipalitySuggestions(municipalities[i18n.language as keyof typeof resources])
+	}, [i18n.language])
 
 	const verifyReCaptcha = useCallback((token: string) => {
 		setReCaptchaToken(token)
@@ -167,7 +178,22 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 								name='municipality'
 								placeholder={t('form.municipality')}
 								$errors={errors.municipality && touched.municipality}
+								list='muni-suggestions'
 							/>
+							{values.municipality.length > 1 && (
+								<datalist id='muni-suggestions'>
+									{municipalitySuggestions &&
+										municipalitySuggestions
+											.filter(suggestion =>
+												suggestion
+													.toLocaleLowerCase()
+													.startsWith(values.municipality.toLocaleLowerCase()),
+											)
+											.map(suggestion => {
+												return <option key={suggestion} value={suggestion} />
+											})}
+								</datalist>
+							)}
 							{errors.municipality && touched.municipality ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.municipality)}</ErrorLabel>
