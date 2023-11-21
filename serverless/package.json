@@ -3,6 +3,7 @@
   "description": "API for DRTiedonkeruu. Handles form data from DRTiedonkeruu web-client and sends verification email to the user and DR-operator.",
   "version": "1.0.0",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.454.0",
     "@aws-sdk/client-ssm": "^3.427.0",
     "aws-sdk": "^2.1484.0",
     "axios": "^1.5.1",

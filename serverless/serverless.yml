@@ -46,14 +46,6 @@ provider:
         - POST
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - ssm:GetParameter
-            - ssm:GetParameters
-          Resource:
-            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
 
 functions:
   handlePost:
@@ -68,6 +60,31 @@ functions:
       - httpApi:
           path: /postData
           method: post
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - ssm:GetParameter
+          - ssm:GetParameters
+        Resource:
+          - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
+
+  sendEmail:
+    handler: src/handler.sendEmail
+    events:
+      - s3:
+          bucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
+          event: s3:ObjectCreated:* # Trigger Lambda function when a new file is uploaded to the S3 bucket
+      - schedule: cron(0 6 * * MON-FRI) # Trigger Lambda function every weekday at 8:00 AM UTC+2
+      - schedule: cron(0 9 * * MON-FRI) # Trigger Lambda function every weekday at 11:00 AM UTC+2
+      - schedule: cron(0 12 * * MON-FRI) # Trigger Lambda function every weekday at 2:00 PM UTC+2
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:ListBucket
+          - s3:GetObject
+        Resource:
+          - arn:aws:s3:::dr-tiedonkeruu-${self:custom.stage}-frontend-hosting
+          - arn:aws:s3:::dr-tiedonkeruu-${self:custom.stage}-frontend-hosting/*
 
 resources:
   Resources:

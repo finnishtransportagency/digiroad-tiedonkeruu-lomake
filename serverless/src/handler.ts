@@ -2,7 +2,9 @@ import {
   APIGatewayProxyEvent,
   APIGatewayEventRequestContext,
   APIGatewayProxyCallback,
+  S3EventRecord,
 } from 'aws-lambda'
+import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3'
 import axios from 'axios'
 import parseFormData from './lambda-multipart-parser'
 import { ZodError } from 'zod'
@@ -70,8 +72,8 @@ export const handlePost = async (
     const report = schema.validate(await parseFormData(event))
     console.log('Validated form data:\n', report)
 
-    const response = await emailService.sendEmail(report)
-    console.log('SMTP response:\n' + response)
+    //const response = await emailService.sendEmail(report)
+    //console.log('SMTP response:\n', response)
 
     return {
       statusCode: 200,
@@ -94,6 +96,17 @@ export const handlePost = async (
   } catch (error: unknown) {
     return errorHandlers(error)
   }
+}
+
+export const sendEmail = async (event: S3EventRecord) => {
+  console.log('Email lamda triggered:\n', event)
+
+  const s3client = new S3Client()
+  const s3ListObjectsCommand = new ListObjectsV2Command({ Bucket: event.s3.bucket.name })
+
+  const s3ObjectList = await s3client.send(s3ListObjectsCommand)
+
+  console.log('S3 objects list:\n', s3ObjectList)
 }
 
 const errorHandlers = (error: unknown) => {
