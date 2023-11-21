@@ -100,9 +100,10 @@ export const handlePost = async (
 
 export const sendEmail = async (event: S3EventRecord) => {
   console.log('Email lamda triggered:\n', event)
+  console.log('S3 bucket:\n', event.s3.bucket)
 
   const s3client = new S3Client()
-  const s3ListObjectsCommand = new ListObjectsV2Command({ Bucket: event.s3.bucket.name })
+  const s3ListObjectsCommand = new ListObjectsV2Command({ Bucket: event.s3.bucket.arn })
 
   const s3ObjectList = await s3client.send(s3ListObjectsCommand)
 
