@@ -2,7 +2,7 @@ import {
   APIGatewayProxyEvent,
   APIGatewayEventRequestContext,
   APIGatewayProxyCallback,
-  S3EventRecord,
+  S3Event,
 } from 'aws-lambda'
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3'
 import axios from 'axios'
@@ -98,16 +98,16 @@ export const handlePost = async (
   }
 }
 
-export const sendEmail = async (event: S3EventRecord) => {
+export const sendEmail = async (event: S3Event) => {
   console.log('Email lamda triggered:\n', event)
-  console.log('S3 bucket:\n', event.s3)
+  console.log('S3 bucket:\n', event.Records[0].s3.bucket)
 
   const s3client = new S3Client()
-  //const s3ListObjectsCommand = new ListObjectsV2Command({ Bucket: event.s3.bucket.arn })
+  const s3ListObjectsCommand = new ListObjectsV2Command({ Bucket: event.Records[0].s3.bucket.name })
 
-  //const s3ObjectList = await s3client.send(s3ListObjectsCommand)
+  const s3ObjectList = await s3client.send(s3ListObjectsCommand)
 
-  //console.log('S3 objects list:\n', s3ObjectList)
+  console.log('S3 objects list:\n', s3ObjectList)
 }
 
 const errorHandlers = (error: unknown) => {
