@@ -58,6 +58,7 @@ provider:
           Action:
             - s3:ListBucket
             - s3:GetObject
+            - s3:GetObjectTagging
           Resource:
             - arn:aws:s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
             - arn:aws:s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting/*
