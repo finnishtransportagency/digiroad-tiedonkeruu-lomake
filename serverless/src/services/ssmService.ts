@@ -1,5 +1,5 @@
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm'
-import { awsRegion, smtpCredentialsName } from './config'
+import { awsRegion, smtpCredentialsName } from '../config'
 
 /**
  * Fetches a parameter from AWS SSM Parameter Store

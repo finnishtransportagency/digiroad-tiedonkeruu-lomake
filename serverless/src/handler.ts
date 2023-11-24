@@ -4,13 +4,14 @@ import {
   APIGatewayProxyCallback,
   S3Event,
 } from 'aws-lambda'
-import { S3Client, GetObjectTaggingCommand } from '@aws-sdk/client-s3'
 import axios from 'axios'
 import parseFormData from './lambda-multipart-parser'
 import { ZodError } from 'zod'
 import schema from './schema'
-import emailService from './emailService'
-import { reCaptchaSecret, reCaptchaVerifyURL } from './config'
+import s3Service from './services/s3Service'
+import emailService from './services/emailService'
+import { reCaptchaSecret, reCaptchaVerifyURL, virusScanBucket } from './config'
+import reportService from './services/reportService'
 
 export const handlePost = async (
   event: APIGatewayProxyEvent,
@@ -72,8 +73,8 @@ export const handlePost = async (
     const report = schema.validate(await parseFormData(event))
     console.log('Validated form data:\n', report)
 
-    //const response = await emailService.sendEmail(report)
-    //console.log('SMTP response:\n', response)
+    const reportId = await reportService.sendToVirusScan(report)
+    console.log('Report sent to virus scan:\n', reportId)
 
     return {
       statusCode: 200,
@@ -100,39 +101,15 @@ export const handlePost = async (
 
 export const sendEmail = async (event: S3Event) => {
   console.log('Email lamda triggered:\n', event)
+
   event.Records.forEach(async record => {
     console.log('S3EventRecord s3:\n', record.s3)
-    console.log('S3EventRecord bucket:\n', record.s3.bucket)
-    console.log('S3EventRecord object:\n', record.s3.object)
+
+    const s3ObjectTags = await s3Service.getTags(record.s3.bucket.name, record.s3.object.key)
+
+    console.log('S3 objects tags:\n', s3ObjectTags)
+    // TODO
   })
-
-  const s3client = new S3Client()
-
-  const ObjectTags = await s3client.send(
-    new GetObjectTaggingCommand({
-      Bucket: event.Records[0].s3.bucket.name,
-      Key: event.Records[0].s3.object.key,
-    })
-  )
-
-  console.log('S3 objects list:\n', ObjectTags)
-
-  const virusScan = ObjectTags.TagSet?.find(tag => tag.Key === 'virusscan')
-
-  if (!virusScan) {
-    console.log('Virus scan not found')
-    return
-  }
-
-  if (virusScan.Value === 'virus') {
-    console.log('Virus detected')
-    return
-  }
-
-  if (virusScan.Value === 'clean') {
-    console.log('Virus scan clean')
-    return
-  }
 }
 
 const errorHandlers = (error: unknown) => {

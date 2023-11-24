@@ -1,5 +1,5 @@
-import { Report } from '../schema'
-import { Translations } from '../translations'
+import { Report } from '../../schema'
+import { Translations } from '../../translations'
 
 const renderEmailContents = (report: Report, translations: Translations) => {
   // STYLES FOR THE EMAIL

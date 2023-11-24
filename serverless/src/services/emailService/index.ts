@@ -1,10 +1,10 @@
 import { createTransport } from 'nodemailer'
 import Mail from 'nodemailer/lib/mailer'
-import { ACCEPTED_FILE_TYPES, Report } from '../schema'
+import { ACCEPTED_FILE_TYPES, Report } from '../../schema'
 import ssmService from '../ssmService'
-import t from '../translations'
+import t from '../../translations'
 import template from './template'
-import { emailSender, offline, smtpEndpoint } from '../config'
+import { emailSender, offline, smtpEndpoint } from '../../config'
 
 type EmailOptions = Mail.Options & {
   attachments?: Array<{

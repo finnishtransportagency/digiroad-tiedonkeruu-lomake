@@ -8,6 +8,7 @@
     "axios": "^1.5.1",
     "busboy": "^1.6.0",
     "nodemailer": "^6.9.6",
+    "uuid": "^9.0.1",
     "zod": "^3.22.2"
   },
   "scripts": {
@@ -16,10 +17,11 @@
     "offline": "serverless offline"
   },
   "devDependencies": {
-    "aws-sdk": "^2.1484.0",
     "@types/aws-lambda": "^8.10.101",
     "@types/busboy": "^1.5.2",
     "@types/nodemailer": "^6.4.11",
+    "@types/uuid": "^9.0.7",
+    "aws-sdk": "^2.1484.0",
     "serverless": "^3.36.0",
     "serverless-offline": "^13.2.1",
     "serverless-plugin-typescript": "^2.1.5",

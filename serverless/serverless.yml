@@ -16,6 +16,7 @@ custom:
   subnetId1: ${env:offline.SUBNET_ID_1, ssm:${env:SUBNET_ID_1}}
   subnetId2: ${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}
   recaptchaSecret: ${env:offline.RECAPTCHA_SECRET, ssm:${env:RECAPTCHA_SECRET}}
+  virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
   s3Sync:
     - bucketNameKey: FrontendS3BucketNameOutputKey
       localDir: ui
@@ -56,22 +57,26 @@ provider:
             - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
         - Effect: Allow
           Action:
+            - s3:PutObject
+            - s3:PutObjectTagging
+          Resource:
+            - arn:aws:s3:::${self:custom.virusScanBucket}
+            - arn:aws:s3:::${self:custom.virusScanBucket}/*
+        - Effect: Allow
+          Action:
             - s3:ListBucket
             - s3:GetObject
             - s3:GetObjectTagging
           Resource:
-            - arn:aws:s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
-            - arn:aws:s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting/*
+            - arn:aws:s3:::${self:custom.virusScanBucket}
+            - arn:aws:s3:::${self:custom.virusScanBucket}/*
 
 functions:
   handlePost:
     handler: src/handler.handlePost
     environment:
       RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
-      REGION: ${env:REGION}
-      SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
-      SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
-      SMTP_SENDER: ${env:SMTP_SENDER}
+      VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
       - httpApi:
           path: /postData
@@ -79,10 +84,15 @@ functions:
 
   sendEmail:
     handler: src/handler.sendEmail
+    environment:
+      REGION: ${env:REGION}
+      SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
+      SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
+      SMTP_SENDER: ${env:SMTP_SENDER}
     events:
       - s3:
-          bucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
-          event: s3:ObjectTagging:* # Trigger Lambda function when object is tagged
+          bucket: ${self:custom.virusScanBucket}
+          event: s3:ObjectTagging:Put # Trigger Lambda function when object is tagged
 
 resources:
   Resources:
