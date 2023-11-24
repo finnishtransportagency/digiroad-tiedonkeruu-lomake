@@ -104,10 +104,7 @@ export const sendEmail = async (event: S3Event) => {
 
   event.Records.forEach(async record => {
     console.log('S3EventRecord s3:\n', record.s3)
-
-    const s3ObjectTags = await s3Service.getTags(record.s3.bucket.name, record.s3.object.key)
-
-    console.log('S3 objects tags:\n', s3ObjectTags)
+    const scannedReport = await reportService.getScannedReport(record.s3)
     // TODO
   })
 }

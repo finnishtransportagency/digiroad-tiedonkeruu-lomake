@@ -1,6 +1,7 @@
 import {
   S3Client,
   PutObjectCommand,
+  GetObjectCommand,
   GetObjectTaggingCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3'
@@ -25,6 +26,17 @@ const putObject = async (
   )
 }
 
+const getObject = async (bucket: string, objectKey: string) => {
+  const ObjectBody = await s3client.send(
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: objectKey,
+    })
+  )
+
+  return ObjectBody.Body
+}
+
 const getTags = async (bucket: string, objectKey: string) => {
   const ObjectTags = await s3client.send(
     new GetObjectTaggingCommand({
@@ -45,4 +57,4 @@ const deleteObject = async (bucket: string, objectKey: string) => {
   )
 }
 
-export default { putObject, getTags, deleteObject }
+export default { putObject, getObject, getTags, deleteObject }
