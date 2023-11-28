@@ -27,14 +27,14 @@ const putObject = async (
 }
 
 const getObject = async (bucket: string, objectKey: string) => {
-  const ObjectBody = await s3client.send(
+  const getObjectResponse = await s3client.send(
     new GetObjectCommand({
       Bucket: bucket,
       Key: objectKey,
     })
   )
 
-  return ObjectBody.Body
+  return getObjectResponse
 }
 
 const getTags = async (bucket: string, objectKey: string) => {
