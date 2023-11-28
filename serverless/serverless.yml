@@ -109,7 +109,7 @@ resources:
       Properties:
         RetentionInDays: 180
 
-    VirusScanS3Bucket:
+    S3BucketDrtiedonkeruudevvirusscannerhosting:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.virusScanBucket}
@@ -118,11 +118,11 @@ resources:
             - Event: s3:ObjectCreated:*
               Function: ${self:custom.virusScanLambda}
 
-    VirusScanS3BucketPolicy:
+    S3BucketDrtiedonkeruudevvirusscannerhostingPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:
-          Ref: VirusScanS3Bucket
+          Ref: S3BucketDrtiedonkeruudevvirusscannerhosting
         PolicyDocument:
           Statement:
             - Effect: Allow
@@ -135,7 +135,7 @@ resources:
                 Fn::Join:
                   - ''
                   - - 'arn:aws:s3:::'
-                    - !Ref VirusScanS3Bucket
+                    - !Ref S3BucketDrtiedonkeruudevvirusscannerhosting
                     - '/*'
 
     FrontendS3Bucket:
