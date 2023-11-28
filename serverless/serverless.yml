@@ -89,6 +89,7 @@ functions:
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
       SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
       SMTP_SENDER: ${env:SMTP_SENDER}
+      VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
       - s3:
           bucket: ${self:custom.virusScanBucket}

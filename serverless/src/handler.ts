@@ -8,9 +8,7 @@ import axios from 'axios'
 import parseFormData from './lambda-multipart-parser'
 import { ZodError } from 'zod'
 import schema from './schema'
-import s3Service from './services/s3Service'
-import emailService from './services/emailService'
-import { reCaptchaSecret, reCaptchaVerifyURL, virusScanBucket } from './config'
+import { reCaptchaSecret, reCaptchaVerifyURL } from './config'
 import reportService from './services/reportService'
 
 export const handlePost = async (
@@ -105,6 +103,7 @@ export const sendEmail = async (event: S3Event) => {
   event.Records.forEach(async record => {
     console.log('S3EventRecord s3:\n', record.s3)
     const scannedReport = await reportService.getScannedReport(record.s3)
+    console.log('Scanned report:\n', scannedReport)
     // TODO
   })
 }

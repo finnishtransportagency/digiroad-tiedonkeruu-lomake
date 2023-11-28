@@ -40,13 +40,15 @@ const sendToVirusScan = async (report: Report): Promise<string> => {
 /**
  * Get report details and scanned attachment files from virus scan bucket.
  *
- * @returns parsed report or null if all files are not scanned
+ * @returns parsed report | null if all files are not scanned or report is not found
  */
 const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Report | null> => {
-  const reportDetails = await s3Service.getObject(
+  const getReportResponse = await s3Service.getObject(
     virusScanBucket,
     `${s3Details.object.key.split('_')[0]}_report.json`
   )
+  if (!getReportResponse) return null
+  const reportDetails = await getReportResponse?.transformToString()
   console.log('Report details:\n', reportDetails)
   return null
 }
