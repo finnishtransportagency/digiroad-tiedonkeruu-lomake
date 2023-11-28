@@ -17,6 +17,8 @@ custom:
   subnetId2: ${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}
   recaptchaSecret: ${env:offline.RECAPTCHA_SECRET, ssm:${env:RECAPTCHA_SECRET}}
   virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
+  virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
+  virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketNameOutputKey
       localDir: ui
@@ -106,6 +108,35 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         RetentionInDays: 180
+
+    VirusScanS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.virusScanBucket}
+        NotificationConfiguration:
+          LambdaConfigurations:
+            - Event: s3:ObjectCreated:*
+              Function: ${self:custom.virusScanLambda}
+
+    VirusScanS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: VirusScanS3Bucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: ${self:custom.virusScanRole}
+              Action:
+                - s3:GetObject
+                - s3:PutObjectTagging
+              Resource:
+                Fn::Join:
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref VirusScanS3Bucket
+                    - '/*'
 
     FrontendS3Bucket:
       Type: AWS::S3::Bucket

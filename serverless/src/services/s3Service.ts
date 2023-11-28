@@ -23,9 +23,9 @@ const putObject = async (
       Key: objectKey,
       Body: objectBody,
       Metadata: {
-        'Content-Type': contentType,
-        'Content-Encoding': encoding,
-        reportId,
+        'content-type': contentType,
+        'content-encoding': encoding,
+        reportid: reportId,
       },
     })
   )
@@ -55,9 +55,9 @@ const getFile = async (bucket: string, objectKey: string): Promise<Report['files
 
   return {
     filename: objectKey.substring(objectKey.indexOf('_') + 1),
-    contentType: s3Response.Metadata?.['Content-Type'] ?? '',
+    contentType: s3Response.Metadata?.['x-amz-meta-content-type'] ?? '',
     content: Buffer.from(byteArray),
-    encoding: s3Response.Metadata?.['Content-Encoding'] ?? '',
+    encoding: s3Response.Metadata?.['x-amz-meta-content-encoding'] ?? '',
   }
 }
 
