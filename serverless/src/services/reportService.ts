@@ -48,13 +48,6 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Report 
     virusScanBucket,
     `${s3Details.object.key.split('_')[0]}_report.json`
   )
-  if (!getReportResponse || !getReportResponse.Body) {
-    console.log('Report not found')
-    return null
-  }
-  console.log('Report metadata:\n', getReportResponse.$metadata)
-  const reportDetails = await getReportResponse.Body.transformToString()
-  console.log('Report details:\n', reportDetails)
   return null
 }
 
