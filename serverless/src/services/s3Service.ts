@@ -32,6 +32,7 @@ const getObject = async (bucket: string, objectKey: string) => {
     Key: objectKey,
   })
 
+  console.log('getObject command created')
   try {
     const response = await s3client.send(command)
     console.log('send command executed')
