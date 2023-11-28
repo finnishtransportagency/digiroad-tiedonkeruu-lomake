@@ -53,11 +53,13 @@ const getFile = async (bucket: string, objectKey: string): Promise<Report['files
 
   if (!byteArray) return null
 
+  console.log('Metadata:\n', s3Response.Metadata)
+
   return {
     filename: objectKey.substring(objectKey.indexOf('_') + 1),
-    contentType: s3Response.Metadata?.['x-amz-meta-content-type'] ?? '',
+    contentType: s3Response.Metadata ? s3Response.Metadata['x-amz-meta-content-type'] : '',
     content: Buffer.from(byteArray),
-    encoding: s3Response.Metadata?.['x-amz-meta-content-encoding'] ?? '',
+    encoding: s3Response.Metadata ? s3Response.Metadata['x-amz-meta-content-encoding'] : '',
   }
 }
 
