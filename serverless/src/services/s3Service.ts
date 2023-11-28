@@ -5,53 +5,71 @@ import {
   GetObjectTaggingCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3'
+import { Report, ReportJSON } from '../schema'
 
 const s3client = new S3Client()
 
 const putObject = async (
   bucket: string,
   objectKey: string,
+  contentType: string,
   objectBody: Buffer,
-  tags: Record<string, string>
+  encoding: string,
+  reportId: string
 ) => {
   await s3client.send(
     new PutObjectCommand({
       Bucket: bucket,
       Key: objectKey,
       Body: objectBody,
-      Tagging: Object.entries(tags)
-        .map(([key, value]) => `${key}=${value}`)
-        .join('&'),
+      Metadata: {
+        'Content-Type': contentType,
+        'Content-Encoding': encoding,
+        reportId,
+      },
     })
   )
 }
 
 const getObject = async (bucket: string, objectKey: string) => {
-  const command = new GetObjectCommand({
-    Bucket: bucket,
-    Key: objectKey,
-  })
+  return await s3client.send(
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: objectKey,
+    })
+  )
+}
 
-  console.log('getObject command created')
-  try {
-    const response = await s3client.send(command)
-    console.log('send command executed')
-    const str = await response.Body?.transformToString()
-    console.log(str)
-  } catch (err) {
-    console.error(err)
+const getReportJSON = async (bucket: string, objectKey: string): Promise<ReportJSON | null> => {
+  const s3Response = await getObject(bucket, objectKey)
+  const objectBody = await s3Response.Body?.transformToString()
+  // TODO: Implement validation in schema.ts for JSON response
+  return objectBody ? JSON.parse(objectBody) : null
+}
+
+const getFile = async (bucket: string, objectKey: string): Promise<Report['files'][0] | null> => {
+  const s3Response = await getObject(bucket, objectKey)
+  const byteArray = await s3Response.Body?.transformToByteArray()
+
+  if (!byteArray) return null
+
+  return {
+    filename: objectKey.substring(objectKey.indexOf('_') + 1),
+    contentType: s3Response.Metadata?.['Content-Type'] ?? '',
+    content: Buffer.from(byteArray),
+    encoding: s3Response.Metadata?.['Content-Encoding'] ?? '',
   }
 }
 
 const getTags = async (bucket: string, objectKey: string) => {
-  const ObjectTags = await s3client.send(
+  const objectTags = await s3client.send(
     new GetObjectTaggingCommand({
       Bucket: bucket,
       Key: objectKey,
     })
   )
 
-  return ObjectTags.TagSet
+  return objectTags.TagSet ?? []
 }
 
 const deleteObject = async (bucket: string, objectKey: string) => {
@@ -63,4 +81,4 @@ const deleteObject = async (bucket: string, objectKey: string) => {
   )
 }
 
-export default { putObject, getObject, getTags, deleteObject }
+export default { putObject, getReportJSON, getFile, getTags, deleteObject }

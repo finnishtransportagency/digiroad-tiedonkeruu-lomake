@@ -75,7 +75,7 @@ export const handlePost = async (
     console.log('Report sent to virus scan:\n', reportId)
 
     return {
-      statusCode: 200,
+      statusCode: 202,
       body: JSON.stringify(
         {
           message: 'Form data received',

@@ -51,6 +51,7 @@ const schema = z.object({
 })
 
 export type Report = z.infer<typeof schema>
+export type ReportJSON = Omit<Report, 'files'> & { files: string[] }
 
 const validate = (input: Object): Report => {
   const safeParseResult = schema.safeParse(input)
