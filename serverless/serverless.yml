@@ -108,7 +108,7 @@ resources:
       Properties:
         RetentionInDays: 180
 
-    virusScannerS3Bucket:
+    S3BucketDrtiedonkeruudevvirusscannerhosting:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.virusScanBucket}
@@ -117,9 +117,12 @@ resources:
             - Event: s3:ObjectCreated:*
               Function: ${self:custom.virusScanLambda}
             - Event: s3:ObjectTagging:Put
-              Function: ${self:custom.sendEmailLambda}
+              Function:
+                Fn::GetAtt:
+                  - SendEmailLambdaFunction
+                  - Arn
 
-    virusScannerS3BucketPolicy:
+    S3BucketDrtiedonkeruudevvirusscannerhostingPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:
