@@ -115,8 +115,8 @@ resources:
         NotificationConfiguration:
           LambdaConfigurations:
             - Event: s3:ObjectCreated:*
-              Function: ${self:custom.virusScanLambda}
-            - Event: s3:ObjectTagging:Put
+              Function: ${self:custom.virusScanLambda} # Needs S3BucketDrtiedonkeruudevvirusscannerhostingPolicy
+            - Event: s3:ObjectTagging:Put # Needs InvokeSendEmailPermissionVirusScanS3
               Function:
                 Fn::GetAtt:
                   - SendEmailLambdaFunction
@@ -141,6 +141,24 @@ resources:
                   - - 'arn:aws:s3:::'
                     - !Ref S3BucketDrtiedonkeruudevvirusscannerhosting
                     - '/*'
+
+    InvokeSendEmailPermissionVirusScanS3:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName:
+          Fn::GetAtt:
+            - SendEmailLambdaFunction
+            - Arn
+        Action: lambda:InvokeFunction
+        Principal: s3.amazonaws.com
+        SourceArn:
+          Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - ':s3:::dr-tiedonkeruu-dev-virus-scanner-hosting'
+        SourceAccount:
+          Ref: AWS::AccountId
 
     FrontendS3Bucket:
       Type: AWS::S3::Bucket
