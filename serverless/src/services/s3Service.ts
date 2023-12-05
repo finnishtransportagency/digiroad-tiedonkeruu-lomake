@@ -6,8 +6,9 @@ import {
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3'
 import { Report, ReportJSON } from '../schema'
+import { s3ClientConfig } from '../config'
 
-const s3client = new S3Client()
+const s3client = new S3Client(s3ClientConfig)
 
 const putObject = async (
   bucket: string,
