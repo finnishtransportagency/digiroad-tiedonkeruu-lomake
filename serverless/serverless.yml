@@ -119,7 +119,7 @@ resources:
             - Event: s3:ObjectTagging:Put
               Function: ${self:custom.sendEmailLambda}
 
-    virusScannerS3Bucket:
+    virusScannerS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:
