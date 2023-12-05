@@ -95,10 +95,6 @@ functions:
       SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
       SMTP_SENDER: ${env:SMTP_SENDER}
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
-    events:
-      - s3:
-          bucket: ${self:custom.virusScanBucket}
-          event: s3:ObjectTagging:Put # Trigger Lambda function when object is tagged
 
 resources:
   Resources:
@@ -112,7 +108,7 @@ resources:
       Properties:
         RetentionInDays: 180
 
-    S3BucketDrtiedonkeruudevvirusscannerhosting:
+    virusScannerS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.virusScanBucket}
@@ -120,8 +116,10 @@ resources:
           LambdaConfigurations:
             - Event: s3:ObjectCreated:*
               Function: ${self:custom.virusScanLambda}
+            - Event: s3:ObjectTagging:Put
+              Function: ${self:custom.sendEmailLambda}
 
-    S3BucketDrtiedonkeruudevvirusscannerhostingPolicy:
+    virusScannerS3Bucket:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:
