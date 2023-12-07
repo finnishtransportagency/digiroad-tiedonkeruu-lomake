@@ -14,8 +14,8 @@ custom:
   serverless-offline:
     httpPort: 3003
   s3: # serverless-s3-local configuration
-    host: localhost
-    directory: /tmp
+    address: 127.0.0.1
+    directory: ./s3rver
   securityGroupId: ${env:offline.SECURITY_GROUP_ID, ssm:${env:SECURITY_GROUP_ID}}
   subnetId1: ${env:offline.SUBNET_ID_1, ssm:${env:SUBNET_ID_1}}
   subnetId2: ${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}

@@ -14,6 +14,6 @@ export const s3ClientConfig = offline
         accessKeyId: 'S3RVER', // This specific key is required when working offline
         secretAccessKey: 'S3RVER',
       },
-      endpoint: 'http://localhost:4569',
+      endpoint: 'http://127.0.0.1:4569',
     }
   : {}

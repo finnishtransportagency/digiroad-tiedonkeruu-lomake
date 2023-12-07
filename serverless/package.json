@@ -14,7 +14,8 @@
   "scripts": {
     "package": "serverless package",
     "handlePost": "serverless invoke local --function handlePost",
-    "offline": "serverless offline"
+    "offline": "serverless offline",
+    "emailLambda": "serverless invoke local --function sendEmail --data"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",

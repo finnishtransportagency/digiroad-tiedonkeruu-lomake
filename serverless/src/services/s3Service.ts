@@ -48,19 +48,25 @@ const getReportJSON = async (bucket: string, objectKey: string): Promise<ReportJ
   return objectBody ? JSON.parse(objectBody) : null
 }
 
+/**
+ * @param bucket Name of s3 bucket
+ * @param objectKey Name of the file in s3 bucket
+ * @returns Object with file name, content type, encoding and data as Buffer | null if file is not found
+ */
 const getFile = async (bucket: string, objectKey: string): Promise<Report['files'][0] | null> => {
   const s3Response = await getObject(bucket, objectKey)
   const byteArray = await s3Response.Body?.transformToByteArray()
 
-  if (!byteArray) return null
-
-  console.log('Metadata:\n', s3Response.Metadata)
+  if (!byteArray) {
+    console.error('File not found: ', objectKey)
+    return null
+  }
 
   return {
     filename: objectKey.substring(objectKey.indexOf('_') + 1),
-    contentType: s3Response.Metadata ? s3Response.Metadata['x-amz-meta-content-type'] : '',
+    contentType: s3Response.Metadata ? s3Response.Metadata['content-type'] : '',
     content: Buffer.from(byteArray),
-    encoding: s3Response.Metadata ? s3Response.Metadata['x-amz-meta-content-encoding'] : '',
+    encoding: s3Response.Metadata ? s3Response.Metadata['content-encoding'] : '',
   }
 }
 
@@ -75,6 +81,15 @@ const getTags = async (bucket: string, objectKey: string) => {
   return objectTags.TagSet ?? []
 }
 
+/**
+ * For local testing with s3rver.
+ */
+const simulateGetTags = (reportJSON: ReportJSON) => {
+  const value =
+    reportJSON.description && reportJSON.description.includes('virus') ? 'virus' : 'clean'
+  return [{ Key: 'virusscan', Value: value }]
+}
+
 const deleteObject = async (bucket: string, objectKey: string) => {
   await s3client.send(
     new DeleteObjectCommand({
@@ -84,4 +99,4 @@ const deleteObject = async (bucket: string, objectKey: string) => {
   )
 }
 
-export default { putObject, getReportJSON, getFile, getTags, deleteObject }
+export default { putObject, getReportJSON, getFile, getTags, simulateGetTags, deleteObject }
