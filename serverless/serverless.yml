@@ -72,6 +72,7 @@ provider:
             - s3:ListBucket
             - s3:GetObject
             - s3:GetObjectTagging
+            - s3:DeleteObject
           Resource:
             - arn:aws:s3:::${self:custom.virusScanBucket}
             - arn:aws:s3:::${self:custom.virusScanBucket}/*
