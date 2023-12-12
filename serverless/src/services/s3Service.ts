@@ -87,7 +87,7 @@ const getTags = async (bucket: string, objectKey: string) => {
 const simulateGetTags = (reportJSON: ReportJSON) => {
   const value =
     reportJSON.description && reportJSON.description.includes('virus') ? 'virus' : 'clean'
-  return [{ Key: 'virusscan', Value: value }]
+  return [{ Key: 'viruscan', Value: value }]
 }
 
 const deleteObject = async (bucket: string, objectKey: string) => {

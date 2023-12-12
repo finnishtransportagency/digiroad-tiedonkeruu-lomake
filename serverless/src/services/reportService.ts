@@ -73,6 +73,8 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
     `${s3Details.object.key.split('_')[0]}_report.json`
   )
 
+  console.log('Report:', reportJSON)
+
   if (!reportJSON) {
     console.error('Report not found')
     return { status: 'notFound' }
@@ -89,7 +91,9 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
     const fileTags = offline
       ? s3Service.simulateGetTags(reportJSON) // For local testing
       : await s3Service.getTags(virusScanBucket, fileName)
-    const virusscan = fileTags.find(tag => tag.Key === 'virusscan')
+
+    console.log('File tags:', fileTags)
+    const virusscan = fileTags.find(tag => tag.Key === 'viruscan')
 
     if (!virusscan) {
       notScannedFileNames.push(fileName)
