@@ -60,7 +60,7 @@ const sendToVirusScan = async (report: Report): Promise<string> => {
 }
 
 /**
- * Get report details and scanned attachment files from virus scan bucket.
+ * Pop report details and scanned attachment files from virus scan bucket.
  *
  * @returns Object with scan status and report if scanned
  * @example { status: 'notFound' }
@@ -68,50 +68,45 @@ const sendToVirusScan = async (report: Report): Promise<string> => {
  * @example { status: 'scanned', report: Report }
  */
 const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<ScannedReportResult> => {
-  const reportJSON = await s3Service.getReportJSON(
-    virusScanBucket,
-    `${s3Details.object.key.split('_')[0]}_report.json`
-  )
-
-  console.log('Report:', reportJSON)
+  const reportId = s3Details.object.key.split('_')[0]
+  const reportJSON = await s3Service.getReportJSON(virusScanBucket, `${reportId}_report.json`)
 
   if (!reportJSON) {
     console.error('Report not found')
     return { status: 'notFound' }
   }
-  if (reportJSON.files.length === 0)
-    // TODO: Delete report from virus scan bucket
-    return { report: schema.validate(reportJSON), status: 'scanned' }
 
-  const infectedFileNames: string[] = []
+  if (reportJSON.files.length === 0) {
+    await deleteReport(reportId, [])
+    return { report: schema.validate(reportJSON), status: 'scanned' }
+  }
+
   const notScannedFileNames: string[] = []
+  const infectedFileNames: string[] = []
   const cleanFileNames: string[] = []
 
   for (const fileName of reportJSON.files) {
     const fileTags = offline
       ? s3Service.simulateGetTags(reportJSON) // For local testing
       : await s3Service.getTags(virusScanBucket, fileName)
-
-    console.log('File tags:', fileTags)
     const virusscan = fileTags.find(tag => tag.Key === 'viruscan')
-
     if (!virusscan) {
       notScannedFileNames.push(fileName)
       continue
     }
-    if (virusscan.Value === 'clean') cleanFileNames.push(fileName)
     if (virusscan.Value === 'virus') infectedFileNames.push(fileName)
+    if (virusscan.Value === 'clean') cleanFileNames.push(fileName)
   }
-
-  infectedFileNames.length > 0
-    ? console.warn('Infected files:\n', infectedFileNames)
-    : console.info('No infected files')
-  // TODO: Deal with infected files
 
   if (notScannedFileNames.length > 0) {
     console.info('All files are not yet scanned:\n', notScannedFileNames)
     return { status: 'notScanned' }
   }
+
+  infectedFileNames.length > 0
+    ? console.warn('Infected files:\n', infectedFileNames)
+    : console.info('Files scanned: no infected files')
+  // TODO: Deal with infected files
 
   const cleanFiles: Report['files'] = []
   for (const fileName of cleanFileNames) {
@@ -121,9 +116,16 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 
   const parsedReport = schema.validate({ ...reportJSON, files: cleanFiles })
 
-  // TODO: Delete report and files from virus scan bucket
+  await deleteReport(reportId, reportJSON.files)
 
   return { status: 'scanned', report: parsedReport }
+}
+
+const deleteReport = async (reportId: string, filenames: Array<string>) => {
+  await s3Service.deleteObject(virusScanBucket, `${reportId}_report.json`)
+  for (const filename of filenames) {
+    await s3Service.deleteObject(virusScanBucket, filename)
+  }
 }
 
 export default { sendToVirusScan, getScannedReport }
