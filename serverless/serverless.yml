@@ -5,16 +5,12 @@ useDotenv: true
 
 plugins:
   - serverless-plugin-typescript
-  - ./serverless-api-cloudfront-plugin
   - serverless-s3-local
   - serverless-offline
   - serverless-s3-sync
 
 custom:
   stage: ${opt:stage, 'dev'}
-  apiCloudFront:
-    headers: all
-    waf: ${env:offline.WAF_ID, ssm:${env:WAF_ID}}
   serverless-offline:
     httpPort: 3003
   s3: # serverless-s3-local configuration
@@ -46,17 +42,9 @@ provider:
     subnetIds:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
-  httpApi:
+  apiGateway:
     metrics: true
     shouldStartNameWithService: true
-    cors:
-      allowedOrigins:
-        - ${env:FRONTEND_URL}
-      allowedHeaders:
-        - g-recaptcha-response
-      allowedMethods:
-        - OPTIONS
-        - POST
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
     role:
@@ -90,9 +78,17 @@ functions:
       RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
-      - httpApi:
+      - http:
           path: /postData
           method: post
+          cors:
+            origin:
+              - ${env:FRONTEND_URL}
+            headers:
+              - g-recaptcha-response
+            methods:
+              - OPTIONS
+              - POST
 
   sendEmail:
     handler: src/emailLambda.handler
