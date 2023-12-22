@@ -25,7 +25,6 @@
     "@types/uuid": "^9.0.7",
     "aws-sdk": "^2.1484.0",
     "serverless": "^3.36.0",
-    "serverless-api-cloudfront": "^0.9.5",
     "serverless-offline": "^13.2.1",
     "serverless-plugin-typescript": "^2.1.5",
     "serverless-s3-local": "^0.8.1",
