@@ -71,10 +71,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
   const reportId = s3Details.object.key.split('_')[0]
   const reportJSON = await s3Service.getReportJSON(virusScanBucket, `${reportId}_report.json`)
 
-  if (!reportJSON) {
-    console.error('Report not found')
-    return { status: 'notFound' }
-  }
+  if (!reportJSON) return { status: 'notFound' }
 
   if (reportJSON.files.length === 0) {
     await deleteReport(reportId, [])
@@ -98,10 +95,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
     if (virusscan.Value === 'clean') cleanFileNames.push(fileName)
   }
 
-  if (notScannedFileNames.length > 0) {
-    console.info('All files are not yet scanned:\n', notScannedFileNames)
-    return { status: 'notScanned' }
-  }
+  if (notScannedFileNames.length > 0) return { status: 'notScanned' }
 
   infectedFileNames.length > 0
     ? console.warn('Infected files:\n', infectedFileNames)

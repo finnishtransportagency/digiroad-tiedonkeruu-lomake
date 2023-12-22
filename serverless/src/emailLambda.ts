@@ -13,7 +13,7 @@ export const handler = async (event: S3Event) => {
       break
 
     case 'notScanned':
-      console.error('Report not scanned')
+      console.info('Report not yet scanned')
       break
 
     case 'scanned':
