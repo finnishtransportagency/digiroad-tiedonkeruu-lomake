@@ -54,3 +54,4 @@ jobs:
           RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
           VIRUS_SCAN_LAMBDA: ${{ secrets.VIRUS_SCAN_LAMBDA }}
           VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
+          WAF_ID: ${{ secrets.WAF_ID }}

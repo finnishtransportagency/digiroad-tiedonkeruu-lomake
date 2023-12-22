@@ -14,7 +14,7 @@ custom:
   stage: ${opt:stage, 'dev'}
   apiCloudFront:
     headers: all
-    waf: ${ssm:${env:WAF_ID}}
+    waf: ${env:offline.WAF_ID, ssm:${env:WAF_ID}}
   serverless-offline:
     httpPort: 3003
   s3: # serverless-s3-local configuration
