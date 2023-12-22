@@ -5,12 +5,15 @@ useDotenv: true
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-api-cloudfront
   - serverless-s3-local
   - serverless-offline
   - serverless-s3-sync
 
 custom:
   stage: ${opt:stage, 'dev'}
+  apiCloudFront:
+    headers: all
   serverless-offline:
     httpPort: 3003
   s3: # serverless-s3-local configuration
@@ -43,6 +46,8 @@ provider:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
   httpApi:
+    metrics: true
+    shouldStartNameWithService: true
     cors:
       allowedOrigins:
         - ${env:FRONTEND_URL}
@@ -209,10 +214,16 @@ resources:
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
-            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
             ViewerProtocolPolicy: https-only
           Enabled: true
 
   Outputs:
     FrontendS3BucketNameOutputKey:
       Value: !Ref FrontendS3Bucket
+    CloudFrontDistributionUrl:
+      Value:
+        Fn::Join:
+          - ''
+          - - 'https://'
+            - !GetAtt CloudFrontDistribution.DomainName
