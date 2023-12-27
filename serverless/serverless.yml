@@ -5,6 +5,7 @@ useDotenv: true
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-iam-roles-per-function
   - serverless-s3-local
   - serverless-offline
   - serverless-s3-sync
@@ -55,33 +56,17 @@ provider:
         - POST
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - ssm:GetParameter
-            - ssm:GetParameters
-          Resource:
-            - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
-        - Effect: Allow
-          Action:
-            - s3:PutObject
-          Resource:
-            - arn:aws:s3:::${self:custom.virusScanBucket}
-            - arn:aws:s3:::${self:custom.virusScanBucket}/*
-        - Effect: Allow
-          Action:
-            - s3:ListBucket
-            - s3:GetObject
-            - s3:GetObjectTagging
-            - s3:DeleteObject
-          Resource:
-            - arn:aws:s3:::${self:custom.virusScanBucket}
-            - arn:aws:s3:::${self:custom.virusScanBucket}/*
 
 functions:
   handlePost:
     handler: src/postLambda.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource:
+          - arn:aws:s3:::${self:custom.virusScanBucket}
+          - arn:aws:s3:::${self:custom.virusScanBucket}/*
     environment:
       RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
@@ -92,6 +77,22 @@ functions:
 
   sendEmail:
     handler: src/emailLambda.handler
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - ssm:GetParameter
+          - ssm:GetParameters
+        Resource:
+          - arn:aws:ssm:${env:REGION}:${env:AWS_ACCOUNT_ID}:parameter/${env:SMTP_CREDENTIALS_NAME}
+      - Effect: Allow
+        Action:
+          - s3:ListBucket
+          - s3:GetObject
+          - s3:GetObjectTagging
+          - s3:DeleteObject
+        Resource:
+          - arn:aws:s3:::${self:custom.virusScanBucket}
+          - arn:aws:s3:::${self:custom.virusScanBucket}/*
     environment:
       REGION: ${env:REGION}
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
