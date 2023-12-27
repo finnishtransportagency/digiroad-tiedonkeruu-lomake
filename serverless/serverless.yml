@@ -112,6 +112,32 @@ resources:
       Properties:
         RetentionInDays: 180
 
+    DrTiedonkeruuAlarmTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: DrTiedonkeruuAlarmTopic
+
+    HandlePostExcessiveRequestAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: HandlePostExcessiveRequestAlarm
+        AlarmDescription: Alarm for unusually high number of requests to /postData
+        MetricName: Count
+        Namespace: AWS/ApiGateway
+        Statistic: Sum
+        Period: 60
+        EvaluationPeriods: 1
+        Threshold: 10
+        ComparisonOperator: GreaterThanThreshold
+        TreatMissingData: notBreaching
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:service}-${self:custom.stage}
+          - Name: Stage
+            Value: ${self:custom.stage}
+        AlarmActions:
+          - !Ref DrTiedonkeruuAlarmTopic
+
     S3BucketDrtiedonkeruudevvirusscannerhosting:
       Type: AWS::S3::Bucket
       Properties:
