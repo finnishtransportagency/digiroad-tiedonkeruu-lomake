@@ -117,24 +117,23 @@ resources:
       Properties:
         TopicName: DrTiedonkeruuAlarmTopic
 
-    HandlePostExcessiveRequestAlarm:
+    HandlePostInvocationAlarm:
       Type: AWS::CloudWatch::Alarm
       Properties:
-        AlarmName: HandlePostExcessiveRequestAlarm
-        AlarmDescription: Alarm for unusually high number of requests to /postData
-        MetricName: Count
-        Namespace: AWS/ApiGateway
+        AlarmName: DrTiedonkeruu/HandlePostInvocationAlarm
+        AlarmDescription: Alarm for unusually high number of invocations of HandlePost
+        MetricName: Invocations
+        Namespace: AWS/Lambda
         Statistic: Sum
-        Period: 60
-        EvaluationPeriods: 1
+        Period: 300 # 5 minutes
+        EvaluationPeriods: 3
+        DatapointsToAlarm: 2
         Threshold: 10
         ComparisonOperator: GreaterThanThreshold
         TreatMissingData: notBreaching
         Dimensions:
-          - Name: ApiName
-            Value: ${self:service}-${self:custom.stage}
-          - Name: Stage
-            Value: ${self:custom.stage}
+          - Name: FunctionName
+            Value: ${self:service}-${self:custom.stage}-handlePost
         AlarmActions:
           - !Ref DrTiedonkeruuAlarmTopic
 
