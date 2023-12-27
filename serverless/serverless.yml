@@ -42,9 +42,17 @@ provider:
     subnetIds:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
-  apiGateway:
+  httpApi:
     metrics: true
     shouldStartNameWithService: true
+    cors:
+      allowedOrigins:
+        - ${env:FRONTEND_URL}
+      allowedHeaders:
+        - g-recaptcha-response
+      allowedMethods:
+        - OPTIONS
+        - POST
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
     role:
@@ -78,17 +86,9 @@ functions:
       RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
-      - http:
+      - httpApi:
           path: /postData
           method: post
-          cors:
-            origin:
-              - ${env:FRONTEND_URL}
-            headers:
-              - g-recaptcha-response
-            methods:
-              - OPTIONS
-              - POST
 
   sendEmail:
     handler: src/emailLambda.handler
