@@ -67,9 +67,8 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 		formData.append('project', values.project)
 		formData.append('municipality', values.municipality)
 		formData.append('opening_date', values.opening_date)
-		const filesArray = Object.values(values.files)
-		if (filesArray.length > 0)
-			filesArray.forEach(file => {
+		if (values.files)
+			Object.values(values.files).forEach(file => {
 				formData.append(`file/${file.name}`, file)
 			})
 		formData.append('description', values.description)

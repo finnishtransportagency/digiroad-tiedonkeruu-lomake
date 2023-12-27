@@ -85,7 +85,7 @@ export const defaultValues = {
 	project: '',
 	municipality: '',
 	opening_date: new Date().toString(),
-	files: {} as { [number: number]: File },
+	files: null as { [number: number]: File } | null,
 	description: '',
 }
 
