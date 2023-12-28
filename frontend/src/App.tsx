@@ -7,7 +7,7 @@ const App = () => {
 	const [toastProps, setToastProps] = useState<ToastProps>({
 		$visible: false,
 		message: '',
-		type: 'loading',
+		type: 'success',
 	})
 
 	return (

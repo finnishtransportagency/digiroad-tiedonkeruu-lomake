@@ -1,4 +1,4 @@
-import styled, { DefaultTheme } from 'styled-components'
+import styled, { DefaultTheme, keyframes } from 'styled-components'
 import LoadingCircle from './LoadingCircle'
 import theme from '../theme'
 
@@ -21,6 +21,32 @@ const toastColor = (type: ToastProps['type'], theme: DefaultTheme) => {
 	}
 }
 
+const fadeIn = keyframes`
+  from {
+		display: none;
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+  to {
+		display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+`
+
+const fadeOut = keyframes`
+  from {
+		display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  to {
+		display: none;
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+`
+
 const StyledToast = styled.div<Omit<ToastProps, 'message'>>`
 	position: fixed;
 	top: 25%;
@@ -29,10 +55,8 @@ const StyledToast = styled.div<Omit<ToastProps, 'message'>>`
 	padding: 1em;
 	border-radius: ${props => props.theme.borderRadius};
 	background-color: ${props => toastColor(props.type, props.theme)};
-	opacity: ${props => (props.$visible ? 1 : 0)};
-	transition:
-		transform 0.5s ease-in-out,
-		opacity 0.5s ease-in-out;
+	animation: ${props => (props.$visible ? fadeIn : fadeOut)} 0.5s ease-in-out;
+	animation-fill-mode: forwards;
 	z-index: 999;
 `
 
