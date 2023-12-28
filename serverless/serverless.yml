@@ -234,11 +234,24 @@ resources:
                     - '.s3-${env:REGION}.amazonaws.com'
               S3OriginConfig:
                 OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
+            - Id: ApiGatewayOrigin
+              DomainName:
+                Fn::Join:
+                  - ''
+                  - - !Ref HttpApi
+                    - '.execute-api.${env:REGION}.amazonaws.com'
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
             ViewerProtocolPolicy: https-only
+          CacheBehaviors:
+            - TargetOriginId: ApiGatewayOrigin
+              PathPattern: /postData
+              ViewerProtocolPolicy: https-only
+              CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
           Enabled: true
 
   Outputs:
