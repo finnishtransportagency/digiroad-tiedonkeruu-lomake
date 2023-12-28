@@ -25,7 +25,7 @@ custom:
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
   s3Sync:
-    - bucketNameKey: FrontendS3BucketNameOutputKey
+    - bucketNameKey: FrontendS3BucketName
       localDir: ui
       deleteRemoved: true
 
@@ -35,7 +35,8 @@ package:
 provider:
   name: aws
   stage: ${self:custom.stage}
-  runtime: nodejs16.x
+  # Some serverless-offline features may not work with nodejs18.x use nodejs16.x instead
+  runtime: ${env:offline.NODE_VERSION, 'nodejs18.x'}
   region: ${env:REGION}
   vpc:
     securityGroupIds:
@@ -255,9 +256,11 @@ resources:
           Enabled: true
 
   Outputs:
-    FrontendS3BucketNameOutputKey:
+    FrontendS3BucketName:
+      Description: 'Name of the frontend S3 bucket'
       Value: !Ref FrontendS3Bucket
     CloudFrontDistributionUrl:
+      Description: 'URL of the CloudFront distribution for the frontend'
       Value:
         Fn::Join:
           - ''
