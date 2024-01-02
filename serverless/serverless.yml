@@ -35,8 +35,7 @@ package:
 provider:
   name: aws
   stage: ${self:custom.stage}
-  # Some serverless-offline features may not work with nodejs18.x use nodejs16.x instead
-  runtime: ${env:offline.NODE_VERSION, 'nodejs18.x'}
+  runtime: nodejs18.x
   region: ${env:REGION}
   vpc:
     securityGroupIds:
@@ -129,7 +128,7 @@ resources:
         Period: 300 # 5 minutes
         EvaluationPeriods: 3
         DatapointsToAlarm: 2
-        Threshold: 10
+        Threshold: 1000
         ComparisonOperator: GreaterThanThreshold
         TreatMissingData: notBreaching
         Dimensions:
@@ -241,6 +240,7 @@ resources:
                   - ''
                   - - !Ref HttpApi
                     - '.execute-api.${env:REGION}.amazonaws.com'
+              OriginPath: /postData
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
           DefaultRootObject: index.html
