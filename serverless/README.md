@@ -2,25 +2,29 @@
 
 ## Running locally
 
-| Since this is a serverless backend, running it locally can be a bit challenging. It is recommended to check in the code that the `IS_OFFLINE` variable is `false` before any calls to other AWS service. |
+| Since this is a serverless backend, running it locally can be a bit challenging. `IS_OFFLINE` environment variable is used to prevent calls to other AWS services when running the service locally. |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ### Prerequisites
 
-You must have a site registered in the reCAPTCHA v3 Admin Console: https://www.google.com/recaptcha/admin
+- [Node.js v18.x & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed
+- [serverless framework v3.x](https://www.npmjs.com/package/serverless) installed globally
+- Site registered in the reCAPTCHA v3 Admin Console: https://www.google.com/recaptcha/admin
 
 ### Commands
 
 1. Install dependencies by running
    `npm install`
 2. Provide the following environment variables in `.env`-file and remember to replace values between `<` and `>` with your own values
-   ```
+   ```sh
    IS_OFFLINE=true
    FRONTEND_URL=<your-frontend-url>
    offline.RECAPTCHA_SECRET=<reCaptcha-secret-key>
-   offline.SECURITY_GROUP_ID=""
-   offline.SUBNET_ID_1=""
-   offline.SUBNET_ID_2=""
+   offline.SECURITY_GROUP_ID="sg-offlineid12345678"
+   offline.SUBNET_ID_1="subnet-offlineid12345678"
+   offline.SUBNET_ID_2="subnet-offlineid12345678"
+   offline.VIRUS_SCAN_LAMBDA=""
+   offline.VIRUS_SCAN_ROLE=""
    REGION=""
    AWS_ACCOUNT_ID=""
    AWS_CLOUDFORMATION_ROLE=""
@@ -29,5 +33,12 @@ You must have a site registered in the reCAPTCHA v3 Admin Console: https://www.g
    ```
 3. Start API in development mode by running
    `npm run offline`
+
+-  **After using UI to post a report you can simulate s3 invocation of the emailLambda in another terminal**
+   ```sh
+   npm run emailLambda -- '{"Records": [{"s3": {"object": {"key": "<your-report-id>_report.json"}}}]}'
+   ```
+   Replace `<your-report-id>` with the id printed in the terminal that is running the API.
+   Example print: `Report sent to virus scan: c38b8994-dcc9-48eb-b533-60823cc96dcb`
 
 ---
