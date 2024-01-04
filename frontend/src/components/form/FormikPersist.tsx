@@ -14,6 +14,8 @@ const FormikPersist = ({ name }: { name: string }) => {
 	const prefValuesRef = useRef<FormValues>()
 
 	const onSave = (values: FormValues) => {
+		// File objects cannot be stringified, so we remove them
+		values.files = null
 		window.localStorage.setItem(name, JSON.stringify(values))
 	}
 

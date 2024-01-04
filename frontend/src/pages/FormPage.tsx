@@ -39,7 +39,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 
 	useEffect(() => {
 		if (!(i18n.language in resources)) {
-			console.error(`Language ${i18n.language} not supported! Defaulting to Finnish.`)
+			console.warn(`Language ${i18n.language} not supported! Defaulting to Finnish.`)
 			i18n.changeLanguage('fi')
 		}
 		// Refresh reCaptcha token every 110 seconds (token expires after 120 seconds)
@@ -76,7 +76,6 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 		if (await httpService.post(apiURL, formData, reCaptchaToken)) {
 			// Successfull submit
 			resetAllInputs(actions.resetForm)
-			setRefreshReCaptcha(r => !r)
 			setToastProps({ $visible: true, message: t('form.submit_success'), type: 'success' })
 			setTimeout(() => {
 				setToastProps(oldProps => ({ ...oldProps, $visible: false }))
@@ -88,6 +87,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 				setToastProps(oldProps => ({ ...oldProps, $visible: false }))
 			}, 3000)
 		}
+		setRefreshReCaptcha(r => !r)
 	}
 
 	const handleReset = (resetForm: () => void) => {
@@ -214,7 +214,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 								}}
 								dateFormat='dd.MM.yyyy'
 							/>
-							{errors.opening_date && touched.opening_date ? (
+							{errors.opening_date ? (
 								// @ts-ignore
 								<ErrorLabel>{t(errors.opening_date)}</ErrorLabel>
 							) : (
@@ -259,6 +259,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 								name='description'
 								ref={descriptionInputRef}
 								placeholder={t('form.description')}
+								value={values.description}
 								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
 									setFieldValue('description', event.currentTarget.value)
 								}
