@@ -49,6 +49,7 @@ const fadeOut = keyframes`
 
 const StyledToast = styled.div<Omit<ToastProps, 'message'>>`
 	position: fixed;
+	display: ${props => (props.$visible ? 'block' : 'none')};
 	top: 25%;
 	left: 50%;
 	transform: translate(-50%, ${props => (props.$visible ? '-50%' : '-100%')});
@@ -80,4 +81,3 @@ const Toast = ({ $visible, message, type }: ToastProps) => {
 }
 
 export default Toast
-
