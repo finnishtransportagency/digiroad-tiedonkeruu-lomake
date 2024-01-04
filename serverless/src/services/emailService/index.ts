@@ -1,12 +1,16 @@
 import { createTransport } from 'nodemailer'
-import Mail from 'nodemailer/lib/mailer'
 import { ACCEPTED_FILE_TYPES, Report } from '../../schema'
 import ssmService from '../ssmService'
 import t from '../../translations'
 import template from './template'
 import { emailSender, offline, smtpEndpoint } from '../../config'
 
-type EmailOptions = Mail.Options & {
+type EmailOptions = {
+  from: string
+  to: string
+  subject: string
+  text: string
+  html: string
   attachments?: Array<{
     filename: string
     contentType: (typeof ACCEPTED_FILE_TYPES)[number]
@@ -14,7 +18,7 @@ type EmailOptions = Mail.Options & {
   }>
 }
 
-const constructEmail = (report: Report) => {
+const constructEmail = (report: Report): EmailOptions => {
   const translations = t(report.lang)
   const emailContents = template.renderEmailContents(report, translations)
 
@@ -38,7 +42,10 @@ const constructEmail = (report: Report) => {
 }
 
 const sendEmail = async (report: Report): Promise<string> => {
+  const emailOptions = constructEmail(report)
+
   if (offline) {
+    console.log('EMAIL:\n', emailOptions.text)
     return new Promise(resolve =>
       setTimeout(() => resolve('Offline mode, not sending email'), 1000)
     )
@@ -55,7 +62,7 @@ const sendEmail = async (report: Report): Promise<string> => {
     },
   })
 
-  const sentMessageInfo = await transporter.sendMail(constructEmail(report))
+  const sentMessageInfo = await transporter.sendMail(emailOptions)
   return sentMessageInfo.response
 }
 
