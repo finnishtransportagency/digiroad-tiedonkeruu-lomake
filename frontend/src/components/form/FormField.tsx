@@ -11,6 +11,7 @@ const FormField = styled(Field)<{ $errors: boolean; $maxWidth: string }>`
 	border-radius: ${props => props.theme.borderRadius};
 	padding: 0.75em 1em;
 	resize: ${props => (props.as === 'textarea' ? 'vertical' : 'none')};
+	max-height: 50em;
 
 	&:focus {
 		outline: 2px solid ${props => props.theme.primaryColor};
