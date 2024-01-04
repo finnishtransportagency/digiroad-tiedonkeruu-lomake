@@ -243,6 +243,8 @@ resources:
               OriginPath: /postData
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
+                OriginSSLProtocols:
+                  - TLSv1.2
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
