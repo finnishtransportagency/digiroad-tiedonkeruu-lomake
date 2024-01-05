@@ -2,6 +2,7 @@ import { useState } from 'react'
 import LanguageSelector from './components/LanguageSelector'
 import Toast, { ToastProps } from './components/Toast'
 import FormPage from './pages/FormPage'
+import Footer from './components/Footer'
 
 const App = () => {
 	const [toastProps, setToastProps] = useState<ToastProps>({
@@ -14,6 +15,7 @@ const App = () => {
 		<>
 			<LanguageSelector />
 			<FormPage setToastProps={setToastProps} />
+			<Footer />
 			<Toast {...toastProps} />
 		</>
 	)
