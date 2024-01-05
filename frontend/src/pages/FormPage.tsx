@@ -107,7 +107,13 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 		<Container>
 			<HorizontalGroup>
 				<Heading $level='h1'>{t('form.title')}</Heading>
-				<img src='/vayla_alla_fi_sv_rgb.png' alt='Väylä-logo' width='35%' height='35%' />
+				<img
+					src='/vayla_alla_fi_sv_rgb.png'
+					alt='Väylävirasto-logo'
+					style={{ userSelect: 'none' }}
+					width='35%'
+					height='35%'
+				/>
 			</HorizontalGroup>
 			<Formik
 				onSubmit={handleSubmit}

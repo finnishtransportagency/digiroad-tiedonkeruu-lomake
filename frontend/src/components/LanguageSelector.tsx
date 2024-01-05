@@ -12,14 +12,12 @@ type LanguageValues = (typeof languages)[number]['value']
 type LanguageButtonProps = { $first: boolean; $last: boolean; $selected: boolean }
 
 const LanguageButton = styled(Button)<LanguageButtonProps>`
+	font-size: 0.9em;
+	padding: 0.65em 1.1em;
 	margin: 0;
 	border-radius: ${props => {
-		if (props.$first) {
-			return `${props.theme.borderRadius} 0 0 ${props.theme.borderRadius}`
-		}
-		if (props.$last) {
-			return `0 ${props.theme.borderRadius} ${props.theme.borderRadius} 0`
-		}
+		if (props.$first) return `${props.theme.borderRadius} 0 0 ${props.theme.borderRadius}`
+		if (props.$last) return `0 ${props.theme.borderRadius} ${props.theme.borderRadius} 0`
 		return '0'
 	}};
 	${props =>
@@ -28,6 +26,11 @@ const LanguageButton = styled(Button)<LanguageButtonProps>`
 			: `
 	color: ${props.theme.primaryColor};
 	background-color: ${props.theme.buttonAccentColor};`}
+	user-select: none;
+`
+
+const LanguageButtonContainer = styled.div`
+	align-self: flex-end;
 `
 
 const LanguageSelector = () => {
@@ -40,7 +43,7 @@ const LanguageSelector = () => {
 	}
 
 	return (
-		<div>
+		<LanguageButtonContainer>
 			{languages.map((option, index) => {
 				return (
 					<LanguageButton
@@ -54,7 +57,7 @@ const LanguageSelector = () => {
 					</LanguageButton>
 				)
 			})}
-		</div>
+		</LanguageButtonContainer>
 	)
 }
 

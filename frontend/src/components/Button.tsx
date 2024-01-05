@@ -23,6 +23,7 @@ const Button = styled.button<ButtonProps>`
 	padding: 0.75em 1.25em;
 	font-size: 1em;
 	cursor: pointer;
+	user-select: none;
 
 	transition: 0.1s;
 	&:active:enabled {
