@@ -15,7 +15,7 @@ const sv = {
 		submit_success: 'TRANSLATE: Lomake lähetetty onnistuneesti!',
 	},
 	tooltips: {
-		file: 'TRANSLATE: Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 5,9MB',
+		file: 'TRANSLATE: Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 4MB',
 	},
 	errors: {
 		reporter: 'TRANSLATE: Ilmoittajan nimi vaaditaan!',
@@ -31,7 +31,7 @@ const sv = {
 			min: 'TRANSLATE: Avaamisajankohdan tulee olla tulevaisuudessa!',
 		},
 		files: {
-			size: 'TRANSLATE: Liitetiedostojen yhteiskoko saa olla enintään 5,9MB!',
+			size: 'TRANSLATE: Liitetiedostojen yhteiskoko saa olla enintään 4MB!',
 			type: 'TRANSLATE: Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
 		},
 		submit: 'TRANSLATE: Lomakkeen lähetys epäonnistui!',
