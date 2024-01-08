@@ -3,7 +3,6 @@ name: Build & deploy to AWS
 on:
   push:
     branches:
-      - development
       - demo
 
 permissions:
@@ -11,10 +10,10 @@ permissions:
   contents: read
 jobs:
   BuildAndDeploy:
-    name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }} deploy
+    name: ${{ github.ref == 'refs/heads/main' && 'production' || 'demo' }} deploy
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'demo' }}
     strategy:
       matrix:
         node-version: [16.x]
