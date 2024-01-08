@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- [Node.js v18.x & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed
+- [Node.js v18 & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed
 - Site registered in the reCAPTCHA v3 Admin Console: https://www.google.com/recaptcha/admin
 
 ### Commands

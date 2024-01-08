@@ -25,6 +25,10 @@
 
 ### Frontend
 
+`frontend/.eslintignore`:
+
+- defines file matching patterns to ignore when linting
+
 `frontend/.eslintrc.json`:
 
 - defines linting rules and configuration
