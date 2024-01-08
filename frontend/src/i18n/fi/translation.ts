@@ -36,6 +36,20 @@ const fi = {
 		},
 		submit: 'Lomakkeen lähetys epäonnistui!',
 	},
+	links: {
+		suravage: {
+			description: 'SURAVAGE-pääohje',
+			link: 'https://vayla.fi/vaylista/aineistot/digiroad/yllapito/suunniteltu-rakennusvaiheen-geometria/suravage-paaohje',
+		},
+		yllapito: {
+			description: 'Ylläpito-ohje kunnille',
+			link: 'https://vayla.fi/vaylista/aineistot/digiroad/yllapito/yllapito-ohje-kunnille',
+		},
+		drsovellus: {
+			description: 'Digiroad-sovellus',
+			link: 'https://digiroad.vaylapilvi.fi/',
+		},
+	},
 } as const
 
 export default fi

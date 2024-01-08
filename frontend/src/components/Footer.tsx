@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 const StyledFooter = styled.footer`
@@ -5,37 +6,30 @@ const StyledFooter = styled.footer`
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	gap: 1.5em;
+	gap: 1em;
 	margin-top: 1em;
 	margin-bottom: 5em;
 	user-select: none;
 `
 
 const Footer = () => {
+	const { t } = useTranslation()
+
 	return (
 		<StyledFooter>
-			<a
-				href='https://vayla.fi/vaylista/aineistot/digiroad/yllapito/suunniteltu-rakennusvaiheen-geometria/suravage-paaohje'
-				target='_blank'
-				rel='noreferrer'
-			>
-				Suravage-pääohje
+			<a href={t('links.suravage.link')} target='_blank' rel='noreferrer'>
+				{t('links.suravage.description')}
 			</a>
 			&bull;
-			<a
-				href='https://vayla.fi/vaylista/aineistot/digiroad/yllapito/yllapito-ohje-kunnille'
-				target='_blank'
-				rel='noreferrer'
-			>
-				Ylläpito-ohje kunnille
+			<a href={t('links.yllapito.link')} target='_blank' rel='noreferrer'>
+				{t('links.yllapito.description')}
 			</a>
 			&bull;
-			<a href='https://digiroad.vaylapilvi.fi/' target='_blank' rel='noreferrer'>
-				Digiroad-sovellus
+			<a href={t('links.drsovellus.link')} target='_blank' rel='noreferrer'>
+				{t('links.drsovellus.description')}
 			</a>
 		</StyledFooter>
 	)
 }
 
 export default Footer
-

@@ -36,6 +36,20 @@ const sv = {
 		},
 		submit: 'TRANSLATE: Lomakkeen lähetys epäonnistui!',
 	},
+	links: {
+		suravage: {
+			description: 'SURAVAGE-instruktioner',
+			link: 'https://vayla.fi/sv/trafikleder/material/digiroad/underhall/planerad-geometri-for-byggskedet/underhalla-vag-och-gatunatets-mittlinjematerial-i-finland-anvisning-',
+		},
+		yllapito: {
+			description: 'Underhållsinstruktioner till kommuner',
+			link: 'https://vayla.fi/sv/trafikleder/material/digiroad/underhall/underhallsinstruktioner-till-kommuner',
+		},
+		drsovellus: {
+			description: 'Digiroad app',
+			link: 'https://digiroad.vaylapilvi.fi/',
+		},
+	},
 } as const
 
 export default sv
