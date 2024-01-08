@@ -16,7 +16,7 @@ jobs:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'demo' }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

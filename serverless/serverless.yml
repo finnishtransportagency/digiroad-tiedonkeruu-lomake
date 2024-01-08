@@ -112,31 +112,6 @@ resources:
       Properties:
         RetentionInDays: 180
 
-    DrTiedonkeruuAlarmTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: DrTiedonkeruuAlarmTopic
-
-    HandlePostInvocationAlarm:
-      Type: AWS::CloudWatch::Alarm
-      Properties:
-        AlarmName: DrTiedonkeruu/HandlePostInvocationAlarm
-        AlarmDescription: Alarm for unusually high number of invocations of HandlePost
-        MetricName: Invocations
-        Namespace: AWS/Lambda
-        Statistic: Sum
-        Period: 300 # 5 minutes
-        EvaluationPeriods: 3
-        DatapointsToAlarm: 2
-        Threshold: 1000
-        ComparisonOperator: GreaterThanThreshold
-        TreatMissingData: notBreaching
-        Dimensions:
-          - Name: FunctionName
-            Value: ${self:service}-${self:custom.stage}-handlePost
-        AlarmActions:
-          - !Ref DrTiedonkeruuAlarmTopic
-
     S3BucketDrtiedonkeruudevvirusscannerhosting:
       Type: AWS::S3::Bucket
       Properties:
