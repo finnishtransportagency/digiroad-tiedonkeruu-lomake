@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development
+      - demo
 
 permissions:
   id-token: write
@@ -50,8 +51,7 @@ jobs:
           SUBNET_ID_2: ${{ secrets.SUBNET_ID_2 }}
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_CLOUDFORMATION_ROLE: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-          SMTP_CREDENTIALS_NAME: ${{ secrets.SMTP_CREDENTIALS_NAME }}
           RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
+          SMTP_CREDENTIALS_NAME: ${{ secrets.SMTP_CREDENTIALS_NAME }}
           VIRUS_SCAN_LAMBDA: ${{ secrets.VIRUS_SCAN_LAMBDA }}
           VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
-          WAF_ID: ${{ secrets.WAF_ID }}
