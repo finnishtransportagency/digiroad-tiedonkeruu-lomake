@@ -73,7 +73,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 			})
 		formData.append('description', values.description)
 
-		if (await httpService.post(apiURL, formData, reCaptchaToken)) {
+		if (await httpService.post(`${apiURL}/api/postData`, formData, reCaptchaToken)) {
 			// Successfull submit
 			resetAllInputs(actions.resetForm)
 			setToastProps({ $visible: true, message: t('form.submit_success'), type: 'success' })

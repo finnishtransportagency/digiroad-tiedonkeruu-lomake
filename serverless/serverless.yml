@@ -73,7 +73,7 @@ functions:
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
       - httpApi:
-          path: /postData
+          path: /api/postData
           method: post
 
   sendEmail:
@@ -241,7 +241,6 @@ resources:
                   - ''
                   - - !Ref HttpApi
                     - '.execute-api.${env:REGION}.amazonaws.com'
-              OriginPath: /api
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
@@ -253,7 +252,7 @@ resources:
             ViewerProtocolPolicy: https-only
           CacheBehaviors:
             - TargetOriginId: ApiGatewayOrigin
-              PathPattern: /api
+              PathPattern: /api/*
               ViewerProtocolPolicy: https-only
               CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
               AllowedMethods:

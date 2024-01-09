@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const post = async (url: string, formData: FormData, reCaptchaToken: string, path?: string) => {
+const post = async (url: string, formData: FormData, reCaptchaToken: string) => {
 	try {
-		await axios.post(`${url}/api${path ? `/${path}` : ''}`, formData, {
+		await axios.post(url, formData, {
 			headers: {
 				'g-recaptcha-response': reCaptchaToken,
 			},
