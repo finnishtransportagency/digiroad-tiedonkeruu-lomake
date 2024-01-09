@@ -14,9 +14,16 @@ const FormikPersist = ({ name }: { name: string }) => {
 	const prefValuesRef = useRef<FormValues>()
 
 	const onSave = (values: FormValues) => {
-		// File objects cannot be stringified, so we remove them
-		values.files = null
-		window.localStorage.setItem(name, JSON.stringify(values))
+		// File objects cannot be stringified, so we won't save them
+		const valuesWithoutFiles: Omit<FormValues, 'files'> = {
+			reporter: values.reporter,
+			email: values.email,
+			project: values.project,
+			municipality: values.municipality,
+			opening_date: values.opening_date,
+			description: values.description,
+		}
+		window.localStorage.setItem(name, JSON.stringify(valuesWithoutFiles))
 	}
 
 	const debouncedOnSave = useDebouncedCallback(onSave, 300)
@@ -46,4 +53,3 @@ const FormikPersist = ({ name }: { name: string }) => {
 }
 
 export default FormikPersist
-
