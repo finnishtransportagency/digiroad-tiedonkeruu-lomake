@@ -10,6 +10,11 @@ const StyledFooter = styled.footer`
 	margin-top: 1em;
 	margin-bottom: 5em;
 	user-select: none;
+
+	@media (max-width: 710px) {
+		flex-direction: column;
+		gap: 0.5em;
+	}
 `
 
 const Footer = () => {
