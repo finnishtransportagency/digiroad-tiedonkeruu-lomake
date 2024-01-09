@@ -48,7 +48,6 @@ provider:
     shouldStartNameWithService: true
     cors:
       allowedOrigins:
-        - "*" # REMOVE THIS IN PRODUCTION
         - ${env:FRONTEND_URL}
       allowedHeaders:
         - g-recaptcha-response
@@ -263,6 +262,13 @@ resources:
                 - PATCH
                 - POST
                 - DELETE
+              ForwardedValues:
+                QueryString: false
+                Headers:
+                  - Access-Control-Request-Headers
+                  - Access-Control-Request-Method
+                  - Origin
+                  - G-Recaptcha-Response
           Enabled: true
 
   Outputs:

@@ -31,6 +31,7 @@ export const handler = async (
       }
     }
     // Verify reCaptcha token exists
+    console.log('HEADERS:\n', event.headers)
     if (!event.headers['g-recaptcha-response']) {
       console.error('Bad Request: Missing reCaptcha token')
       return {
