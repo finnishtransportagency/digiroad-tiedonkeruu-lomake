@@ -5,10 +5,10 @@ import { SUPPORTED_LANGUAGES } from './translations'
 /**
  * Amazon SES supports emails with a message size of up to 40MB but
  * lambda function has a limit of 6MB for the invocation payload.
- * Backend has a limit of 39MB incase the invocation payload somehow
+ * Backend has a limit of 35MB incase the invocation payload somehow
  * contains file larger than 6MB.
  */
-const MAX_TOTAL_FILE_SIZE = 39_000_000
+const MAX_TOTAL_FILE_SIZE = 35_000_000
 export const ACCEPTED_FILE_TYPES = [
   'application/pdf',
   'application/acad',
