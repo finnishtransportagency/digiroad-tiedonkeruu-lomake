@@ -5,7 +5,7 @@
   "scripts": {
     "build:ui": "cd frontend && npm ci && npm run build && cd ..",
     "cp:ui": "cp -r frontend/build serverless/ui",
-    "deploy:serverless": "cd serverless && npm i && serverless deploy --verbose && cd .."
+    "deploy:serverless": "cd serverless && npm i && serverless deploy --config serverless-waf.yml && serverless deploy --verbose && cd .."
   },
   "keywords": [
     "aws",

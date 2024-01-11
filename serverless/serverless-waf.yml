@@ -1,0 +1,85 @@
+service: dr-tiedonkeruu-waf
+frameworkVersion: '3'
+
+useDotenv: true
+
+custom:
+  stage: ${opt:stage, 'dev'}
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  region: us-east-1
+  iam:
+    deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
+
+resources:
+  Resources:
+    CloudFrontWebACL:
+      Type: AWS::WAFv2::WebACL
+      Properties:
+        Name: dr-tiedonkeruu-${self:custom.stage}-waf
+        Description: 'DRTiedonkeruu WAF Configuration'
+        DefaultAction:
+          Allow: {}
+        Rules:
+          - Name: RateBasedRule-IP-300
+            Priority: 0
+            Statement:
+              RateBasedStatement:
+                Limit: 300
+                AggregateKeyType: IP
+            Action:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: RateBasedRule-IP-300
+              SampledRequestsEnabled: true
+          - Name: AWS-ManagedRulesAmazonIpReputationList
+            Priority: 1
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesAmazonIpReputationList
+            OverrideAction:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AWS-ManagedRulesAmazonIpReputationList
+              SampledRequestsEnabled: true
+          - Name: AWS-ManagedRulesCommonRuleSet
+            Priority: 2
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesCommonRuleSet
+            OverrideAction:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AWS-ManagedRulesCommonRuleSet
+              SampledRequestsEnabled: true
+          - Name: AWS-ManagedRulesKnownBadInputsRuleSet
+            Priority: 3
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesKnownBadInputsRuleSet
+            OverrideAction:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AWS-ManagedRulesKnownBadInputsRuleSet
+              SampledRequestsEnabled: true
+        Scope: CLOUDFRONT
+        VisibilityConfig:
+          CloudWatchMetricsEnabled: true
+          MetricName: dr-tiedonkeruu-${self:custom.stage}-waf
+          SampledRequestsEnabled: true
+
+  Outputs:
+    WebACLId:
+      Value: !Ref CloudFrontWebACL
