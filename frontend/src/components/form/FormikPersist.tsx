@@ -20,7 +20,10 @@ const FormikPersist = ({ name }: { name: string }) => {
 			email: values.email,
 			project: values.project,
 			municipality: values.municipality,
-			opening_date: values.opening_date,
+			opening_date:
+				new Date(values.opening_date) > new Date(new Date().setHours(0, 0, 0, 0))
+					? values.opening_date
+					: new Date().toISOString(),
 			description: values.description,
 		}
 		window.localStorage.setItem(name, JSON.stringify(valuesWithoutFiles))
