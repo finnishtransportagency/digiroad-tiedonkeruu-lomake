@@ -16,7 +16,8 @@
     "offline": "serverless offline",
     "handlePost": "serverless invoke local --function handlePost",
     "emailLambda": "serverless invoke local --function sendEmail --data",
-    "resetS3": "rm -r s3rver/*"
+    "resetS3": "rm -r s3rver/*",
+    "set:wafid": "WEB_ACL_ID=$(aws cloudformation describe-stacks --stack-name $WAF_STACK_ID --query 'Stacks[0].Outputs[?OutputKey=='WebACLId'].OutputValue' --output text)"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",

@@ -38,6 +38,42 @@ resources:
               CloudWatchMetricsEnabled: true
               MetricName: RateBasedRule-IP-300
               SampledRequestsEnabled: true
+          - Name: AWS-ManagedRulesAmazonIpReputationList
+            Priority: 1
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesAmazonIpReputationList
+            OverrideAction:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AWS-ManagedRulesAmazonIpReputationList
+              SampledRequestsEnabled: true
+          - Name: AWS-ManagedRulesCommonRuleSet
+            Priority: 2
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesCommonRuleSet
+            OverrideAction:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AWS-ManagedRulesCommonRuleSet
+              SampledRequestsEnabled: true
+          - Name: AWS-ManagedRulesKnownBadInputsRuleSet
+            Priority: 3
+            Statement:
+              ManagedRuleGroupStatement:
+                VendorName: AWS
+                Name: AWSManagedRulesKnownBadInputsRuleSet
+            OverrideAction:
+              Count: {}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AWS-ManagedRulesKnownBadInputsRuleSet
+              SampledRequestsEnabled: true
         Scope: CLOUDFRONT
         VisibilityConfig:
           CloudWatchMetricsEnabled: true
