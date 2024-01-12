@@ -17,7 +17,7 @@
     "handlePost": "serverless invoke local --function handlePost",
     "emailLambda": "serverless invoke local --function sendEmail --data",
     "resetS3": "rm -r s3rver/*",
-    "set:wafId": "WEB_ACL_ID=$(aws cloudformation describe-stacks --stack-name $WAF_STACK_NAME --region us-east-1 --query \"Stacks[0].Outputs[?OutputKey=='WebAclId'].OutputValue\" --output text) && echo \"WEB_ACL_ID=$WEB_ACL_ID\""
+    "set:wafId": "WEB_ACL_ID=$(aws cloudformation describe-stacks --stack-name $WAF_STACK_NAME --region us-east-1 --query \"Stacks[0].Outputs[?OutputKey=='WebAclId'].OutputValue\" --output text) && echo $WEB_ACL_ID >> .env"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",
