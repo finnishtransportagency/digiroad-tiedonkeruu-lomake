@@ -81,5 +81,8 @@ resources:
           SampledRequestsEnabled: true
 
   Outputs:
-    WebACLId:
-      Value: !Ref CloudFrontWebACL
+    WebAclId:
+      Value:
+        Fn::GetAtt:
+          - CloudFrontWebACL
+          - Id

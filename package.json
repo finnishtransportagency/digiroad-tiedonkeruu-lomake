@@ -5,7 +5,7 @@
   "scripts": {
     "build:ui": "cd frontend && npm ci && npm run build && cd ..",
     "cp:ui": "cp -r frontend/build serverless/ui",
-    "deploy:serverless": "cd serverless && npm i && sls deploy --config serverless-waf.yml && WEB_ACL_ID=$(echo $(aws cloudformation describe-stacks --stack-name $WAF_STACK_NAME --region us-east-1 --query \"Stacks[0].Outputs[?OutputKey=='WebACLId'].OutputValue\" --output text) >> stack.txt && awk -F \"|\" '{print $2}' stack.txt) && echo $WEB_ACL_ID && sls deploy --verbose && cd .."
+    "deploy:serverless": "cd serverless && npm i && sls deploy --config serverless-waf.yml && npm run set:wafId && sls deploy --verbose && cd .."
   },
   "keywords": [
     "aws",
