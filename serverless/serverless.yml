@@ -137,25 +137,25 @@ resources:
         AlarmActions:
           - !Ref DrTiedonkeruuAlarmTopic
 
-    S3BucketDrtiedonkeruudevvirusscannerhosting:
+    S3BucketDrtiedonkeruuvirusscannerhosting:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.virusScanBucket}
         NotificationConfiguration:
           LambdaConfigurations:
             - Event: s3:ObjectCreated:*
-              Function: ${self:custom.virusScanLambda} # Needs S3BucketDrtiedonkeruudevvirusscannerhostingPolicy
+              Function: ${self:custom.virusScanLambda} # Needs S3BucketDrtiedonkeruuvirusscannerhostingPolicy
             - Event: s3:ObjectTagging:Put # Needs InvokeSendEmailPermissionVirusScanS3
               Function:
                 Fn::GetAtt:
                   - SendEmailLambdaFunction
                   - Arn
 
-    S3BucketDrtiedonkeruudevvirusscannerhostingPolicy:
+    S3BucketDrtiedonkeruuvirusscannerhostingPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket:
-          Ref: S3BucketDrtiedonkeruudevvirusscannerhosting
+          Ref: S3BucketDrtiedonkeruuvirusscannerhosting
         PolicyDocument:
           Statement:
             - Effect: Allow
@@ -168,7 +168,7 @@ resources:
                 Fn::Join:
                   - ''
                   - - 'arn:aws:s3:::'
-                    - !Ref S3BucketDrtiedonkeruudevvirusscannerhosting
+                    - !Ref S3BucketDrtiedonkeruuvirusscannerhosting
                     - '/*'
 
     InvokeSendEmailPermissionVirusScanS3:
@@ -185,7 +185,7 @@ resources:
             - ''
             - - 'arn:'
               - Ref: AWS::Partition
-              - ':s3:::dr-tiedonkeruu-dev-virus-scanner-hosting'
+              - ':s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting'
         SourceAccount:
           Ref: AWS::AccountId
 
