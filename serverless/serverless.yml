@@ -285,7 +285,7 @@ resources:
         Name: dr-tiedonkeruu-${self:custom.stage}-api-gateway-waf
         Description: 'DRTiedonkeruu WAF for API Gateway'
         DefaultAction:
-          Allow: {}
+          Block: {}
         Rules:
           - Name: AllowCloudFront
             Priority: 0
@@ -303,12 +303,6 @@ resources:
                           Type: NONE
                       PositionalConstraint: EXACTLY
                       SearchString: ${self:custom.cloudFrontAuthId}
-          - Name: BlockAllOtherRequests
-            Priority: 1
-            Action:
-              Block: {}
-            Statement:
-              TrueStatement: {}
         Scope: REGIONAL
         VisibilityConfig:
           CloudWatchMetricsEnabled: true
