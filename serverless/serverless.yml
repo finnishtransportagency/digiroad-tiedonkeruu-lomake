@@ -24,6 +24,7 @@ custom:
   virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
+  cloudFrontAuthId: ${env:offline.CLOUDFRONT_AUTH_ID, ssm:${env:CLOUDFRONT_AUTH_ID}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
@@ -250,6 +251,9 @@ resources:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
+              OriginCustomHeaders:
+                - HeaderName: X-CloudFront-Auth-Id
+                  HeaderValue: ${self:custom.cloudFrontAuthId}
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
@@ -274,6 +278,60 @@ resources:
                 - DELETE
           Enabled: true
           WebACLId: ${env:WEB_ACL_ID}
+
+    ApiGatewayWebAcl:
+      Type: AWS::WAFv2::WebACL
+      Properties:
+        Name: dr-tiedonkeruu-${self:custom.stage}-api-gateway-waf
+        Description: 'DRTiedonkeruu WAF for API Gateway'
+        DefaultAction:
+          Allow: {}
+        Rules:
+          - Name: AllowCloudFront
+            Priority: 0
+            Action:
+              Allow: {}
+            Statement:
+              AndStatement:
+                Statements:
+                  - ByteMatchStatement:
+                      FieldToMatch:
+                        SingleHeader:
+                          Name: X-CloudFront-Auth-Id
+                      TextTransformations:
+                        - Priority: 0
+                          Type: NONE
+                      PositionalConstraint: EXACTLY
+                      SearchString: ${self:custom.cloudFrontAuthId}
+          - Name: BlockAllOtherRequests
+            Priority: 1
+            Action:
+              Block: {}
+            Statement:
+              TrueStatement: {}
+        Scope: REGIONAL
+        VisibilityConfig:
+          CloudWatchMetricsEnabled: true
+          MetricName: dr-tiedonkeruu-${self:custom.stage}-api-gateway-waf
+          SampledRequestsEnabled: true
+
+    ApiGatewayWebAclAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Properties:
+        ResourceArn:
+          Fn::Join:
+            - ''
+            - - 'arn:aws:execute-api:'
+              - ${env:REGION}
+              - ':'
+              - ${env:AWS_ACCOUNT_ID}
+              - ':'
+              - !Ref HttpApi
+              - '/*'
+        WebACLArn:
+          Fn::GetAtt:
+            - ApiGatewayWebAcl
+            - Arn
 
   Outputs:
     FrontendS3BucketName:

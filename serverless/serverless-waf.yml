@@ -21,7 +21,7 @@ resources:
     CloudFrontWebACL:
       Type: AWS::WAFv2::WebACL
       Properties:
-        Name: dr-tiedonkeruu-${self:custom.stage}-waf
+        Name: dr-tiedonkeruu-waf-${self:custom.stage}
         Description: 'DRTiedonkeruu WAF Configuration'
         DefaultAction:
           Allow: {}
@@ -77,7 +77,7 @@ resources:
         Scope: CLOUDFRONT
         VisibilityConfig:
           CloudWatchMetricsEnabled: true
-          MetricName: dr-tiedonkeruu-${self:custom.stage}-waf
+          MetricName: dr-tiedonkeruu-waf-${self:custom.stage}
           SampledRequestsEnabled: true
 
   Outputs:
