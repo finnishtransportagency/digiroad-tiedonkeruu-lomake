@@ -292,17 +292,19 @@ resources:
             Action:
               Allow: {}
             Statement:
-              AndStatement:
-                Statements:
-                  - ByteMatchStatement:
-                      FieldToMatch:
-                        SingleHeader:
-                          Name: X-CloudFront-Auth-Id
-                      TextTransformations:
-                        - Priority: 0
-                          Type: NONE
-                      PositionalConstraint: EXACTLY
-                      SearchString: ${self:custom.cloudFrontAuthId}
+              - ByteMatchStatement:
+                  FieldToMatch:
+                    SingleHeader:
+                      Name: X-CloudFront-Auth-Id
+                  TextTransformations:
+                    - Priority: 0
+                      Type: NONE
+                  PositionalConstraint: EXACTLY
+                  SearchString: ${self:custom.cloudFrontAuthId}
+            VisibilityConfig:
+              CloudWatchMetricsEnabled: true
+              MetricName: AllowCloudFront
+              SampledRequestsEnabled: true
         Scope: REGIONAL
         VisibilityConfig:
           CloudWatchMetricsEnabled: true
