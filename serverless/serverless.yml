@@ -68,11 +68,11 @@ functions:
           path: /api/postData
           method: post
           cors:
-            allowedOrigins:
+            origin:
               - ${env:FRONTEND_URL}
-            allowedHeaders:
+            headers:
               - g-recaptcha-response
-            allowedMethods:
+            methods:
               - OPTIONS
               - POST
 
