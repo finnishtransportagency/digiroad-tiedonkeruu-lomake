@@ -292,15 +292,15 @@ resources:
             Action:
               Allow: {}
             Statement:
-              - ByteMatchStatement:
-                  FieldToMatch:
-                    SingleHeader:
-                      Name: X-CloudFront-Auth-Id
-                  TextTransformations:
-                    - Priority: 0
-                      Type: NONE
-                  PositionalConstraint: EXACTLY
-                  SearchString: ${self:custom.cloudFrontAuthId}
+              ByteMatchStatement:
+                FieldToMatch:
+                  SingleHeader:
+                    Name: X-CloudFront-Auth-Id
+                TextTransformations:
+                  - Priority: 0
+                    Type: NONE
+                PositionalConstraint: EXACTLY
+                SearchString: ${self:custom.cloudFrontAuthId}
             VisibilityConfig:
               CloudWatchMetricsEnabled: true
               MetricName: AllowCloudFront
