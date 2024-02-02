@@ -18,22 +18,29 @@ export const ACCEPTED_FILE_TYPES = [
 // ^----------------------------------------------------------^
 
 const schema = z.object({
-	reporter: z.string({
-		required_error: 'errors.reporter',
-	}),
+	reporter: z
+		.string({
+			required_error: 'errors.reporter.required',
+		})
+		.max(64, { message: 'errors.reporter.max' }),
 	email: z
 		.string({
 			required_error: 'errors.email.required',
 		})
 		.email({
 			message: 'errors.email.value',
-		}),
-	project: z.string({
-		required_error: 'errors.project',
-	}),
-	municipality: z.string({
-		required_error: 'errors.municipality',
-	}),
+		})
+		.max(320, { message: 'errors.email.max' }),
+	project: z
+		.string({
+			required_error: 'errors.project.required',
+		})
+		.max(64, { message: 'errors.project.max' }),
+	municipality: z
+		.string({
+			required_error: 'errors.municipality.required',
+		})
+		.max(32, { message: 'errors.municipality.max' }),
 	opening_date: z
 		.date({
 			coerce: true,

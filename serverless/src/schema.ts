@@ -22,10 +22,17 @@ export const ACCEPTED_FILE_TYPES = [
 
 const schema = z.object({
   lang: z.enum(SUPPORTED_LANGUAGES),
-  reporter: z.string({ required_error: 'Missing reporter' }),
-  email: z.string({ required_error: 'Missing email' }).email({ message: 'Invalid email' }),
-  project: z.string({ required_error: 'Missing project' }),
-  municipality: z.string({ required_error: 'Missing municipality' }),
+  reporter: z
+    .string({ required_error: 'Missing reporter' })
+    .max(64, { message: 'Reporter too long' }),
+  email: z
+    .string({ required_error: 'Missing email' })
+    .email({ message: 'Invalid email' })
+    .max(320, { message: 'Email too long' }),
+  project: z.string({ required_error: 'Missing project' }).max(64, { message: 'Project too long' }),
+  municipality: z
+    .string({ required_error: 'Missing municipality' })
+    .max(32, { message: 'Municipality too long' }),
   opening_date: z
     .string({ required_error: 'Missing opening date' })
     .transform(value => new Date(value)),

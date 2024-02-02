@@ -6,7 +6,7 @@ const fi = {
 		project: 'Rakennushankkeen nimi',
 		municipality: 'Kunta',
 		opening_date: 'Liikenteelle avaamisajankohta',
-		file: 'Liitetiedosto',
+		file: 'Liitetiedostot',
 		description: 'Lisätietoja',
 		reset: 'Tyhjennä lomake',
 		reset_confirm: 'Haluatko varmasti tyhjentää lomakkeen?',
@@ -18,13 +18,23 @@ const fi = {
 		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 4MB',
 	},
 	errors: {
-		reporter: 'Ilmoittajan nimi vaaditaan!',
+		reporter: {
+			required: 'Ilmoittajan nimi vaaditaan!',
+			max: 'Ilmoittajan nimi saa olla enintään 64 merkkiä pitkä!',
+		},
 		email: {
 			required: 'Sähköposti vaaditaan!',
 			value: 'Sähköpostin tulee olla validi!',
+			max: 'Sähköpostiosoite saa olla enintään 320 merkkiä pitkä!',
 		},
-		project: 'Rakennushankkeen nimi vaaditaan!',
-		municipality: 'Kunta vaaditaan!',
+		project: {
+			required: 'Rakennushankkeen nimi vaaditaan!',
+			max: 'Rakennushankkeen nimi saa olla enintään 64 merkkiä pitkä!',
+		},
+		municipality: {
+			required: 'Kunta vaaditaan!',
+			max: 'Kunta saa olla enintään 32 merkkiä pitkä!',
+		},
 		opening_date: {
 			required: 'Avaamisajankohta vaaditaan!',
 			value: 'Päivämäärän tulee olla muotoa dd.mm.yyyy',

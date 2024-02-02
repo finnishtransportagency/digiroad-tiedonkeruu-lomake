@@ -6,7 +6,7 @@ const sv = {
 		project: 'TRANSLATE: Rakennushankkeen nimi',
 		municipality: 'TRANSLATE: Kunta',
 		opening_date: 'TRANSLATE: Liikenteelle avaamisajankohta',
-		file: 'TRANSLATE: Liitetiedosto',
+		file: 'TRANSLATE: Liitetiedostot',
 		description: 'TRANSLATE: Lisätietoja',
 		reset: 'TRANSLATE: Tyhjennä lomake',
 		reset_confirm: 'TRANSLATE: Haluatko varmasti tyhjentää lomakkeen?',
@@ -18,13 +18,22 @@ const sv = {
 		file: 'TRANSLATE: Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 4MB',
 	},
 	errors: {
-		reporter: 'TRANSLATE: Ilmoittajan nimi vaaditaan!',
+		reporter: {
+			required: 'TRANSLATE: Ilmoittajan nimi vaaditaan!',
+			max: 'TRANSLATE: Ilmoittajan nimi saa olla enintään 64 merkkiä pitkä!',
+		},
 		email: {
 			required: 'TRANSLATE: Sähköposti vaaditaan!',
 			value: 'TRANSLATE: Sähköpostin tulee olla validi!',
 		},
-		project: 'TRANSLATE: Rakennushankkeen nimi vaaditaan!',
-		municipality: 'TRANSLATE: Kunta vaaditaan!',
+		project: {
+			required: 'TRANSLATE: Rakennushankkeen nimi vaaditaan!',
+			max: 'TRANSLATE: Rakennushankkeen nimi saa olla enintään 64 merkkiä pitkä!',
+		},
+		municipality: {
+			required: 'TRANSLATE: Kunta vaaditaan!',
+			max: 'TRANSLATE: Kunta saa olla enintään 32 merkkiä pitkä!',
+		},
 		opening_date: {
 			required: 'TRANSLATE: Avaamisajankohta vaaditaan!',
 			value: 'TRANSLATE: Päivämäärän tulee olla muotoa dd.mm.yyyy',
