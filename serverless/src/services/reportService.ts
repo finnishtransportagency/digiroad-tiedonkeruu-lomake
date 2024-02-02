@@ -97,10 +97,12 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 
   if (notScannedFileNames.length > 0) return { status: 'notScanned' }
 
-  infectedFileNames.length > 0
-    ? console.warn('Infected files:\n', infectedFileNames)
-    : console.info('Files scanned: no infected files')
-  // TODO: Deal with infected files
+  if (infectedFileNames.length > 0) {
+    console.warn('Deleting infected files:\n', infectedFileNames)
+    await deleteFiles(infectedFileNames)
+  } else {
+    console.info('Files scanned: no infected files')
+  }
 
   const cleanFiles: Report['files'] = []
   for (const fileName of cleanFileNames) {
@@ -117,6 +119,10 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 
 const deleteReport = async (reportId: string, filenames: Array<string>) => {
   await s3Service.deleteObject(virusScanBucket, `${reportId}_report.json`)
+  deleteFiles(filenames)
+}
+
+const deleteFiles = async (filenames: Array<string>) => {
   for (const filename of filenames) {
     await s3Service.deleteObject(virusScanBucket, filename)
   }
