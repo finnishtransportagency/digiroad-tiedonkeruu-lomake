@@ -32,7 +32,7 @@
    SMTP_SENDER=""
    ```
 3. Start API in development mode by running
-   `npm run offline`
+   `npm start`
 
 - **After using UI to post a report you can simulate s3 invocation of the emailLambda in another terminal**
 

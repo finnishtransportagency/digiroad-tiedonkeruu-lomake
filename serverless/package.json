@@ -12,11 +12,11 @@
     "zod": "^3.22.2"
   },
   "scripts": {
-    "package": "serverless package",
-    "offline": "serverless offline",
-    "handlePost": "serverless invoke local --function handlePost",
+    "start": "serverless offline",
     "emailLambda": "serverless invoke local --function sendEmail --data",
-    "resetS3": "rm -r s3rver/*"
+    "handlePost": "serverless invoke local --function handlePost",
+    "resetS3": "rm -r s3rver/*",
+    "package": "serverless package"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",

@@ -45,7 +45,7 @@ const sendEmail = async (report: Report): Promise<string> => {
   const emailOptions = constructEmail(report)
 
   if (offline) {
-    console.log('EMAIL:\n', emailOptions.text)
+    console.log('EMAIL:\n' + emailOptions.text)
     return new Promise(resolve =>
       setTimeout(() => resolve('Offline mode, not sending email'), 1000)
     )
