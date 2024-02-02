@@ -25,6 +25,7 @@ const sv = {
 		email: {
 			required: 'TRANSLATE: Sähköposti vaaditaan!',
 			value: 'TRANSLATE: Sähköpostin tulee olla validi!',
+			max: 'TRANSLATE: Sähköposti saa olla enintään 64 merkkiä pitkä!',
 		},
 		project: {
 			required: 'TRANSLATE: Rakennushankkeen nimi vaaditaan!',
