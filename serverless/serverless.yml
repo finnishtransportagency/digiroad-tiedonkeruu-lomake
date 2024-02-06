@@ -103,6 +103,12 @@ functions:
 
 resources:
   Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        BinaryMediaTypes:
+          - '*/*'
+
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
