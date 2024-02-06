@@ -69,7 +69,12 @@ const sendToVirusScan = async (report: Report): Promise<string> => {
  */
 const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<ScannedReportResult> => {
   const reportId = s3Details.object.key.split('_')[0]
-  const reportJSON = await s3Service.getReportJSON(virusScanBucket, `${reportId}_report.json`)
+  let reportJSON: ReportJSON | null = null
+  try {
+    reportJSON = await s3Service.getReportJSON(virusScanBucket, `${reportId}_report.json`)
+  } catch (error) {
+    console.error('Error while getting report JSON: ', error)
+  }
 
   if (!reportJSON) return { status: 'notFound' }
 
