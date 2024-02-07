@@ -5,6 +5,7 @@ export const reCaptchaSecret = process.env.RECAPTCHA_SECRET || ''
 export const awsRegion = process.env.REGION || 'eu-west-1'
 export const smtpCredentialsName = process.env.SMTP_CREDENTIALS_NAME || ''
 export const emailSender = process.env.SMTP_SENDER || ''
+export const emailRecipient = process.env.SMTP_RECIPIENT || ''
 export const smtpEndpoint = process.env.SMTP_ENDPOINT || ''
 export const virusScanBucket = process.env.VIRUS_SCAN_BUCKET || ''
 export const s3ClientConfig = offline

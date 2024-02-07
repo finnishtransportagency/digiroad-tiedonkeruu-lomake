@@ -52,6 +52,7 @@ jobs:
           REGION: ${{ vars.REGION }}
           FRONTEND_URL: ${{ vars.FRONTEND_URL }}
           SMTP_SENDER: ${{ vars.SMTP_SENDER }}
+          SMTP_RECIPIENT: ${{ vars.SMTP_RECIPIENT }}
           SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}
           SUBNET_ID_1: ${{ secrets.SUBNET_ID_1 }}
           SUBNET_ID_2: ${{ secrets.SUBNET_ID_2 }}

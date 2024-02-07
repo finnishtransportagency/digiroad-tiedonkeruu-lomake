@@ -3,7 +3,7 @@ import { ACCEPTED_FILE_TYPES, Report } from '../../schema'
 import ssmService from '../ssmService'
 import t from '../../translations'
 import template from './template'
-import { emailSender, offline, smtpEndpoint } from '../../config'
+import { emailRecipient, emailSender, offline, smtpEndpoint } from '../../config'
 
 type EmailOptions = {
   from: string
@@ -24,7 +24,7 @@ const constructEmail = (report: Report): EmailOptions => {
 
   const emailOptions: EmailOptions = {
     from: emailSender,
-    to: report.email,
+    to: emailRecipient,
     subject: `${translations.title}: ${report.project}, ${report.municipality}`,
     text: emailContents.text,
     html: emailContents.html,

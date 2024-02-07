@@ -17,7 +17,7 @@ export const handler = async (event: S3Event) => {
       break
 
     case 'scanned':
-      console.log('Scanned report:\n' + scannedReport.report)
+      console.info('Sending report email...')
       const response = await emailService.sendEmail(scannedReport.report)
       console.log('SMTP response:\n' + response)
       break
