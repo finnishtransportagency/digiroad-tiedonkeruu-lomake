@@ -35,7 +35,7 @@ const LanguageButtonContainer = styled.div`
 
 const LanguageSelector = () => {
 	const { i18n } = useTranslation()
-	const [selectedOption, setSelected] = useState<LanguageValues>(languages[0].value)
+	const [selectedOption, setSelected] = useState<LanguageValues>(i18n.language as LanguageValues)
 
 	const handleOptionChange = (value: LanguageValues) => {
 		setSelected(value)
