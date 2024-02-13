@@ -49,6 +49,10 @@ provider:
     shouldStartNameWithService: true
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
+  stackTags:
+    Name: dr-tiedonkeruu-${self:custom.stage}
+    Environment: ${self:custom.stage}
+    Administrator: ${env:ADMINISTRATOR}
   tags:
     Name: dr-tiedonkeruu-${self:custom.stage}
     Environment: ${self:custom.stage}
@@ -118,16 +122,37 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         RetentionInDays: 180
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     SendEmailLogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
         RetentionInDays: 180
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     DrTiedonkeruuAlarmTopic:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: DrTiedonkeruuAlarmTopic
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     HandlePostInvocationAlarm:
       Type: AWS::CloudWatch::Alarm
@@ -162,6 +187,13 @@ resources:
                 Fn::GetAtt:
                   - SendEmailLambdaFunction
                   - Arn
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     S3BucketDrtiedonkeruuvirusscannerhostingPolicy:
       Type: AWS::S3::BucketPolicy
@@ -205,6 +237,13 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: dr-tiedonkeruu-${self:custom.stage}-frontend-hosting
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     FrontendS3OAI:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -289,6 +328,13 @@ resources:
                 - DELETE
           Enabled: true
           WebACLId: ${env:WEB_ACL_ID}
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     ApiGatewayWebAcl:
       Type: AWS::WAFv2::WebACL
@@ -321,6 +367,13 @@ resources:
           CloudWatchMetricsEnabled: true
           MetricName: dr-tiedonkeruu-${self:custom.stage}-api-gateway-waf
           SampledRequestsEnabled: true
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     ApiGatewayWebAclAssociation:
       Type: AWS::WAFv2::WebACLAssociation
