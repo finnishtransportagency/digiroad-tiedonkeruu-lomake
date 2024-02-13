@@ -64,3 +64,4 @@ jobs:
           VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
           CLOUDFRONT_AUTH_ID: ${{ secrets.CLOUDFRONT_AUTH_ID }}
           WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
+          ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}

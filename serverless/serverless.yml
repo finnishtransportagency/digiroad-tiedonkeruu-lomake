@@ -49,6 +49,10 @@ provider:
     shouldStartNameWithService: true
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
+  tags:
+    Name: dr-tiedonkeruu-${self:custom.stage}
+    Environment: ${self:custom.stage}
+    Administrator: ${env:ADMINISTRATOR}
 
 functions:
   handlePost:
