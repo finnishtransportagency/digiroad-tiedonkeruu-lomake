@@ -1,13 +1,9 @@
 name: Build & deploy to AWS
 
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
   push:
     branches:
+      - main
       - development
 
 permissions:
