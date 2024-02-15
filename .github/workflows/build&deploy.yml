@@ -41,15 +41,17 @@ jobs:
       - name: Copy UI build to serverless folder
         run: npm run cp:ui
       - name: Deploy WAF
-        run: npm run deploy:waf -- --stage ${{ vars.STAGE_NAME }}
+        run: npm run deploy:waf
         env:
+          STAGE_NAME: ${{ vars.STAGE_NAME }}
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_CLOUDFORMATION_ROLE: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
       - name: Set WEB_ACL_ID
         run: echo "WEB_ACL_ID=$(aws cloudformation describe-stacks --stack-name dr-tiedonkeruu-waf-${{ vars.STAGE_NAME }} --region us-east-1 --query "Stacks[0].Outputs[?OutputKey=='WebAclArn'].OutputValue" --output text)" >> $GITHUB_ENV
       - name: Deploy serverless
-        run: npm run deploy:serverless -- --stage ${{ vars.STAGE_NAME }}
+        run: npm run deploy:serverless 
         env:
+          STAGE_NAME: ${{ vars.STAGE_NAME }}
           REGION: ${{ vars.REGION }}
           FRONTEND_URL: ${{ vars.FRONTEND_URL }}
           SMTP_SENDER: ${{ vars.SMTP_SENDER }}
