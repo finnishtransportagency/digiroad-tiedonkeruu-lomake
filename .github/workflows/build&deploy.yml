@@ -3,6 +3,7 @@ name: Build & deploy to AWS
 on:
   push:
     branches:
+      - main
       - development
 
 permissions:
