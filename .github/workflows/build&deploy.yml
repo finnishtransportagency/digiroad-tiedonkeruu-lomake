@@ -1,0 +1,67 @@
+name: Build & deploy to AWS
+
+on:
+  push:
+    branches:
+      - development
+
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  BuildAndDeploy:
+    name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }} deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build UI
+        env:
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+          REACT_APP_RECAPTCHA_SITE_KEY: ${{ vars.REACT_APP_RECAPTCHA_SITE_KEY }}
+        run: npm run build:ui
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE }}
+          role-session-name: ServerlessDeployment
+          aws-region: ${{ vars.REGION }}
+      - name: Install serverless globally
+        run: npm i -g serverless@3.x
+      - name: Copy UI build to serverless folder
+        run: npm run cp:ui
+      - name: Deploy WAF
+        run: npm run deploy:waf -- --stage ${{ vars.STAGE_NAME }}
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_CLOUDFORMATION_ROLE: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+      - name: Set WEB_ACL_ID
+        run: echo "WEB_ACL_ID=$(aws cloudformation describe-stacks --stack-name dr-tiedonkeruu-waf-${{ vars.STAGE_NAME }} --region us-east-1 --query "Stacks[0].Outputs[?OutputKey=='WebAclArn'].OutputValue" --output text)" >> $GITHUB_ENV
+      - name: Deploy serverless
+        run: npm run deploy:serverless -- --stage ${{ vars.STAGE_NAME }}
+        env:
+          REGION: ${{ vars.REGION }}
+          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+          SMTP_SENDER: ${{ vars.SMTP_SENDER }}
+          SMTP_RECIPIENT: ${{ vars.SMTP_RECIPIENT }}
+          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}
+          SUBNET_ID_1: ${{ secrets.SUBNET_ID_1 }}
+          SUBNET_ID_2: ${{ secrets.SUBNET_ID_2 }}
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_CLOUDFORMATION_ROLE: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
+          SMTP_CREDENTIALS_NAME: ${{ secrets.SMTP_CREDENTIALS_NAME }}
+          RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
+          VIRUS_SCAN_LAMBDA: ${{ secrets.VIRUS_SCAN_LAMBDA }}
+          VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
+          CLOUDFRONT_AUTH_ID: ${{ secrets.CLOUDFRONT_AUTH_ID }}
+          WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
+          ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}

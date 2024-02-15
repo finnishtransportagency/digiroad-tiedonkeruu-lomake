@@ -1,0 +1,35 @@
+{
+  "name": "dr-tiedonkeruu-email-notification-service",
+  "description": "API for DRTiedonkeruu. Handles form data from DRTiedonkeruu web-client and sends verification email to the user and DR-operator.",
+  "version": "1.0.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.454.0",
+    "@aws-sdk/client-ssm": "^3.427.0",
+    "axios": "^1.5.1",
+    "busboy": "^1.6.0",
+    "nodemailer": "^6.9.6",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.2"
+  },
+  "scripts": {
+    "start": "serverless offline",
+    "emailLambda": "serverless invoke local --function sendEmail --data",
+    "handlePost": "serverless invoke local --function handlePost",
+    "resetS3": "rm -r s3rver/*",
+    "package": "serverless package"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.101",
+    "@types/busboy": "^1.5.2",
+    "@types/nodemailer": "^6.4.11",
+    "@types/uuid": "^9.0.7",
+    "aws-sdk": "^2.1484.0",
+    "serverless": "^3.38.0",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-offline": "^13.2.1",
+    "serverless-plugin-typescript": "^2.1.5",
+    "serverless-s3-local": "^0.8.1",
+    "serverless-s3-sync": "^3.2.0",
+    "typescript": "^4.7.4"
+  }
+}

@@ -1,12 +1,23 @@
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
+import LanguageSelector from './components/LanguageSelector'
+import Toast, { ToastProps } from './components/Toast'
+import FormPage from './pages/FormPage'
+import Footer from './components/Footer'
 
-function App() {
-	const { t } = useTranslation()
+const App = () => {
+	const [toastProps, setToastProps] = useState<ToastProps>({
+		$visible: false,
+		message: '',
+		type: 'success',
+	})
+
 	return (
-		<div>
-			<h1>{t('title')}</h1>
-			<p>{t('hello')}</p>
-		</div>
+		<>
+			<LanguageSelector />
+			<FormPage setToastProps={setToastProps} />
+			<Footer />
+			<Toast {...toastProps} />
+		</>
 	)
 }
 
