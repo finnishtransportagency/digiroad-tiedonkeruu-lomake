@@ -300,9 +300,6 @@ resources:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
-              OriginCustomHeaders:
-                - HeaderName: X-CloudFront-Auth-Id
-                  HeaderValue: ${self:custom.cloudFrontAuthId}
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
