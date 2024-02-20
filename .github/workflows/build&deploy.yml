@@ -66,5 +66,6 @@ jobs:
           RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
           VIRUS_SCAN_LAMBDA: ${{ secrets.VIRUS_SCAN_LAMBDA }}
           VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
+          VPC_ID: ${{ secrets.VPC_ID }}
           WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
           ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}

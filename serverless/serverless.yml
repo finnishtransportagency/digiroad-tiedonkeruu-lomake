@@ -24,6 +24,7 @@ custom:
   virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
+  vpcId: ${env:offline.VPC_ID, ssm:${env:VPC_ID}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
@@ -111,11 +112,36 @@ functions:
 
 resources:
   Resources:
+    ApiGatewayVPCEndpoint:
+      Type: AWS::EC2::VPCEndpoint
+        Properties:
+          ServiceName: !Sub 'com.amazonaws.${env:REGION}.execute-api'
+          SecurityGroupIds:
+            - ${self:custom.securityGroupId}
+          PrivateDnsEnabled: true
+          SubnetIds:
+            - ${self:custom.subnetId1}
+            - ${self:custom.subnetId2}
+          VpcEndpointType: Interface
+          VpcId: ${self:custom.vpcId}
+
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
         BinaryMediaTypes:
           - '*/*'
+        EndpointConfiguration:
+          Types:
+            - PRIVATE
+          VpcEndpointIds:
+            - !Ref ApiGatewayVPCEndpoint
+        Tags:
+          - Key: Name
+            Value: dr-tiedonkeruu-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
 
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
