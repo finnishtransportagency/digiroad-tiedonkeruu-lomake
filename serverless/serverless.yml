@@ -114,16 +114,16 @@ resources:
   Resources:
     ApiGatewayVPCEndpoint:
       Type: AWS::EC2::VPCEndpoint
-        Properties:
-          ServiceName: !Sub 'com.amazonaws.${env:REGION}.execute-api'
-          SecurityGroupIds:
-            - ${self:custom.securityGroupId}
-          PrivateDnsEnabled: true
-          SubnetIds:
-            - ${self:custom.subnetId1}
-            - ${self:custom.subnetId2}
-          VpcEndpointType: Interface
-          VpcId: ${self:custom.vpcId}
+      Properties:
+        ServiceName: !Sub 'com.amazonaws.${env:REGION}.execute-api'
+        SecurityGroupIds:
+          - ${self:custom.securityGroupId}
+        PrivateDnsEnabled: true
+        SubnetIds:
+          - ${self:custom.subnetId1}
+          - ${self:custom.subnetId2}
+        VpcEndpointType: Interface
+        VpcId: ${self:custom.vpcId}
 
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
