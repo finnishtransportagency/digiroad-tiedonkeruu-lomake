@@ -24,7 +24,6 @@ custom:
   virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
-  cloudFrontAuthId: ${env:offline.CLOUDFRONT_AUTH_ID, ssm:${env:CLOUDFRONT_AUTH_ID}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
