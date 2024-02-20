@@ -27,6 +27,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Build UI
         env:
+          REACT_APP_STAGE: ${{ vars.STAGE_NAME }}
           REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
           REACT_APP_RECAPTCHA_SITE_KEY: ${{ vars.REACT_APP_RECAPTCHA_SITE_KEY }}
         run: npm run build:ui
@@ -65,6 +66,5 @@ jobs:
           RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
           VIRUS_SCAN_LAMBDA: ${{ secrets.VIRUS_SCAN_LAMBDA }}
           VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
-          CLOUDFRONT_AUTH_ID: ${{ secrets.CLOUDFRONT_AUTH_ID }}
           WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
           ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}
