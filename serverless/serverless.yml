@@ -46,17 +46,17 @@ provider:
       - ${self:custom.subnetId2}
   apiGateway:
     shouldStartNameWithService: true
+    resourcePolicy:
+      - Effect: Allow
+        Principal: '*'
+        Action: execute-api:Invoke
+        Resource: 'arn:aws:execute-api:${env:REGION}:${env:AWS_ACCOUNT_ID}:*/*/api/postData'
+        Condition:
+          StringEquals:
+            aws:sourceVpce: !Ref ApiGatewayVPCEndpoint
   endpointType: PRIVATE
   vpcEndpointIds:
     - !Ref ApiGatewayVPCEndpoint
-  resourcePolicy:
-    - Effect: Allow
-      Principal: '*'
-      Action: execute-api:Invoke
-      Resource: 'arn:aws:execute-api:${env:REGION}:${env:AWS_ACCOUNT_ID}:*/*/api/postData'
-      Condition:
-        StringEquals:
-          aws:sourceVpce: !Ref ApiGatewayVPCEndpoint
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
   stackTags:
