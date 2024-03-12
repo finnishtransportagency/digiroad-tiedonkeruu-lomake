@@ -24,6 +24,7 @@ custom:
   virusScanBucket: ${self:service}-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
+  apiKey: ${env:API_KEY}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
@@ -122,6 +123,7 @@ resources:
               Ref: ApiGatewayRestApi
             StageName: ${self:custom.stage}
         Enabled: true
+        Value: ${self:custom.apiKey}
         Tags:
           - Key: Name
             Value: ${self:service}-${self:custom.stage}
@@ -315,7 +317,7 @@ resources:
                   - TLSv1.2
               OriginCustomHeaders:
                 - HeaderName: X-Api-Key
-                  HeaderValue: !GetAtt ApiGatewayApiKey.Value
+                  HeaderValue: ${self:custom.apiKey}
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
