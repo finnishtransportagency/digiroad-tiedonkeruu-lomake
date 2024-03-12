@@ -21,10 +21,9 @@ custom:
   subnetId1: ${env:offline.SUBNET_ID_1, ssm:${env:SUBNET_ID_1}}
   subnetId2: ${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}
   recaptchaSecret: ${env:offline.RECAPTCHA_SECRET, ssm:${env:RECAPTCHA_SECRET}}
-  virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
+  virusScanBucket: ${self:service}-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
-  vpcId: ${env:offline.VPC_ID, ssm:${env:VPC_ID}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
@@ -44,19 +43,12 @@ provider:
     subnetIds:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
+  endpointType: REGIONAL
   apiGateway:
+    apiKeys:
+      - name: ${self:service}-${self:custom.stage}-api-key
+    metrics: true
     shouldStartNameWithService: true
-    resourcePolicy:
-      - Effect: Allow
-        Principal: '*'
-        Action: execute-api:Invoke
-        Resource: 'arn:aws:execute-api:${env:REGION}:${env:AWS_ACCOUNT_ID}:*/*/api/postData'
-        Condition:
-          StringEquals:
-            aws:sourceVpce: !Ref ApiGatewayVPCEndpoint
-  endpointType: PRIVATE
-  vpcEndpointIds:
-    - !Ref ApiGatewayVPCEndpoint
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
   stackTags:
@@ -85,6 +77,7 @@ functions:
       - http:
           path: /api/postData
           method: post
+          private: true
           cors:
             origin:
               - ${env:FRONTEND_URL}
@@ -122,32 +115,6 @@ functions:
 
 resources:
   Resources:
-    ApiGatewayVPCEndpoint:
-      Type: AWS::EC2::VPCEndpoint
-      Properties:
-        ServiceName: !Sub 'com.amazonaws.${env:REGION}.execute-api'
-        SecurityGroupIds:
-          - ${self:custom.securityGroupId}
-        PrivateDnsEnabled: true
-        SubnetIds:
-          - ${self:custom.subnetId1}
-          - ${self:custom.subnetId2}
-        VpcEndpointType: Interface
-        VpcId: ${self:custom.vpcId}
-
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        BinaryMediaTypes:
-          - '*/*'
-        Tags:
-          - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
-          - Key: Environment
-            Value: ${self:custom.stage}
-          - Key: Administrator
-            Value: ${env:ADMINISTRATOR}
-
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
@@ -259,14 +226,14 @@ resources:
             - ''
             - - 'arn:'
               - Ref: AWS::Partition
-              - ':s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting'
+              - ':s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting'
         SourceAccount:
           Ref: AWS::AccountId
 
     FrontendS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: dr-tiedonkeruu-${self:custom.stage}-frontend-hosting
+        BucketName: ${self:service}-${self:custom.stage}-frontend-hosting
         Tags:
           - Key: Name
             Value: dr-tiedonkeruu-${self:custom.stage}
@@ -331,6 +298,9 @@ resources:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
+              OriginCustomHeaders:
+                - HeaderName: X-Api-Key
+                  HeaderValue: !GetAtt ApiGatewayApiKey1.ApiKey
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
