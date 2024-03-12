@@ -298,9 +298,6 @@ resources:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
-              OriginCustomHeaders:
-                - HeaderName: X-Api-Key
-                  HeaderValue: !GetAtt ApiGatewayApiKey1.ApiKey
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
