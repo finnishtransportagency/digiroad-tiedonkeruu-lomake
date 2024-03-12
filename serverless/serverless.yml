@@ -45,18 +45,16 @@ provider:
       - ${self:custom.subnetId2}
   endpointType: REGIONAL
   apiGateway:
-    apiKeys:
-      - name: ${self:service}-${self:custom.stage}-api-key
     metrics: true
     shouldStartNameWithService: true
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
   stackTags:
-    Name: dr-tiedonkeruu-${self:custom.stage}
+    Name: ${self:service}-${self:custom.stage}
     Environment: ${self:custom.stage}
     Administrator: ${env:ADMINISTRATOR}
   tags:
-    Name: dr-tiedonkeruu-${self:custom.stage}
+    Name: ${self:service}-${self:custom.stage}
     Environment: ${self:custom.stage}
     Administrator: ${env:ADMINISTRATOR}
 
@@ -115,13 +113,30 @@ functions:
 
 resources:
   Resources:
+    ApiGatewayApiKey:
+      Type: AWS::ApiGateway::ApiKey
+      Properties:
+        Name: ${self:service}-${self:custom.stage}-api-key
+        StageKeys:
+          - RestApiId:
+              Ref: ApiGatewayRestApi
+            StageName: ${self:custom.stage}
+        Enabled: true
+        Tags:
+          - Key: Name
+            Value: ${self:service}-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
+
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
         RetentionInDays: 180
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -133,7 +148,7 @@ resources:
         RetentionInDays: 180
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -145,7 +160,7 @@ resources:
         TopicName: DrTiedonkeruuAlarmTopic
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -186,7 +201,7 @@ resources:
                   - Arn
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -236,7 +251,7 @@ resources:
         BucketName: ${self:service}-${self:custom.stage}-frontend-hosting
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -298,6 +313,9 @@ resources:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
+              OriginCustomHeaders:
+                - HeaderName: X-Api-Key
+                  HeaderValue: !GetAtt ApiGatewayApiKey.Value
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
@@ -324,7 +342,7 @@ resources:
           WebACLId: ${env:WEB_ACL_ID}
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
