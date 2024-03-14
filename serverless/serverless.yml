@@ -118,10 +118,6 @@ resources:
       Type: AWS::ApiGateway::ApiKey
       Properties:
         Name: ${self:service}-${self:custom.stage}-api-key
-        StageKeys:
-          - RestApiId:
-              Ref: ApiGatewayRestApi
-            StageName: ${self:custom.stage}
         Enabled: true
         Value: ${self:custom.apiKey}
         Tags:
@@ -131,6 +127,28 @@ resources:
             Value: ${self:custom.stage}
           - Key: Administrator
             Value: ${env:ADMINISTRATOR}
+
+    ApiGatewayUsagePlan:
+      Type: AWS::ApiGateway::UsagePlan
+      Properties:
+        ApiStages:
+          - ApiId: !Ref ApiGatewayRestApi
+            Stage: ${self:custom.stage}
+        UsagePlanName: ${self:service}-${self:custom.stage}-usage-plan
+        Tags:
+          - Key: Name
+            Value: ${self:service}-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
+
+    ApiGatewayUsagePlanKey:
+      Type: AWS::ApiGateway::UsagePlanKey
+      Properties:
+        KeyId: !Ref ApiGatewayApiKey
+        KeyType: API_KEY
+        UsagePlanId: !Ref ApiGatewayUsagePlan
 
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
