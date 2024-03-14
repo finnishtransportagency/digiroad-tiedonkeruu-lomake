@@ -46,6 +46,8 @@ provider:
       - ${self:custom.subnetId2}
   endpointType: REGIONAL
   apiGateway:
+    binaryMediaTypes:
+      - '*/*'
     metrics: true
     shouldStartNameWithService: true
   iam:
