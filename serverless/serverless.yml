@@ -142,6 +142,8 @@ resources:
             Value: ${self:custom.stage}
           - Key: Administrator
             Value: ${env:ADMINISTRATOR}
+      DependsOn:
+        - ApiGatewayRestApi
 
     ApiGatewayUsagePlanKey:
       Type: AWS::ApiGateway::UsagePlanKey
@@ -149,6 +151,9 @@ resources:
         KeyId: !Ref ApiGatewayApiKey
         KeyType: API_KEY
         UsagePlanId: !Ref ApiGatewayUsagePlan
+      DependsOn:
+        - ApiGatewayUsagePlan
+        - ApiGatewayApiKey
 
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
