@@ -47,10 +47,12 @@ jobs:
           STAGE_NAME: ${{ vars.STAGE_NAME }}
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_CLOUDFORMATION_ROLE: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
-      - name: Getting WEB_ACL_ID
+      - name: Get WEB_ACL_ID
         run: echo "WEB_ACL_ID=$(aws cloudformation describe-stacks --stack-name dr-tiedonkeruu-waf-${{ vars.STAGE_NAME }} --region us-east-1 --query "Stacks[0].Outputs[?OutputKey=='WebAclArn'].OutputValue" --output text)" >> $GITHUB_ENV
-      - name: Generating API_KEY
+      - name: Generate API_KEY
         run: echo "API_KEY=$(openssl rand -base64 32)" >> $GITHUB_ENV
+      - name: Generate api key name postfix
+        run: echo "POSTFIX=$(openssl rand -hex 4)" >> $GITHUB_ENV
       - name: Deploy serverless
         run: npm run deploy:serverless 
         env:
@@ -71,4 +73,5 @@ jobs:
           VPC_ID: ${{ secrets.VPC_ID }}
           WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
           API_KEY: ${{ env.API_KEY }}
+          POSTFIX: ${{ env.POSTFIX }}
           ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}

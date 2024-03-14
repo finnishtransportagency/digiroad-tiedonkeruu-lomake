@@ -117,7 +117,8 @@ resources:
     ApiGatewayApiKey:
       Type: AWS::ApiGateway::ApiKey
       Properties:
-        Name: ${self:service}-${self:custom.stage}-api-key
+        # POSTFIX in Name is used to create unique names every run because existing API keys cannot be updated
+        Name: ${self:service}-${self:custom.stage}-key-${env:POSTFIX}
         Enabled: true
         Value: ${self:custom.apiKey}
         Tags:
@@ -152,8 +153,8 @@ resources:
         KeyType: API_KEY
         UsagePlanId: !Ref ApiGatewayUsagePlan
       DependsOn:
-        - ApiGatewayUsagePlan
         - ApiGatewayApiKey
+        - ApiGatewayUsagePlan
 
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
