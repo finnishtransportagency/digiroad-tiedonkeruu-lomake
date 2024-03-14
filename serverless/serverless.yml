@@ -21,9 +21,10 @@ custom:
   subnetId1: ${env:offline.SUBNET_ID_1, ssm:${env:SUBNET_ID_1}}
   subnetId2: ${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}
   recaptchaSecret: ${env:offline.RECAPTCHA_SECRET, ssm:${env:RECAPTCHA_SECRET}}
-  virusScanBucket: dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting
+  virusScanBucket: ${self:service}-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
+  apiKey: ${env:API_KEY}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
@@ -43,17 +44,18 @@ provider:
     subnetIds:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
-  http:
+  endpointType: REGIONAL
+  apiGateway:
     metrics: true
     shouldStartNameWithService: true
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
   stackTags:
-    Name: dr-tiedonkeruu-${self:custom.stage}
+    Name: ${self:service}-${self:custom.stage}
     Environment: ${self:custom.stage}
     Administrator: ${env:ADMINISTRATOR}
   tags:
-    Name: dr-tiedonkeruu-${self:custom.stage}
+    Name: ${self:service}-${self:custom.stage}
     Environment: ${self:custom.stage}
     Administrator: ${env:ADMINISTRATOR}
 
@@ -74,6 +76,7 @@ functions:
       - http:
           path: /api/postData
           method: post
+          private: true
           cors:
             origin:
               - ${env:FRONTEND_URL}
@@ -111,11 +114,41 @@ functions:
 
 resources:
   Resources:
-    ApiGatewayRestApi:
-      Type: AWS::ApiGateway::RestApi
+    ApiGatewayApiKey:
+      Type: AWS::ApiGateway::ApiKey
       Properties:
-        BinaryMediaTypes:
-          - '*/*'
+        Name: ${self:service}-${self:custom.stage}-api-key
+        Enabled: true
+        Value: ${self:custom.apiKey}
+        Tags:
+          - Key: Name
+            Value: ${self:service}-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
+
+    ApiGatewayUsagePlan:
+      Type: AWS::ApiGateway::UsagePlan
+      Properties:
+        ApiStages:
+          - ApiId: !Ref ApiGatewayRestApi
+            Stage: ${self:custom.stage}
+        UsagePlanName: ${self:service}-${self:custom.stage}-usage-plan
+        Tags:
+          - Key: Name
+            Value: ${self:service}-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
+
+    ApiGatewayUsagePlanKey:
+      Type: AWS::ApiGateway::UsagePlanKey
+      Properties:
+        KeyId: !Ref ApiGatewayApiKey
+        KeyType: API_KEY
+        UsagePlanId: !Ref ApiGatewayUsagePlan
 
     HandlePostLogGroup:
       Type: AWS::Logs::LogGroup
@@ -123,7 +156,7 @@ resources:
         RetentionInDays: 180
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -135,7 +168,7 @@ resources:
         RetentionInDays: 180
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -147,7 +180,7 @@ resources:
         TopicName: DrTiedonkeruuAlarmTopic
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -188,7 +221,7 @@ resources:
                   - Arn
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -228,17 +261,17 @@ resources:
             - ''
             - - 'arn:'
               - Ref: AWS::Partition
-              - ':s3:::dr-tiedonkeruu-${self:custom.stage}-virus-scanner-hosting'
+              - ':s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting'
         SourceAccount:
           Ref: AWS::AccountId
 
     FrontendS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: dr-tiedonkeruu-${self:custom.stage}-frontend-hosting
+        BucketName: ${self:service}-${self:custom.stage}-frontend-hosting
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
@@ -300,6 +333,9 @@ resources:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
+              OriginCustomHeaders:
+                - HeaderName: X-Api-Key
+                  HeaderValue: ${self:custom.apiKey}
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
@@ -326,7 +362,7 @@ resources:
           WebACLId: ${env:WEB_ACL_ID}
         Tags:
           - Key: Name
-            Value: dr-tiedonkeruu-${self:custom.stage}
+            Value: ${self:service}-${self:custom.stage}
           - Key: Environment
             Value: ${self:custom.stage}
           - Key: Administrator
