@@ -1,5 +1,5 @@
 service: dr-tiedonkeruu
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 useDotenv: true
 
@@ -44,12 +44,24 @@ provider:
     subnetIds:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
-  endpointType: REGIONAL
+  endpointType: PRIVATE
+  # vpcEndpointIds:
+  #   - ${env:VPC_ENDPOINT_ID}
   apiGateway:
     binaryMediaTypes:
-      - '*/*'
+      - "*/*"
     metrics: true
     shouldStartNameWithService: true
+    resourcePolicy:
+      - Effect: Allow
+        Principal: "*"
+        Action: execute-api:Invoke
+        Resource:
+          - execute-api:/*/*/*
+        Condition:
+          IpAddress:
+            aws:SourceVpce:
+              - "vpce-"
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
   stackTags:
@@ -208,10 +220,10 @@ resources:
                 - s3:PutObjectTagging
               Resource:
                 Fn::Join:
-                  - ''
-                  - - 'arn:aws:s3:::'
+                  - ""
+                  - - "arn:aws:s3:::"
                     - !Ref S3BucketDrtiedonkeruuvirusscannerhosting
-                    - '/*'
+                    - "/*"
 
     InvokeSendEmailPermissionVirusScanS3:
       Type: AWS::Lambda::Permission
@@ -224,10 +236,10 @@ resources:
         Principal: s3.amazonaws.com
         SourceArn:
           Fn::Join:
-            - ''
-            - - 'arn:'
+            - ""
+            - - "arn:"
               - Ref: AWS::Partition
-              - ':s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting'
+              - ":s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting"
         SourceAccount:
           Ref: AWS::AccountId
 
@@ -247,7 +259,7 @@ resources:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: 'DRTiedonkeruu Frontend Origin Access Identity'
+          Comment: "DRTiedonkeruu Frontend Origin Access Identity"
 
     FrontendS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -265,10 +277,10 @@ resources:
               Action: s3:GetObject
               Resource:
                 Fn::Join:
-                  - ''
-                  - - 'arn:aws:s3:::'
+                  - ""
+                  - - "arn:aws:s3:::"
                     - !Ref FrontendS3Bucket
-                    - '/*'
+                    - "/*"
 
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
@@ -284,17 +296,17 @@ resources:
             - Id: S3Origin
               DomainName:
                 Fn::Join:
-                  - ''
+                  - ""
                   - - !Ref FrontendS3Bucket
-                    - '.s3-${env:REGION}.amazonaws.com'
+                    - ".s3-${env:REGION}.amazonaws.com"
               S3OriginConfig:
-                OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
+                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${FrontendS3OAI}"
             - Id: ApiGatewayOrigin
               DomainName:
                 Fn::Join:
-                  - ''
+                  - ""
                   - - !Ref ApiGatewayRestApi
-                    - '.execute-api.${env:REGION}.amazonaws.com'
+                    - ".execute-api.${env:REGION}.amazonaws.com"
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
@@ -309,7 +321,7 @@ resources:
             ViewerProtocolPolicy: https-only
           CacheBehaviors:
             - TargetOriginId: ApiGatewayOrigin
-              PathPattern: '/${self:custom.stage}/api/*'
+              PathPattern: "/${self:custom.stage}/api/*"
               ViewerProtocolPolicy: https-only
               # This policy includes all values (headers, cookies, and query strings) from the viewer request.
               # OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # Managed-AllViewer
@@ -380,12 +392,12 @@ resources:
 
   Outputs:
     FrontendS3BucketName:
-      Description: 'Name of the frontend S3 bucket'
+      Description: "Name of the frontend S3 bucket"
       Value: !Ref FrontendS3Bucket
     CloudFrontDistributionUrl:
-      Description: 'URL of the CloudFront distribution for the frontend'
+      Description: "URL of the CloudFront distribution for the frontend"
       Value:
         Fn::Join:
-          - ''
-          - - 'https://'
+          - ""
+          - - "https://"
             - !GetAtt CloudFrontDistribution.DomainName
