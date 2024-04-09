@@ -25,7 +25,7 @@ custom:
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
   acmCertificateArn: ${env:offline.ACM_CERTIFICATE_ARN, ssm:${env:ACM_CERTIFICATE_ARN}}
-  apiKey: ${env:API_KEY}
+  proxy: ${env:offline.PROXY, ssm:${env:PROXY}}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
       localDir: ui
@@ -45,12 +45,6 @@ provider:
     subnetIds:
       - ${self:custom.subnetId1}
       - ${self:custom.subnetId2}
-  endpointType: REGIONAL
-  apiGateway:
-    binaryMediaTypes:
-      - '*/*'
-    metrics: true
-    shouldStartNameWithService: true
   iam:
     deploymentRole: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}
   stackTags:
@@ -76,19 +70,6 @@ functions:
       RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
-      - http:
-          path: /api/postData
-          method: post
-          private: true
-          cors:
-            origin:
-              - ${env:DOMAIN}
-              - ${env:ALTERNATE_DOMAIN}
-            headers:
-              - g-recaptcha-response
-            methods:
-              - OPTIONS
-              - POST
       - alb:
           listenerArn: !Ref Listener
           priority: 1
@@ -309,26 +290,19 @@ resources:
                     - '.s3-${env:REGION}.amazonaws.com'
               S3OriginConfig:
                 OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
-            - Id: ApiGatewayOrigin
-              DomainName:
-                Fn::Join:
-                  - ''
-                  - - !Ref ApiGatewayRestApi
-                    - '.execute-api.${env:REGION}.amazonaws.com'
+            - id: DmzAlbOrigin
+              DomainName: ${self:custom.proxy}
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
                   - TLSv1.2
-              OriginCustomHeaders:
-                - HeaderName: X-Api-Key
-                  HeaderValue: ${self:custom.apiKey}
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
             ViewerProtocolPolicy: https-only
           CacheBehaviors:
-            - TargetOriginId: ApiGatewayOrigin
+            - TargetOriginId: DmzAlbOrigin
               PathPattern: '/${self:custom.stage}/api/*'
               ViewerProtocolPolicy: https-only
               # This policy includes all values (headers, cookies, and query strings) from the viewer request.
@@ -354,58 +328,13 @@ resources:
           - Key: Administrator
             Value: ${env:ADMINISTRATOR}
 
-    ApiGatewayApiKey:
-      Type: AWS::ApiGateway::ApiKey
-      Properties:
-        # POSTFIX in Name is used to create unique names every run because existing API keys cannot be updated
-        Name: ${self:service}-${self:custom.stage}-key-${env:POSTFIX}
-        Enabled: true
-        Value: ${self:custom.apiKey}
-        Tags:
-          - Key: Name
-            Value: ${self:service}-${self:custom.stage}
-          - Key: Environment
-            Value: ${self:custom.stage}
-          - Key: Administrator
-            Value: ${env:ADMINISTRATOR}
-
-    ApiGatewayUsagePlan:
-      Type: AWS::ApiGateway::UsagePlan
-      Properties:
-        ApiStages:
-          - ApiId: !Ref ApiGatewayRestApi
-            Stage: ${self:custom.stage}
-        UsagePlanName: ${self:service}-${self:custom.stage}-usage-plan
-        Tags:
-          - Key: Name
-            Value: ${self:service}-${self:custom.stage}
-          - Key: Environment
-            Value: ${self:custom.stage}
-          - Key: Administrator
-            Value: ${env:ADMINISTRATOR}
-      DependsOn:
-        - ApiGatewayRestApi
-        # Trying to make sure that the API key is not created before the API Gateway stage
-        - CloudFrontDistribution
-
-    ApiGatewayUsagePlanKey:
-      Type: AWS::ApiGateway::UsagePlanKey
-      Properties:
-        KeyId: !Ref ApiGatewayApiKey
-        KeyType: API_KEY
-        UsagePlanId: !Ref ApiGatewayUsagePlan
-      DependsOn:
-        - ApiGatewayApiKey
-        - ApiGatewayUsagePlan
-
     Alb:
       Type: AWS::ElasticLoadBalancingV2::LoadBalancer
       Properties:
-        Name: !Sub 'dr-tiedonkeruu-alb-${self:custom.stage}'
+        Name: !Sub '${self:service}-alb-${self:custom.stage}'
         Scheme: internal
         SecurityGroups:
           - ${self:custom.securityGroupId}
-          # - !Sub "{{resolve:ssm:/${NamePrefix}-${EnvironmentName}/cachet_app_key}}"
         Subnets:
           - ${self:custom.subnetId1}
           - ${self:custom.subnetId2}
