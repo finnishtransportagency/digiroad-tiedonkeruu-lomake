@@ -303,7 +303,7 @@ resources:
             ViewerProtocolPolicy: https-only
           CacheBehaviors:
             - TargetOriginId: DmzAlbOrigin
-              PathPattern: '/${self:custom.stage}/api/*'
+              PathPattern: '/api/*'
               ViewerProtocolPolicy: https-only
               # This policy includes all values (headers, cookies, and query strings) from the viewer request.
               # OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # Managed-AllViewer
