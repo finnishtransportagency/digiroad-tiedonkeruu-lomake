@@ -24,6 +24,7 @@ custom:
   virusScanBucket: ${self:service}-${self:custom.stage}-virus-scanner-hosting
   virusScanLambda: ${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}
   virusScanRole: ${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}
+  acmCertificateArn: ${env:offline.ACM_CERTIFICATE_ARN, ssm:${env:ACM_CERTIFICATE_ARN}}
   apiKey: ${env:API_KEY}
   s3Sync:
     - bucketNameKey: FrontendS3BucketName
@@ -80,8 +81,7 @@ functions:
           method: post
           private: true
           cors:
-            origin:
-              - ${env:FRONTEND_URL}
+            origin: [${env:FRONTEND_URL}]
             headers:
               - g-recaptcha-response
             methods:
@@ -282,6 +282,11 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
+          Aliases: [${env:FRONTEND_URL}]
+          ViewerCertificate:
+            AcmCertificateArn: ${self:custom.acmCertificateArn}
+            MinimumProtocolVersion: TLSv1.2_2019
+            SslSupportMethod: sni-only
           PriceClass: PriceClass_100 # Use only North America and Europe
           Restrictions:
             GeoRestriction:

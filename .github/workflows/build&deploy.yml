@@ -75,3 +75,4 @@ jobs:
           API_KEY: ${{ env.API_KEY }}
           POSTFIX: ${{ env.POSTFIX }}
           ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}
+          ACM_CERTIFICATE_ARN: ${{ secrets.ACM_CERTIFICATE_ARN }}
