@@ -81,7 +81,7 @@ functions:
           method: post
           private: true
           cors:
-            origin: [${env:FRONTEND_URL}]
+            origin: ["${env:FRONTEND_URL}"]
             headers:
               - g-recaptcha-response
             methods:
@@ -282,7 +282,7 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          Aliases: [${env:FRONTEND_URL}]
+          Aliases: ["${env:FRONTEND_URL}"]
           ViewerCertificate:
             AcmCertificateArn: ${self:custom.acmCertificateArn}
             MinimumProtocolVersion: TLSv1.2_2019
