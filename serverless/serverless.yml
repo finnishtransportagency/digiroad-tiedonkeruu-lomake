@@ -290,7 +290,7 @@ resources:
                     - '.s3-${env:REGION}.amazonaws.com'
               S3OriginConfig:
                 OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
-            - id: DmzAlbOrigin
+            - Id: DmzAlbOrigin
               DomainName: ${self:custom.proxy}
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
