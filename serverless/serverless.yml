@@ -282,7 +282,7 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          Aliases: ["${env:FRONTEND_URL}"]
+          CNAMEs: ["${env:FRONTEND_URL}"]
           ViewerCertificate:
             AcmCertificateArn: ${self:custom.acmCertificateArn}
             MinimumProtocolVersion: TLSv1.2_2019
