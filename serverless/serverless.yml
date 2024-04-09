@@ -1,5 +1,5 @@
 service: dr-tiedonkeruu
-frameworkVersion: "3"
+frameworkVersion: '3'
 
 useDotenv: true
 
@@ -48,7 +48,7 @@ provider:
   endpointType: REGIONAL
   apiGateway:
     binaryMediaTypes:
-      - "*/*"
+      - '*/*'
     metrics: true
     shouldStartNameWithService: true
   iam:
@@ -81,7 +81,9 @@ functions:
           method: post
           private: true
           cors:
-            origin: ["${env:FRONTEND_URL}"]
+            origin:
+              - ${env:DOMAIN}
+              - ${env:ALTERNATE_DOMAIN}
             headers:
               - g-recaptcha-response
             methods:
@@ -216,10 +218,10 @@ resources:
                 - s3:PutObjectTagging
               Resource:
                 Fn::Join:
-                  - ""
-                  - - "arn:aws:s3:::"
+                  - ''
+                  - - 'arn:aws:s3:::'
                     - !Ref S3BucketDrtiedonkeruuvirusscannerhosting
-                    - "/*"
+                    - '/*'
 
     InvokeSendEmailPermissionVirusScanS3:
       Type: AWS::Lambda::Permission
@@ -232,10 +234,10 @@ resources:
         Principal: s3.amazonaws.com
         SourceArn:
           Fn::Join:
-            - ""
-            - - "arn:"
+            - ''
+            - - 'arn:'
               - Ref: AWS::Partition
-              - ":s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting"
+              - ':s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting'
         SourceAccount:
           Ref: AWS::AccountId
 
@@ -255,7 +257,7 @@ resources:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: "DRTiedonkeruu Frontend Origin Access Identity"
+          Comment: 'DRTiedonkeruu Frontend Origin Access Identity'
 
     FrontendS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -273,16 +275,18 @@ resources:
               Action: s3:GetObject
               Resource:
                 Fn::Join:
-                  - ""
-                  - - "arn:aws:s3:::"
+                  - ''
+                  - - 'arn:aws:s3:::'
                     - !Ref FrontendS3Bucket
-                    - "/*"
+                    - '/*'
 
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          CNAMEs: ["${env:FRONTEND_URL}"]
+          CNAMEs:
+            - ${env:DOMAIN}
+            - ${env:ALTERNATE_DOMAIN}
           ViewerCertificate:
             AcmCertificateArn: ${self:custom.acmCertificateArn}
             MinimumProtocolVersion: TLSv1.2_2019
@@ -297,17 +301,17 @@ resources:
             - Id: S3Origin
               DomainName:
                 Fn::Join:
-                  - ""
+                  - ''
                   - - !Ref FrontendS3Bucket
-                    - ".s3-${env:REGION}.amazonaws.com"
+                    - '.s3-${env:REGION}.amazonaws.com'
               S3OriginConfig:
-                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${FrontendS3OAI}"
+                OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
             - Id: ApiGatewayOrigin
               DomainName:
                 Fn::Join:
-                  - ""
+                  - ''
                   - - !Ref ApiGatewayRestApi
-                    - ".execute-api.${env:REGION}.amazonaws.com"
+                    - '.execute-api.${env:REGION}.amazonaws.com'
               CustomOriginConfig:
                 OriginProtocolPolicy: https-only
                 OriginSSLProtocols:
@@ -322,7 +326,7 @@ resources:
             ViewerProtocolPolicy: https-only
           CacheBehaviors:
             - TargetOriginId: ApiGatewayOrigin
-              PathPattern: "/${self:custom.stage}/api/*"
+              PathPattern: '/${self:custom.stage}/api/*'
               ViewerProtocolPolicy: https-only
               # This policy includes all values (headers, cookies, and query strings) from the viewer request.
               # OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # Managed-AllViewer
@@ -394,7 +398,7 @@ resources:
     Alb:
       Type: AWS::ElasticLoadBalancingV2::LoadBalancer
       Properties:
-        Name: !Sub "dr-tiedonkeruu-alb-${self:custom.stage}"
+        Name: !Sub 'dr-tiedonkeruu-alb-${self:custom.stage}'
         Scheme: internal
         SecurityGroups:
           - ${self:custom.securityGroupId}
@@ -416,21 +420,21 @@ resources:
         DefaultActions:
           - Type: fixed-response
             FixedResponseConfig:
-              ContentType: "text/plain"
-              MessageBody: "Not found."
-              StatusCode: "404"
+              ContentType: 'text/plain'
+              MessageBody: 'Not found.'
+              StatusCode: '404'
         LoadBalancerArn: !Ref Alb
         Port: 80
         Protocol: HTTP
 
   Outputs:
     FrontendS3BucketName:
-      Description: "Name of the frontend S3 bucket"
+      Description: 'Name of the frontend S3 bucket'
       Value: !Ref FrontendS3Bucket
     CloudFrontDistributionUrl:
-      Description: "URL of the CloudFront distribution for the frontend"
+      Description: 'URL of the CloudFront distribution for the frontend'
       Value:
         Fn::Join:
-          - ""
-          - - "https://"
+          - ''
+          - - 'https://'
             - !GetAtt CloudFrontDistribution.DomainName
