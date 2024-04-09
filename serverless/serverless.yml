@@ -284,12 +284,15 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
+          Aliases:
+            - ${env:DOMAIN}
+            - ${env:ALTERNATE_DOMAIN}
           CNAMEs:
             - ${env:DOMAIN}
             - ${env:ALTERNATE_DOMAIN}
           ViewerCertificate:
             AcmCertificateArn: ${self:custom.acmCertificateArn}
-            MinimumProtocolVersion: TLSv1.2_2019
+            MinimumProtocolVersion: TLSv1.2_2021
             SslSupportMethod: sni-only
           PriceClass: PriceClass_100 # Use only North America and Europe
           Restrictions:
