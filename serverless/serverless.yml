@@ -1,5 +1,5 @@
 service: dr-tiedonkeruu
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 useDotenv: true
 
@@ -70,6 +70,14 @@ functions:
       RECAPTCHA_SECRET: ${self:custom.recaptchaSecret}
       VIRUS_SCAN_BUCKET: ${self:custom.virusScanBucket}
     events:
+      - alb:
+          listenerArn: !Ref Listener
+          priority: 1
+          conditions:
+            path: /api/postData
+            method:
+              - OPTIONS
+              - POST
       - alb:
           listenerArn: !Ref Listener
           priority: 1
@@ -199,10 +207,10 @@ resources:
                 - s3:PutObjectTagging
               Resource:
                 Fn::Join:
-                  - ''
-                  - - 'arn:aws:s3:::'
+                  - ""
+                  - - "arn:aws:s3:::"
                     - !Ref S3BucketDrtiedonkeruuvirusscannerhosting
-                    - '/*'
+                    - "/*"
 
     InvokeSendEmailPermissionVirusScanS3:
       Type: AWS::Lambda::Permission
@@ -215,10 +223,10 @@ resources:
         Principal: s3.amazonaws.com
         SourceArn:
           Fn::Join:
-            - ''
-            - - 'arn:'
+            - ""
+            - - "arn:"
               - Ref: AWS::Partition
-              - ':s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting'
+              - ":s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting"
         SourceAccount:
           Ref: AWS::AccountId
 
@@ -238,7 +246,7 @@ resources:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: 'DRTiedonkeruu Frontend Origin Access Identity'
+          Comment: "DRTiedonkeruu Frontend Origin Access Identity"
 
     FrontendS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -256,10 +264,10 @@ resources:
               Action: s3:GetObject
               Resource:
                 Fn::Join:
-                  - ''
-                  - - 'arn:aws:s3:::'
+                  - ""
+                  - - "arn:aws:s3:::"
                     - !Ref FrontendS3Bucket
-                    - '/*'
+                    - "/*"
 
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
@@ -285,9 +293,9 @@ resources:
             - Id: S3Origin
               DomainName:
                 Fn::Join:
-                  - ''
+                  - ""
                   - - !Ref FrontendS3Bucket
-                    - '.s3-${env:REGION}.amazonaws.com'
+                    - ".s3-${env:REGION}.amazonaws.com"
               S3OriginConfig:
                 OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${FrontendS3OAI}'
             - Id: DmzAlbOrigin
@@ -359,14 +367,46 @@ resources:
         Port: 80
         Protocol: HTTP
 
+    Alb:
+      Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+      Properties:
+        Name: !Sub "dr-tiedonkeruu-alb-${self:custom.stage}"
+        Scheme: internal
+        SecurityGroups:
+          - ${self:custom.securityGroupId}
+          # - !Sub "{{resolve:ssm:/${NamePrefix}-${EnvironmentName}/cachet_app_key}}"
+        Subnets:
+          - ${self:custom.subnetId1}
+          - ${self:custom.subnetId2}
+        Tags:
+          - Key: Name
+            Value: ${self:service}-${self:custom.stage}
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Administrator
+            Value: ${env:ADMINISTRATOR}
+
+    Listener:
+      Type: AWS::ElasticLoadBalancingV2::Listener
+      Properties:
+        DefaultActions:
+          - Type: fixed-response
+            FixedResponseConfig:
+              ContentType: "text/plain"
+              MessageBody: "Not found."
+              StatusCode: "404"
+        LoadBalancerArn: !Ref Alb
+        Port: 80
+        Protocol: HTTP
+
   Outputs:
     FrontendS3BucketName:
-      Description: 'Name of the frontend S3 bucket'
+      Description: "Name of the frontend S3 bucket"
       Value: !Ref FrontendS3Bucket
     CloudFrontDistributionUrl:
-      Description: 'URL of the CloudFront distribution for the frontend'
+      Description: "URL of the CloudFront distribution for the frontend"
       Value:
         Fn::Join:
-          - ''
-          - - 'https://'
+          - ""
+          - - "https://"
             - !GetAtt CloudFrontDistribution.DomainName
