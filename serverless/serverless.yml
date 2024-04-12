@@ -304,7 +304,7 @@ resources:
           CacheBehaviors:
             - TargetOriginId: DmzAlbOrigin
               PathPattern: '/api/*'
-              ViewerProtocolPolicy: https-only
+              ViewerProtocolPolicy: redirect-to-https
               # This policy includes all values (headers, cookies, and query strings) from the viewer request.
               OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3 # Managed-AllViewer
               # This policy does _not_ include the Host header from the viewer request.
