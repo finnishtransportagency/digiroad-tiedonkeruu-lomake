@@ -38,10 +38,6 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	const [municipalitySuggestions, setMunicipalitySuggestions] = useState<string[]>([])
 
 	useEffect(() => {
-		if (!(i18n.language in resources)) {
-			console.warn(`Language ${i18n.language} not supported! Defaulting to Finnish.`)
-			i18n.changeLanguage('fi')
-		}
 		// Refresh reCaptcha token every 110 seconds (token expires after 120 seconds)
 		const interval: NodeJS.Timer = setInterval(() => {
 			setRefreshReCaptcha(r => !r)
