@@ -16,6 +16,19 @@ export const handler = async (
   _callback: APIGatewayProxyCallback
 ) => {
   try {
+    // Handle OPTIONS request
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': 'https://katuhanketest.testivaylapilvi.fi',
+          'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
+          'Access-Control-Allow-Headers': 'Content-Type, g-recaptcha-response',
+        },
+        body: '',
+      }
+    }
+
     // Verify body exists
     if (event.body === null) {
       console.error('Bad Request: Missing body')

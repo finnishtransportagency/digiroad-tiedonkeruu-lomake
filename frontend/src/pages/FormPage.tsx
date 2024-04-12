@@ -19,7 +19,7 @@ import Container from '../components/Container'
 import Heading from '../components/Heading'
 import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
 import httpService from '../services/httpService'
-import { apiURL, stage } from '../config'
+import { apiURL } from '../config'
 import { resources } from '../i18n/config'
 import municipalities from '../i18n/municipalities'
 
@@ -73,7 +73,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 			})
 		formData.append('description', values.description)
 
-		if (await httpService.post(`${apiURL}/${stage}/api/postData`, formData, reCaptchaToken)) {
+		if (await httpService.post(`${apiURL}/api/postData`, formData, reCaptchaToken)) {
 			// Successfull submit
 			resetAllInputs(actions.resetForm)
 			setToastProps({ $visible: true, message: t('form.submit_success'), type: 'success' })

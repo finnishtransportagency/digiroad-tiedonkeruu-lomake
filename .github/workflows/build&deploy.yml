@@ -58,7 +58,8 @@ jobs:
         env:
           STAGE_NAME: ${{ vars.STAGE_NAME }}
           REGION: ${{ vars.REGION }}
-          FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+          DOMAIN: ${{ vars.DOMAIN }}
+          ALTERNATE_DOMAIN: ${{ vars.ALTERNATE_DOMAIN }}
           SMTP_SENDER: ${{ vars.SMTP_SENDER }}
           SMTP_RECIPIENT: ${{ vars.SMTP_RECIPIENT }}
           SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}
@@ -73,5 +74,6 @@ jobs:
           VPC_ID: ${{ secrets.VPC_ID }}
           WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
           API_KEY: ${{ env.API_KEY }}
-          POSTFIX: ${{ env.POSTFIX }}
+          PROXY: ${{ secrets.PROXY }}
           ADMINISTRATOR: ${{ secrets.ADMINISTRATOR }}
+          ACM_CERTIFICATE_ARN: ${{ secrets.ACM_CERTIFICATE_ARN }}
