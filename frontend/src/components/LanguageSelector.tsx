@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { styled } from 'styled-components'
 import Button from './Button'
+import { resources } from '../i18n/config'
 
 const languages = [
 	{ label: 'suomeksi', value: 'fi' },
@@ -35,7 +36,13 @@ const LanguageButtonContainer = styled.div`
 
 const LanguageSelector = () => {
 	const { i18n } = useTranslation()
-	const [selectedOption, setSelected] = useState<LanguageValues>(i18n.language as LanguageValues)
+	const defaultLanguage: LanguageValues = useMemo(() => {
+		if (i18n.language in resources) return i18n.language as LanguageValues
+		console.warn(`Unsupported language ${i18n.language}, falling back to fi`)
+		i18n.changeLanguage('fi')
+		return 'fi'
+	}, [i18n])
+	const [selectedOption, setSelected] = useState<LanguageValues>(defaultLanguage)
 
 	const handleOptionChange = (value: LanguageValues) => {
 		setSelected(value)

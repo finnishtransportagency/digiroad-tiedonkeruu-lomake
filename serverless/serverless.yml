@@ -300,7 +300,7 @@ resources:
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
-            ViewerProtocolPolicy: https-only
+            ViewerProtocolPolicy: redirect-to-https
           CacheBehaviors:
             - TargetOriginId: DmzAlbOrigin
               PathPattern: '/api/*'

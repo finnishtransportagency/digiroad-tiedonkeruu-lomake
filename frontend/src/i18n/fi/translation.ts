@@ -15,7 +15,7 @@ const fi = {
 		submit_success: 'Lomake lähetetty onnistuneesti!',
 	},
 	tooltips: {
-		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 4MB',
+		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 4MB. Lisää kaikki liitetiedostot yhdelläkertaa!',
 	},
 	errors: {
 		reporter: {
