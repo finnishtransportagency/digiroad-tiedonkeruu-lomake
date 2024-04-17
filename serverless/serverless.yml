@@ -9,11 +9,15 @@ plugins:
   - serverless-s3-local
   - serverless-offline
   - serverless-s3-sync
+  - serverless-aws-lambda
 
 custom:
   stage: ${opt:stage, 'dev'}
   serverless-offline:
     httpPort: 3003
+  serverless-aws-lambda:
+    port: 3004
+    watch: true
   s3: # serverless-s3-local configuration
     address: 127.0.0.1
     directory: ./s3rver

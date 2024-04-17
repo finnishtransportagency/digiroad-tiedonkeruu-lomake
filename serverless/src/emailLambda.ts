@@ -3,7 +3,7 @@ import reportService from './services/reportService'
 import emailService from './services/emailService'
 
 export const handler = async (event: S3Event) => {
-  console.log('Email lamda triggered by:\n', event.Records[0].s3.object.key)
+  console.log('Email lamda triggered by tagging of:\n', event.Records[0].s3.object.key)
 
   const scannedReport = await reportService.getScannedReport(event.Records[0].s3)
 

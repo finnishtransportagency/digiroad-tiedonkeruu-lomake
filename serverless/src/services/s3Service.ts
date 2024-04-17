@@ -58,7 +58,7 @@ const getFile = async (bucket: string, objectKey: string): Promise<Report['files
   const byteArray = await s3Response.Body?.transformToByteArray()
 
   if (!byteArray) {
-    console.error('File not found: ', objectKey)
+    console.error(`File not found: ${objectKey}\nFrom bucket: ${bucket}`)
     return null
   }
 
