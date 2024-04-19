@@ -18,7 +18,8 @@
 2. Provide the following environment variables in `.env`-file and remember to replace values between `<` and `>` with your own values
    ```sh
    IS_OFFLINE=true
-   FRONTEND_URL=<your-frontend-url>
+   DOMAIN=<your-frontend-url>
+   ALTERNATE_DOMAIN=<your-frontend-url>
    offline.RECAPTCHA_SECRET=<reCaptcha-secret-key>
    offline.SECURITY_GROUP_ID="sg-offlineid12345678"
    offline.SUBNET_ID_1="subnet-offlineid12345678"
