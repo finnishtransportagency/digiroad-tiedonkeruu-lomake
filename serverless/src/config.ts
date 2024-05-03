@@ -1,4 +1,5 @@
 export const offline = process.env.IS_OFFLINE === 'true'
+export const stage = process.env.STAGE || 'dev'
 export const corsHeaders = {
   'Access-Control-Allow-Origin': offline
     ? 'http://localhost:3000'

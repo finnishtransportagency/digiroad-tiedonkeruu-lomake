@@ -98,6 +98,7 @@ functions:
           - arn:aws:s3:::${self:custom.virusScanBucket}
           - arn:aws:s3:::${self:custom.virusScanBucket}/*
     environment:
+      STAGE: ${self:custom.stage}
       REGION: ${env:REGION}
       SMTP_CREDENTIALS_NAME: ${env:SMTP_CREDENTIALS_NAME}
       SMTP_ENDPOINT: email-smtp.${env:REGION}.amazonaws.com
