@@ -56,11 +56,15 @@ const schema = z.object({
 	files: z
 		.array(
 			z.object({
-				filename: z
-					.string()
-					.refine(filename => ACCEPTED_FILE_TYPES.includes(filename.split('.').pop() ?? ''), {
-						message: 'Missing filename',
-					}),
+				filename: z.string().refine(
+					filename => {
+						console.log('filename:', filename)
+						return ACCEPTED_FILE_TYPES.includes(filename.split('.').pop() ?? '')
+					},
+					{
+						message: 'Invalid file extension',
+					},
+				),
 				contentType: z.string().optional(),
 				content: z.instanceof(Buffer),
 				encoding: z.string(),
