@@ -7,7 +7,7 @@ import axios from 'axios'
 import parseFormData from './lambda-multipart-parser'
 import { ZodError } from 'zod'
 import schema from './schema'
-import { reCaptchaSecret, reCaptchaVerifyURL } from './config'
+import { corsHeaders, offline, reCaptchaSecret, reCaptchaVerifyURL } from './config'
 import reportService from './services/reportService'
 
 export const handler = async (
@@ -20,11 +20,7 @@ export const handler = async (
     if (event.httpMethod === 'OPTIONS') {
       return {
         statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': 'https://katuhanketest.testivaylapilvi.fi',
-          'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
-          'Access-Control-Allow-Headers': 'Content-Type, g-recaptcha-response',
-        },
+        headers: corsHeaders,
         body: '',
       }
     }
@@ -65,7 +61,7 @@ export const handler = async (
         )
       ).data.success
     ) {
-      console.log('reCaptcha token verified')
+      console.info('reCaptcha token verified')
     } else {
       console.error('Bad Request: Invalid reCaptcha token')
       return {
@@ -81,13 +77,26 @@ export const handler = async (
     }
 
     const report = schema.validate(await parseFormData(event))
-    console.log('Validated form data:\n', report)
+    console.log(
+      'Validated form data:\n' +
+        `language: ${report.lang}\n` +
+        `reporter: ${report.reporter.substring(0, 2)}****\n` +
+        `email: ${report.email}\n` +
+        `project: ${report.project}\n` +
+        `municipality: ${report.municipality}\n` +
+        `opening date: ${report.opening_date.toISOString()}\n` +
+        `description: ${report.description}\n` +
+        `files: ${report.files.map(file => file.filename).join(', ')}`
+    )
 
-    const reportId = await reportService.sendToVirusScan(report)
-    console.log('Report sent to virus scan:\n', reportId)
+    if (!offline) {
+      const reportId = await reportService.sendToVirusScan(report)
+      console.log('Report sent to virus scan:\n', reportId)
+    }
 
     return {
       statusCode: 202,
+      headers: corsHeaders,
       body: JSON.stringify(
         {
           message: 'Form data received',
@@ -111,7 +120,7 @@ export const handler = async (
 
 const errorHandlers = (error: unknown) => {
   if (error instanceof ZodError) {
-    console.error('Error validating form data:\n', error)
+    console.error('Error while validating form data:\n', error)
     return {
       statusCode: 400,
       body: JSON.stringify(

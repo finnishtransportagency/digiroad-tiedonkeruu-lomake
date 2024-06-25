@@ -5,6 +5,7 @@ jspm_packages
 # Serverless directories
 .serverless
 .build
+.aws_lambda
 s3rver
 
 .env

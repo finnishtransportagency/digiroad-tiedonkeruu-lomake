@@ -3,7 +3,7 @@ import { ACCEPTED_FILE_TYPES, Report } from '../../schema'
 import ssmService from '../ssmService'
 import t from '../../translations'
 import template from './template'
-import { emailRecipient, emailSender, offline, smtpEndpoint } from '../../config'
+import { emailRecipient, emailSender, offline, smtpEndpoint, stage } from '../../config'
 
 type EmailOptions = {
   from: string
@@ -25,7 +25,9 @@ const constructEmail = (report: Report): EmailOptions => {
   const emailOptions: EmailOptions = {
     from: emailSender,
     to: emailRecipient,
-    subject: `${translations.title}: ${report.project}, ${report.municipality}`,
+    subject: `${(stage === 'dev' || stage === 'test') && 'TEST EMAIL!!! '}${translations.title}: ${
+      report.project
+    }, ${report.municipality}`,
     text: emailContents.text,
     html: emailContents.html,
   }
@@ -45,7 +47,9 @@ const sendEmail = async (report: Report): Promise<string> => {
   const emailOptions = constructEmail(report)
 
   if (offline) {
-    console.log('EMAIL:\n' + emailOptions.text)
+    console.log(
+      `EMAIL:\nSender: ${emailOptions.from}\nRecipient: ${emailOptions.to}\nSubject: ${emailOptions.subject}\nCONTENT:\n${emailOptions.text}\n`
+    )
     return new Promise(resolve =>
       setTimeout(() => resolve('Offline mode, not sending email'), 1000)
     )

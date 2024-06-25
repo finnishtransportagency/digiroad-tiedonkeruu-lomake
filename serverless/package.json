@@ -28,7 +28,7 @@
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^13.3.3",
     "serverless-plugin-typescript": "^2.1.5",
-    "serverless-s3-local": "^0.8.1",
+    "serverless-s3-local": "^0.8.4",
     "serverless-s3-sync": "^3.2.0",
     "typescript": "^4.7.4"
   }

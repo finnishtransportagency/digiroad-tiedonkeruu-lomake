@@ -1,19 +1,36 @@
 import { z } from 'zod'
 
-// Remember to update error messages if you change these values
 /**
  * Amazon SES supports emails with a message size of up to 40MB but
  * lambda function has a limit of 6MB for the invocation payload.
  */
-const MAX_TOTAL_FILE_SIZE = 4_200_000 // 4.2MB leaving some room for other fields
+const MAX_TOTAL_FILE_SIZE = 1_100_000 // TEMPORARY LIMIT: Something (maybe loadbalancer) limits file size... //4_200_000 // 4.2MB leaving some room for other fields
 export const ACCEPTED_FILE_TYPES = [
+	// Remember to update error messages if you change accepted file types
+	'.pdf',
+	'.dgn',
+	'.dwg',
+	'.dxf',
 	'application/pdf',
 	'application/acad',
+	'application/x-acad',
+	'application/dgn',
+	'image/vnd.dgn',
+	'application/autocad.dwg',
+	'application/dwg',
+	'application/x-invisox',
+	'image/dwg',
 	'image/vnd.dwg',
 	'image/x-dwg',
+	'vector/x-dwg',
+	'application/autocad.dxf',
 	'application/dxf',
+	'application/x-handydxf',
+	'application/x-invisox',
+	'dxf/dxf',
+	'image/dxf',
 	'image/vnd.dxf',
-	'image/vnd.dgn',
+	'image/x-dxf',
 ]
 // ^----------------------------------------------------------^
 
@@ -74,11 +91,11 @@ const schema = z.object({
 		.refine(filesObject => {
 			if (!filesObject) return true
 			if (filesObject instanceof Object) {
-				const filesArray = Object.values(filesObject)
-				return filesArray.reduce((onlyAcceptedFiles: boolean, file) => {
-					return (
-						onlyAcceptedFiles && file instanceof File && ACCEPTED_FILE_TYPES.includes(file.type)
-					)
+				return Object.values(filesObject).reduce((onlyAcceptedFiles: boolean, file) => {
+					if (!onlyAcceptedFiles || !(file instanceof File)) return false
+					let fileType = file.type
+					if (!fileType) fileType = `.${file.name.split('.').pop()}`
+					return ACCEPTED_FILE_TYPES.includes(fileType)
 				}, true)
 			}
 			return false
