@@ -15,7 +15,7 @@ const sv = {
 		submit_success: 'Formuläret har skickats!',
 	},
 	tooltips: {
-		file: 'Den bifogade filen kan vara i .pdf-, .dwg-, .dxf- eller .dgn-format. Den totala storleken på filerna får inte överstiga 4MB. Lägg till alla bilagor på en gång!',
+		file: 'Den bifogade filen kan vara i .pdf-, .dwg-, .dxf- eller .dgn-format. Den totala storleken på filerna får inte överstiga 1MB. Lägg till alla bilagor på en gång!',
 	},
 	errors: {
 		reporter: {
@@ -41,7 +41,7 @@ const sv = {
 			min: 'Öppningsdatumet måste ligga i framtiden!',
 		},
 		files: {
-			size: 'Den totala storleken på bifogade filer får inte överstiga 4 MB!',
+			size: 'Den totala storleken på bifogade filer får inte överstiga 1MB!',
 			type: 'Tillåtna filformat är: .pdf, .dwg, .dxf och .dgn',
 		},
 		submit: 'Det gick inte att skicka in formuläret!',
