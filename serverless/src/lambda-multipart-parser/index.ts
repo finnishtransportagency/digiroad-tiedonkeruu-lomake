@@ -44,7 +44,7 @@ const parse = (event: APIGatewayEvent): Promise<{ files: Array<File>; [key: stri
 			file.on('end', () => {
 				if (uploadFile.content) {
 					uploadFile.filename = filename
-					uploadFile.contentType = mimeType || `.${filename.split('.').pop()}` || ''
+					uploadFile.contentType = mimeType
 					uploadFile.encoding = encoding
 					uploadFile.fieldname = fieldname
 					result.files.push(uploadFile)

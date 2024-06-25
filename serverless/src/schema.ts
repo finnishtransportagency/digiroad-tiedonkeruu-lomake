@@ -56,10 +56,12 @@ const schema = z.object({
 	files: z
 		.array(
 			z.object({
-				filename: z.string(),
-				contentType: z
-					.enum(ACCEPTED_FILE_TYPES)
-					.refine(contentType => contentType !== undefined, { message: 'Invalid file type' }),
+				filename: z
+					.string()
+					.refine(filename => ACCEPTED_FILE_TYPES.includes(filename.split('.').pop() ?? ''), {
+						message: 'Missing filename',
+					}),
+				contentType: z.string().optional(),
 				content: z.instanceof(Buffer),
 				encoding: z.string(),
 			}),
