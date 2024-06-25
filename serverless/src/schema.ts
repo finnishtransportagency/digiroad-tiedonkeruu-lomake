@@ -59,6 +59,13 @@ const schema = z.object({
 				filename: z.string().refine(
 					filename => {
 						console.log('filename:', filename)
+						console.log('filename split:', filename.split('.'))
+						console.log('file extension:', filename.split('.').pop())
+						console.log('accepted types:', ACCEPTED_FILE_TYPES)
+						console.log(
+							'accepted types includes:',
+							ACCEPTED_FILE_TYPES.includes(filename.split('.').pop() ?? ''),
+						)
 						return ACCEPTED_FILE_TYPES.includes(filename.split('.').pop() ?? '')
 					},
 					{
