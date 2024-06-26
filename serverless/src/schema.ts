@@ -14,6 +14,7 @@ export const ACCEPTED_FILE_TYPES = [
 	'.dgn',
 	'.dwg',
 	'.dxf',
+	'.gpkg',
 	'application/pdf',
 	'application/acad',
 	'application/x-acad',
@@ -34,6 +35,7 @@ export const ACCEPTED_FILE_TYPES = [
 	'image/dxf',
 	'image/vnd.dxf',
 	'image/x-dxf',
+	'application/x-sqlite3', // To allow geopackages
 ] as [string, ...string[]]
 // ^----------------------------------------------------------^
 
