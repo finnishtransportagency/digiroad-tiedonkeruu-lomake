@@ -47,13 +47,13 @@ const sendToVirusScan = async (report: Report): Promise<string> => {
   // Upload files
   for (const file of files) {
     await s3Service.putObject(
-      virusScanBucket,
-      file.filename,
-      file.contentType,
-      file.content,
-      file.encoding,
-      reportId
-    )
+			virusScanBucket,
+			file.filename,
+			file.contentType || '',
+			file.content,
+			file.encoding,
+			reportId,
+		)
   }
 
   return reportId
