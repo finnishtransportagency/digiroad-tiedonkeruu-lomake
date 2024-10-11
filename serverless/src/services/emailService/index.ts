@@ -25,7 +25,7 @@ const constructEmail = (report: Report): EmailOptions => {
 	const emailOptions: EmailOptions = {
 		from: emailSender,
 		to: emailRecipient,
-		subject: `${stage === 'dev' || stage === 'test' ? 'TEST EMAIL!!! ' : translations.title}: ${
+		subject: `${stage === 'dev' || stage === 'test' ? 'TEST EMAIL!!! ' : ''}${translations.title}: ${
 			report.project
 		}, ${report.municipality}`,
 		text: emailContents.text,
