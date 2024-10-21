@@ -2,8 +2,6 @@ import type { AWS } from '@serverless/typescript'
 import 'dotenv/config'
 import { offline } from './src/config'
 
-type t = AWS['functions']
-
 interface ServerlessConfiguration extends AWS {
 	functions: {
 		[key: string]: Exclude<AWS['functions'], undefined>[string] & {
@@ -110,7 +108,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								method: 'options',
 							},
 						},
-				  ]
+					]
 				: [
 						{
 							alb: {
@@ -126,7 +124,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								},
 							},
 						},
-				  ],
+					],
 		},
 		sendEmail: {
 			handler: 'src/emailLambda.handler',
@@ -432,7 +430,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								},
 								S3OriginConfig: {
 									OriginAccessIdentity: {
-										Sub: 'origin-access-identity/cloudfront/${FrontendS3OAI}',
+										'Fn::Sub': 'origin-access-identity/cloudfront/${FrontendS3OAI}',
 									},
 								},
 							},
@@ -484,7 +482,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 				Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer',
 				Properties: {
 					Name: {
-						Sub: '${self:service}-alb-${self:custom.stage}',
+						'Fn::Sub': '${self:service}-alb-${self:custom.stage}',
 					},
 					Scheme: 'internal',
 					SecurityGroups: ['${self:custom.securityGroupId}'],
@@ -541,7 +539,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 						[
 							'https://',
 							{
-								GetAtt: 'CloudFrontDistribution.DomainName',
+								'Fn::GetAtt': 'CloudFrontDistribution.DomainName',
 							},
 						],
 					],
