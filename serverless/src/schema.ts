@@ -60,20 +60,20 @@ const schema = z.object({
 			z.object({
 				filename: z
 					.string()
-					.refine(filename => ACCEPTED_FILE_TYPES.includes(`.${filename.split('.').pop()}` ?? ''), {
+					.refine(filename => ACCEPTED_FILE_TYPES.includes(`.${filename.split('.').pop()}`), {
 						message: 'Invalid file extension',
 					}),
 				contentType: z.string().optional(),
 				content: z.instanceof(Buffer),
 				encoding: z.string(),
-			}),
+			})
 		)
 		.refine(
 			files =>
 				files.reduce((totalSize: number, file) => {
 					return totalSize + file.content.length
 				}, 0) <= MAX_TOTAL_FILE_SIZE,
-			`File size too large`,
+			`File size too large`
 		),
 	description: z.string().optional(),
 })
@@ -81,7 +81,7 @@ const schema = z.object({
 export type Report = z.infer<typeof schema>
 export type ReportJSON = Omit<Report, 'files'> & { files: string[] }
 
-const validate = (input: Object): Report => {
+const validate = (input: object): Report => {
 	const safeParseResult = schema.safeParse(input)
 	if (safeParseResult.success) return safeParseResult.data
 	if (safeParseResult.error.issues.filter(issue => issue.path[0] === 'lang').length > 0)

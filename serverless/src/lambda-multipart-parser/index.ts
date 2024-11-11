@@ -14,7 +14,7 @@ interface File {
  * @param event an event containing the multipart/form-data in the body
  * @return a JSON object containing unknown fields and a known field 'files' containing an array of files
  */
-const parse = (event: APIGatewayEvent): Promise<{ files: Array<File>; [key: string]: unknown }> => {
+const parse = (event: APIGatewayEvent): Promise<{ files: File[]; [key: string]: unknown }> => {
 	return new Promise((resolve, reject) => {
 		const bb = busboy({
 			headers: {

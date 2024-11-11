@@ -5,17 +5,17 @@ import t from '../../translations'
 import template from './template'
 import { emailRecipient, emailSender, offline, smtpEndpoint, stage } from '../../config'
 
-type EmailOptions = {
+interface EmailOptions {
 	from: string
 	to: string
 	subject: string
 	text: string
 	html: string
-	attachments?: Array<{
+	attachments?: {
 		filename: string
 		contentType?: (typeof ACCEPTED_FILE_TYPES)[number]
 		content: Buffer
-	}>
+	}[]
 }
 
 const constructEmail = (report: Report): EmailOptions => {
@@ -25,9 +25,9 @@ const constructEmail = (report: Report): EmailOptions => {
 	const emailOptions: EmailOptions = {
 		from: emailSender,
 		to: emailRecipient,
-		subject: `${stage === 'dev' || stage === 'test' ? 'TEST EMAIL!!! ' : ''}${translations.title}: ${
-			report.project
-		}, ${report.municipality}`,
+		subject: `${stage === 'dev' || stage === 'test' ? 'TEST EMAIL!!! ' : ''}${
+			translations.title
+		}: ${report.project}, ${report.municipality}`,
 		text: emailContents.text,
 		html: emailContents.html,
 	}
@@ -48,10 +48,10 @@ const sendEmail = async (report: Report): Promise<string> => {
 
 	if (offline) {
 		console.log(
-			`EMAIL:\nSender: ${emailOptions.from}\nRecipient: ${emailOptions.to}\nSubject: ${emailOptions.subject}\nCONTENT:\n${emailOptions.text}\n`,
+			`EMAIL:\nSender: ${emailOptions.from}\nRecipient: ${emailOptions.to}\nSubject: ${emailOptions.subject}\nCONTENT:\n${emailOptions.text}\n`
 		)
 		return new Promise(resolve =>
-			setTimeout(() => resolve('Offline mode, not sending email'), 1000),
+			setTimeout(() => resolve('Offline mode, not sending email'), 1000)
 		)
 	}
 
