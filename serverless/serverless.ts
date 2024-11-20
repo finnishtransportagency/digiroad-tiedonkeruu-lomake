@@ -1,21 +1,49 @@
 import type { AWS } from '@serverless/typescript'
 import 'dotenv/config'
-import { offline } from './src/config'
+import {
+	offline,
+	stage,
+	reCaptchaSecret,
+	securityGroupId,
+	serviceName,
+	subnetId1,
+	subnetId2,
+	virusScanArn,
+	virusScanBucket,
+} from './src/config'
+
+type FunctionWithRoles = Exclude<AWS['functions'], undefined>[string] & {
+	iamRoleStatements: Array<{
+		Effect: 'Allow' | 'Deny'
+		Action: Array<string>
+		Resource: Array<string>
+	}>
+}
 
 interface ServerlessConfiguration extends AWS {
 	functions: {
-		[key: string]: Exclude<AWS['functions'], undefined>[string] & {
-			iamRoleStatements: Array<{
-				Effect: 'Allow' | 'Deny'
-				Action: Array<string>
-				Resource: Array<string>
-			}>
-		}
+		[key: string]: FunctionWithRoles
 	}
 }
 
+const slsServiceStageStr = '${self:service}-${self:custom.stage}'
+const tags = [
+	{
+		Key: 'Name',
+		Value: slsServiceStageStr,
+	},
+	{
+		Key: 'Environment',
+		Value: '${self:custom.stage}',
+	},
+	{
+		Key: 'Administrator',
+		Value: '${env:ADMINISTRATOR}',
+	},
+] as const
+
 const serverlessConfiguration: ServerlessConfiguration = {
-	service: 'dr-tiedonkeruu',
+	service: serviceName,
 	frameworkVersion: '3',
 	useDotenv: true,
 	plugins: [
@@ -34,12 +62,11 @@ const serverlessConfiguration: ServerlessConfiguration = {
 			address: '127.0.0.1',
 			directory: './s3rver',
 		},
-		securityGroupId: '${env:offline.SECURITY_GROUP_ID, ssm:${env:SECURITY_GROUP_ID}}',
-		subnetId1: '${env:offline.SUBNET_ID_1, ssm:${env:SUBNET_ID_1}}',
-		subnetId2: '${env:offline.SUBNET_ID_2, ssm:${env:SUBNET_ID_2}}',
-		recaptchaSecret: '${env:offline.RECAPTCHA_SECRET, ssm:${env:RECAPTCHA_SECRET}}',
-		virusScanBucket: '${self:service}-${self:custom.stage}-virus-scanner-hosting',
-		virusScanLambda: '${env:offline.VIRUS_SCAN_LAMBDA, ssm:${env:VIRUS_SCAN_LAMBDA}}',
+		securityGroupId: offline ? securityGroupId : `\${ssm:${securityGroupId}}`,
+		subnetId1: offline ? subnetId1 : `\${ssm:${subnetId1}}`,
+		subnetId2: offline ? subnetId2 : `\${ssm:${subnetId2}}`,
+		recaptchaSecret: offline ? reCaptchaSecret : `\${ssm:${reCaptchaSecret}}`,
+		virusScanLambdaArn: offline ? virusScanArn : `\${ssm:${virusScanArn}}`,
 		virusScanRole: '${env:offline.VIRUS_SCAN_ROLE, ssm:${env:VIRUS_SCAN_ROLE}}',
 		acmCertificateArn: '${env:offline.ACM_CERTIFICATE_ARN, ssm:${env:ACM_CERTIFICATE_ARN}}',
 		proxy: '${env:offline.PROXY, ssm:${env:PROXY}}',
@@ -56,7 +83,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 	},
 	provider: {
 		name: 'aws',
-		stage: '${self:custom.stage}',
+		stage,
 		runtime: 'nodejs18.x',
 		region: '${env:REGION}' as 'eu-west-1',
 		vpc: {
@@ -67,32 +94,49 @@ const serverlessConfiguration: ServerlessConfiguration = {
 			deploymentRole: 'arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/${env:AWS_CLOUDFORMATION_ROLE}',
 		},
 		stackTags: {
-			Name: '${self:service}-${self:custom.stage}',
+			Name: slsServiceStageStr,
 			Environment: '${self:custom.stage}',
 			Administrator: '${env:ADMINISTRATOR}',
 		},
 		tags: {
-			Name: '${self:service}-${self:custom.stage}',
+			Name: slsServiceStageStr,
 			Environment: '${self:custom.stage}',
 			Administrator: '${env:ADMINISTRATOR}',
 		},
 	},
 	functions: {
+		presignPost: {
+			handler: 'src/presignLambda.handler',
+			iamRoleStatements: [],
+			events: offline
+				? [
+						{
+							httpApi: {
+								path: '/api/presign',
+								method: 'post',
+							},
+						},
+						{
+							httpApi: {
+								path: '/api/presign',
+								method: 'options',
+							},
+						},
+					]
+				: [],
+		},
 		handlePost: {
 			handler: 'src/postLambda.handler',
 			iamRoleStatements: [
 				{
 					Effect: 'Allow',
 					Action: ['s3:PutObject'],
-					Resource: [
-						'arn:aws:s3:::${self:custom.virusScanBucket}',
-						'arn:aws:s3:::${self:custom.virusScanBucket}/*',
-					],
+					Resource: [`arn:aws:s3:::${virusScanBucket}`, `arn:aws:s3:::${virusScanBucket}/*`],
 				},
 			],
 			environment: {
 				RECAPTCHA_SECRET: '${self:custom.recaptchaSecret}',
-				VIRUS_SCAN_BUCKET: '${self:custom.virusScanBucket}',
+				VIRUS_SCAN_BUCKET: virusScanBucket,
 			},
 			events: offline
 				? [
@@ -119,7 +163,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								conditions: {
 									path: ['/api/postData'],
 									method: ['POST', 'OPTIONS'],
-									// There is issue with serverless-offline and alb events
+									// There is a known issue with serverless-offline and alb events
 									// https://github.com/dherault/serverless-offline/issues/1771 -> https://github.com/dherault/serverless-offline/pull/1772
 								},
 							},
@@ -139,10 +183,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 				{
 					Effect: 'Allow',
 					Action: ['s3:ListBucket', 's3:GetObject', 's3:GetObjectTagging', 's3:DeleteObject'],
-					Resource: [
-						'arn:aws:s3:::${self:custom.virusScanBucket}',
-						'arn:aws:s3:::${self:custom.virusScanBucket}/*',
-					],
+					Resource: [`arn:aws:s3:::${virusScanBucket}`, `arn:aws:s3:::${virusScanBucket}/*`],
 				},
 			],
 			environment: {
@@ -152,8 +193,17 @@ const serverlessConfiguration: ServerlessConfiguration = {
 				SMTP_ENDPOINT: 'email-smtp.${env:REGION}.amazonaws.com',
 				SMTP_SENDER: '${env:SMTP_SENDER}',
 				SMTP_RECIPIENT: '${env:SMTP_RECIPIENT}',
-				VIRUS_SCAN_BUCKET: '${self:custom.virusScanBucket}',
+				VIRUS_SCAN_BUCKET: virusScanBucket,
 			},
+			/* events: [
+				{
+					schedule: {
+						name: 'SendEmailSchedule',
+						description: 'Send email with virus scan report',
+						rate: ['cron(0 3 ? * MON-FRI *)'],
+					},
+				},
+			], */
 		},
 	},
 	resources: {
@@ -162,60 +212,21 @@ const serverlessConfiguration: ServerlessConfiguration = {
 				Type: 'AWS::Logs::LogGroup',
 				Properties: {
 					RetentionInDays: 180,
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					Tags: tags,
 				},
 			},
 			SendEmailLogGroup: {
 				Type: 'AWS::Logs::LogGroup',
 				Properties: {
 					RetentionInDays: 180,
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					Tags: tags,
 				},
 			},
 			DrTiedonkeruuAlarmTopic: {
 				Type: 'AWS::SNS::Topic',
 				Properties: {
 					TopicName: 'DrTiedonkeruuAlarmTopic',
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					Tags: tags,
 				},
 			},
 			HandlePostInvocationAlarm: {
@@ -235,7 +246,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 					Dimensions: [
 						{
 							Name: 'FunctionName',
-							Value: '${self:service}-${self:custom.stage}-handlePost',
+							Value: `${slsServiceStageStr}-handlePost`,
 						},
 					],
 					AlarmActions: [
@@ -248,35 +259,46 @@ const serverlessConfiguration: ServerlessConfiguration = {
 			S3BucketDrtiedonkeruuvirusscannerhosting: {
 				Type: 'AWS::S3::Bucket',
 				Properties: {
-					BucketName: '${self:custom.virusScanBucket}',
+					BucketName: virusScanBucket,
+					LifecycleConfiguration: {
+						Rules: [
+							{
+								ExpirationInDays: 30,
+								Prefix: 'reports/',
+								Status: 'Enabled',
+							},
+							{
+								ExpirationInDays: 7,
+								Prefix: 'attachments/',
+								Status: 'Enabled',
+							},
+						],
+					},
 					NotificationConfiguration: {
 						LambdaConfigurations: [
 							{
 								Event: 's3:ObjectCreated:*',
-								Function: '${self:custom.virusScanLambda}',
+								Function: '${self:custom.virusScanLambdaArn}',
 							},
 							{
 								Event: 's3:ObjectTagging:Put',
 								Function: {
 									'Fn::GetAtt': ['SendEmailLambdaFunction', 'Arn'],
 								},
+								Filter: {
+									Key: {
+										FilterRules: [
+											{
+												Name: 'prefix',
+												Value: 'reports/',
+											},
+										],
+									},
+								},
 							},
 						],
 					},
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					Tags: tags,
 				},
 			},
 			S3BucketDrtiedonkeruuvirusscannerhostingPolicy: {
@@ -326,7 +348,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								{
 									Ref: 'AWS::Partition',
 								},
-								':s3:::${self:service}-${self:custom.stage}-virus-scanner-hosting',
+								`:s3:::${slsServiceStageStr}-virus-scanner-hosting`,
 							],
 						],
 					},
@@ -338,21 +360,8 @@ const serverlessConfiguration: ServerlessConfiguration = {
 			FrontendS3Bucket: {
 				Type: 'AWS::S3::Bucket',
 				Properties: {
-					BucketName: '${self:service}-${self:custom.stage}-frontend-hosting',
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					BucketName: `${slsServiceStageStr}-frontend-hosting`,
+					Tags: tags,
 				},
 			},
 			FrontendS3OAI: {
@@ -462,20 +471,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 						Enabled: true,
 						WebACLId: '${env:WEB_ACL_ID}',
 					},
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					Tags: tags,
 				},
 			},
 			Alb: {
@@ -487,20 +483,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 					Scheme: 'internal',
 					SecurityGroups: ['${self:custom.securityGroupId}'],
 					Subnets: ['${self:custom.subnetId1}', '${self:custom.subnetId2}'],
-					Tags: [
-						{
-							Key: 'Name',
-							Value: '${self:service}-${self:custom.stage}',
-						},
-						{
-							Key: 'Environment',
-							Value: '${self:custom.stage}',
-						},
-						{
-							Key: 'Administrator',
-							Value: '${env:ADMINISTRATOR}',
-						},
-					],
+					Tags: tags,
 				},
 			},
 			Listener: {
@@ -550,4 +533,3 @@ const serverlessConfiguration: ServerlessConfiguration = {
 }
 
 module.exports = serverlessConfiguration
-

@@ -36,7 +36,7 @@ export const ACCEPTED_FILE_TYPES = [
 ]
 // ^----------------------------------------------------------^
 
-const schema = z.object({
+const reportSchema = z.object({
 	reporter: z
 		.string({
 			required_error: 'errors.reporter.required',
@@ -117,4 +117,17 @@ export const defaultValues = {
 
 export type FormValues = typeof defaultValues
 
-export default schema
+export const presignResponseSchema = z.object({
+	url: z.string(),
+	fields: z.object({
+		bucket: z.string(),
+		'X-Amz-Algorithm': z.string(),
+		'X-Amz-Credential': z.string(),
+		'X-Amz-Date': z.string(),
+		key: z.string(),
+		Policy: z.string(),
+		'X-Amz-Signature': z.string(),
+	}),
+})
+
+export default reportSchema

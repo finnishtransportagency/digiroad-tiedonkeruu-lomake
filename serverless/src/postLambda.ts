@@ -8,8 +8,9 @@ import reportService from './services/reportService'
 
 export const handler: Handler = async event => {
 	try {
+		if (offline) console.log('Received event:\n', event)
 		// Handle OPTIONS request
-		if (event.httpMethod === 'OPTIONS') {
+		if (offline && event.requestContext.http.method === 'OPTIONS') {
 			return {
 				statusCode: 200,
 				headers: corsHeaders,
@@ -46,16 +47,13 @@ export const handler: Handler = async event => {
 			}
 		}
 		// Verify reCaptcha token
-		if (
-			(
-				await axios.post(
-					`${reCaptchaVerifyURL}?secret=${reCaptchaSecret}&response=${event.headers['g-recaptcha-response']}`
-				)
-			).data.success
-		) {
+		const recaptchaResponse = await axios.post(
+			`${reCaptchaVerifyURL}?secret=${reCaptchaSecret}&response=${event.headers['g-recaptcha-response']}`
+		)
+		if (recaptchaResponse.data.success) {
 			console.info('reCaptcha token verified')
 		} else {
-			console.error('Bad Request: Invalid reCaptcha token')
+			console.error(`Invalid reCaptcha token: ${recaptchaResponse.data['error-codes']}`)
 			return {
 				statusCode: 400,
 				body: JSON.stringify(
@@ -68,9 +66,10 @@ export const handler: Handler = async event => {
 			}
 		}
 
-		const report = schema.validate(await parseFormData(event))
+		const report = schema.validateReport(await parseFormData(event))
 		console.log(
 			'Validated form data:\n' +
+				`reportId: ${report.report_id}\n` +
 				`language: ${report.lang}\n` +
 				`reporter: ${report.reporter.substring(0, 2)}****\n` +
 				`email: ${report.email}\n` +
@@ -78,13 +77,11 @@ export const handler: Handler = async event => {
 				`municipality: ${report.municipality}\n` +
 				`opening date: ${report.opening_date.toISOString()}\n` +
 				`description: ${report.description}\n` +
-				`files: ${report.files.map(file => file.filename).join(', ')}`
+				`attachment names: ${report.attachment_names}`
 		)
 
-		if (!offline) {
-			const reportId = await reportService.sendToVirusScan(report)
-			console.log('Report sent to virus scan:\n', reportId)
-		}
+		const reportId = await reportService.saveReport(report)
+		console.log('Report sent to virus scan:\n', reportId)
 
 		return {
 			statusCode: 202,
@@ -92,14 +89,7 @@ export const handler: Handler = async event => {
 			body: JSON.stringify(
 				{
 					message: 'Form data received',
-					formData: {
-						...report,
-						files: report.files.map(file => {
-							return {
-								filename: file.filename,
-							}
-						}),
-					},
+					formData: report,
 				},
 				null,
 				2

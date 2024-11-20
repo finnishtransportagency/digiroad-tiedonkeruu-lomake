@@ -11,6 +11,7 @@ const fi = {
 		reset: 'Tyhjennä lomake',
 		reset_confirm: 'Haluatko varmasti tyhjentää lomakkeen?',
 		submit: 'Lähetä',
+		submitting_attachment: 'Lähetetään liitetiedostoa',
 		submitting: 'Lähetetään...',
 		submit_success: 'Lomake lähetetty onnistuneesti!',
 	},
@@ -18,6 +19,7 @@ const fi = {
 		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf tai .dgn. Tiedostojen yhteiskoko saa olla enintään 1MB. Lisää kaikki liitetiedostot yhdelläkertaa!',
 	},
 	errors: {
+		attachment: 'Liitetiedostojen lähetys epäonnistui',
 		reporter: {
 			required: 'Ilmoittajan nimi vaaditaan!',
 			max: 'Ilmoittajan nimi saa olla enintään 64 merkkiä pitkä!',

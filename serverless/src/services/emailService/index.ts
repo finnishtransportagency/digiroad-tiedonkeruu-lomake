@@ -1,24 +1,11 @@
 import { createTransport } from 'nodemailer'
-import { ACCEPTED_FILE_TYPES, Report } from '../../schema'
 import ssmService from '../ssmService'
 import t from '../../translations'
 import template from './template'
 import { emailRecipient, emailSender, offline, smtpEndpoint, stage } from '../../config'
+import { AttachmentArray, EmailOptions, Report, ScannedReport } from '../../types'
 
-interface EmailOptions {
-	from: string
-	to: string
-	subject: string
-	text: string
-	html: string
-	attachments?: {
-		filename: string
-		contentType?: (typeof ACCEPTED_FILE_TYPES)[number]
-		content: Buffer
-	}[]
-}
-
-const constructEmail = (report: Report): EmailOptions => {
+const constructEmail = (report: Report, files: AttachmentArray): EmailOptions => {
 	const translations = t(report.lang)
 	const emailContents = template.renderEmailContents(report, translations)
 
@@ -32,19 +19,15 @@ const constructEmail = (report: Report): EmailOptions => {
 		html: emailContents.html,
 	}
 
-	if (report.files.length > 0) {
-		emailOptions.attachments = report.files.map(file => ({
-			filename: file.filename,
-			contentType: file.contentType,
-			content: file.content,
-		}))
+	if (files.length > 0) {
+		emailOptions.attachments = files
 	}
 
 	return emailOptions
 }
 
-const sendEmail = async (report: Report): Promise<string> => {
-	const emailOptions = constructEmail(report)
+const sendEmail = async (scannedReport: ScannedReport): Promise<string> => {
+	const emailOptions = constructEmail(scannedReport.report, scannedReport.attachments)
 
 	if (offline) {
 		console.log(
