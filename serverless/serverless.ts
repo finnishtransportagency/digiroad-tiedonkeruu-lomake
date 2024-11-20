@@ -123,7 +123,22 @@ const serverlessConfiguration: ServerlessConfiguration = {
 							},
 						},
 				  ]
-				: [],
+				: [
+						{
+							alb: {
+								listenerArn: {
+									Ref: 'Listener',
+								},
+								priority: 1,
+								conditions: {
+									path: ['/api/presign'],
+									method: ['POST', 'OPTIONS'],
+									// There is a known issue with serverless-offline and alb events
+									// https://github.com/dherault/serverless-offline/issues/1771 -> https://github.com/dherault/serverless-offline/pull/1772
+								},
+							},
+						},
+				  ],
 		},
 		handlePost: {
 			handler: 'src/postLambda.handler',
@@ -159,7 +174,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								listenerArn: {
 									Ref: 'Listener',
 								},
-								priority: 1,
+								priority: 2,
 								conditions: {
 									path: ['/api/postData'],
 									method: ['POST', 'OPTIONS'],
