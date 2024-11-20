@@ -122,7 +122,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								method: 'options',
 							},
 						},
-					]
+				  ]
 				: [],
 		},
 		handlePost: {
@@ -152,7 +152,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								method: 'options',
 							},
 						},
-					]
+				  ]
 				: [
 						{
 							alb: {
@@ -168,7 +168,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								},
 							},
 						},
-					],
+				  ],
 		},
 		sendEmail: {
 			handler: 'src/emailLambda.handler',
@@ -286,8 +286,8 @@ const serverlessConfiguration: ServerlessConfiguration = {
 									'Fn::GetAtt': ['SendEmailLambdaFunction', 'Arn'],
 								},
 								Filter: {
-									Key: {
-										FilterRules: [
+									S3Key: {
+										Rules: [
 											{
 												Name: 'prefix',
 												Value: 'reports/',
