@@ -78,6 +78,9 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 						message: `${t('errors.attachment')}: ${file.name}`,
 						type: 'error',
 					})
+					setTimeout(() => {
+						setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+					}, 4000)
 					return
 				}
 				const presignData = presignResponseSchema.parse(presignResponse.response.data)

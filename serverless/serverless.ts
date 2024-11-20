@@ -129,7 +129,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								listenerArn: {
 									Ref: 'Listener',
 								},
-								priority: 1,
+								priority: 2,
 								conditions: {
 									path: ['/api/presign'],
 									method: ['POST', 'OPTIONS'],
@@ -174,7 +174,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								listenerArn: {
 									Ref: 'Listener',
 								},
-								priority: 2,
+								priority: 1,
 								conditions: {
 									path: ['/api/postData'],
 									method: ['POST', 'OPTIONS'],
