@@ -223,6 +223,13 @@ const serverlessConfiguration: ServerlessConfiguration = {
 	},
 	resources: {
 		Resources: {
+			PresignPostLogGroup: {
+				Type: 'AWS::Logs::LogGroup',
+				Properties: {
+					RetentionInDays: 180,
+					Tags: tags,
+				},
+			},
 			HandlePostLogGroup: {
 				Type: 'AWS::Logs::LogGroup',
 				Properties: {
