@@ -36,7 +36,11 @@ const saveReport = async (report: Report): Promise<string> => {
  * @example { status: 'scanned', report: Report, attachments: AttachmentArray, retrys: 0 }
  */
 const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<ScannedReportResult> => {
-	const reportId = s3Details.object.key.split('_')[0]
+	// Example key: reports/a26896ec-3693-4687-bc62-42e6e46b19f3.json
+	const reportId = (s3Details.object.key.match(
+		/^reports\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).json$/
+	) ?? [null])[0]
+	if (!reportId) return { status: 'notFound' }
 	let reportJSON: Report | null = null
 	try {
 		reportJSON = await s3Service.getReportJSON(virusScanBucket, `reports/${reportId}.json`)
@@ -74,6 +78,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	}
 	schema.validateFiles(cleanFiles)
 
+	await deleteReport(reportId, scannedAttachments.cleanFileNames)
 	return {
 		status: 'scanned',
 		report: reportJSON,
@@ -111,17 +116,19 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 				continue
 			}
 		}
-		if (attachment_names.length > 0)
+		if (attachment_names.length > 0) {
+			console.info('Waiting for virusscan lambda...')
 			setTimeout(() => {
 				retrys++
-				console.info('Waiting for virusscan lambda...')
+				console.info(`Retry number: ${retrys}`)
 			}, 1000)
+		}
 	} while (attachment_names.length > 0 && retrys < 30)
 	return { infectedFileNames, cleanFileNames, notScannedFileNames: attachment_names, retrys }
 }
 
 const deleteReport = async (reportId: string, filenames: string[]) => {
-	await s3Service.deleteObject(virusScanBucket, `${reportId}_report.json`)
+	await s3Service.deleteObject(virusScanBucket, `reports/${reportId}.json`)
 	deleteFiles(filenames)
 }
 
