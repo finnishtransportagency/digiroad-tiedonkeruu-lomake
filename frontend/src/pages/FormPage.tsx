@@ -92,6 +92,17 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					presignData.fields,
 				)
 				console.log('Upload response:', uploadResponse)
+				if (!uploadResponse.success) {
+					setToastProps({
+						$visible: true,
+						message: `${t('errors.attachment')}: ${file.name}`,
+						type: 'error',
+					})
+					setTimeout(() => {
+						setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+					}, 4000)
+					return
+				}
 			}
 		}
 		setToastProps({ $visible: true, message: t('form.submitting'), type: 'loading' })
