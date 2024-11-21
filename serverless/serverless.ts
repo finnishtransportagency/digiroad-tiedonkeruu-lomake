@@ -287,7 +287,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 							{
 								AllowedHeaders: ['*'],
 								AllowedMethods: ['POST'],
-								AllowedOrigins: ['${env:DOMAIN}', '${env:ALTERNATE_DOMAIN}'],
+								AllowedOrigins: ['https://${env:DOMAIN}', 'https://${env:ALTERNATE_DOMAIN}'],
 								MaxAge: 30,
 							},
 						],

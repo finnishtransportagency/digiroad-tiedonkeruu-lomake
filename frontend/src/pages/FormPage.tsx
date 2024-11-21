@@ -85,6 +85,9 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 				}
 				const presignData = presignResponseSchema.parse(presignResponse.response.data)
 				const attachmentFile = new FormData()
+				Object.entries(presignData.fields).forEach(([key, value]) => {
+					attachmentFile.append(key, value)
+				})
 				attachmentFile.append('file', file, presignData.fields.key)
 				const uploadResponse = await httpService.post(
 					presignData.url,
