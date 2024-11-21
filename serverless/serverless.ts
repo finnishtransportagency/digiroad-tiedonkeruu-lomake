@@ -282,6 +282,16 @@ const serverlessConfiguration: ServerlessConfiguration = {
 				Type: 'AWS::S3::Bucket',
 				Properties: {
 					BucketName: virusScanBucket,
+					CorsConfiguration: {
+						CorsRules: [
+							{
+								AllowedHeaders: ['*'],
+								AllowedMethods: ['POST'],
+								AllowedOrigins: ['${env:DOMAIN}', '${env:ALTERNATE_DOMAIN}'],
+								MaxAge: 30,
+							},
+						],
+					},
 					LifecycleConfiguration: {
 						Rules: [
 							{
