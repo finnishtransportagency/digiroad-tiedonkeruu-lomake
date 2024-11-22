@@ -5,11 +5,43 @@ import {
 	GetObjectTaggingCommand,
 	DeleteObjectCommand,
 } from '@aws-sdk/client-s3'
-import { offlineVirusTag, s3ClientConfig } from '../config'
+import { awsRegion, offline, offlineVirusTag, presignRoleArn } from '../config'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 import { Attachment, Report } from '../types'
+import stsService from './stsService'
 
-const s3client = new S3Client(s3ClientConfig)
+const getS3Client = async (presignRole: 'presign-role' | '' = ''): Promise<S3Client> => {
+	switch (presignRole) {
+		case 'presign-role': {
+			const { AccessKeyId, SecretAccessKey, SessionToken } = await stsService.getRoleCredentials(
+				presignRoleArn,
+				'presign-s3-session'
+			)
+			return new S3Client({
+				region: awsRegion,
+				credentials: {
+					accessKeyId: AccessKeyId,
+					secretAccessKey: SecretAccessKey,
+					sessionToken: SessionToken,
+				},
+			})
+		}
+
+		default:
+			return new S3Client(
+				offline
+					? {
+							forcePathStyle: true,
+							credentials: {
+								accessKeyId: 'S3RVER', // This specific key is required when working offline
+								secretAccessKey: 'S3RVER',
+							},
+							endpoint: 'http://127.0.0.1:4569',
+					  }
+					: { region: awsRegion }
+			)
+	}
+}
 
 const getPresignedPostUrl = async (
 	bucket: string,
@@ -18,17 +50,23 @@ const getPresignedPostUrl = async (
 	// contentType: string
 	// checksum: string // TODO: Add MD5 hash check to the conditions for more security
 ) =>
-	await createPresignedPost(s3client, {
+	await createPresignedPost(await getS3Client('presign-role'), {
 		Bucket: bucket,
 		Key: `attachments/${reportId}/${fileName}`,
 		Conditions: [
+			{ acl: 'bucket-owner-full-control' },
 			{ bucket },
 			['starts-with', '$key', `attachments/${reportId}/`],
 			// { 'Content-MD5': checksum },
 			['content-length-range', 1024, 10485760], // file size limit 1KB-10MB
 			// ['starts-with', '$Content-Type', contentType],
 		],
-		// Fields: { 'Content-MD5': checksum },
+		Fields: {
+			acl: 'bucket-owner-full-control',
+			key: `attachments/${reportId}/${fileName}`,
+			// 'Content-MD5': checksum,
+			// 'Content-Type': contentType,
+		},
 		Expires: 30, // Seconds before the presigned post expires. 3600 by default.
 	})
 
@@ -40,7 +78,9 @@ const putObject = async (
 	encoding: string,
 	reportId: string
 ) =>
-	await s3client.send(
+	await (
+		await getS3Client()
+	).send(
 		new PutObjectCommand({
 			Bucket: bucket,
 			Key: objectKey,
@@ -54,7 +94,9 @@ const putObject = async (
 	)
 
 const getObject = async (bucket: string, objectKey: string) =>
-	await s3client.send(
+	await (
+		await getS3Client()
+	).send(
 		new GetObjectCommand({
 			Bucket: bucket,
 			Key: objectKey,
@@ -91,7 +133,7 @@ const getFile = async (bucket: string, objectKey: string): Promise<Attachment | 
 }
 
 const getTags = async (bucket: string, objectKey: string) => {
-	const objectTags = await s3client.send(
+	const objectTags = await(await getS3Client()).send(
 		new GetObjectTaggingCommand({
 			Bucket: bucket,
 			Key: objectKey,
@@ -110,7 +152,7 @@ const simulateGetTags = () => {
 }
 
 const deleteObject = async (bucket: string, objectKey: string) => {
-	await s3client.send(
+	await(await getS3Client()).send(
 		new DeleteObjectCommand({
 			Bucket: bucket,
 			Key: objectKey,

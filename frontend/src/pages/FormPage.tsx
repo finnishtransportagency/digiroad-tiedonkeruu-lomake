@@ -89,11 +89,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					attachmentFile.append(key, value)
 				})
 				attachmentFile.append('file', file, presignData.fields.key)
-				const uploadResponse = await httpService.post(
-					presignData.url,
-					attachmentFile,
-					presignData.fields,
-				)
+				const uploadResponse = await httpService.post(presignData.url, attachmentFile)
 				console.log('Upload response:', uploadResponse)
 				if (!uploadResponse.success) {
 					setToastProps({

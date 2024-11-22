@@ -25,13 +25,4 @@ export const emailSender = process.env.SMTP_SENDER || ''
 export const emailRecipient = process.env.SMTP_RECIPIENT || ''
 export const smtpEndpoint = process.env.SMTP_ENDPOINT || ''
 export const virusScanBucket = `${serviceName}-${stage}-virus-scanner-hosting`
-export const s3ClientConfig = offline
-	? {
-			forcePathStyle: true,
-			credentials: {
-				accessKeyId: 'S3RVER', // This specific key is required when working offline
-				secretAccessKey: 'S3RVER',
-			},
-			endpoint: 'http://127.0.0.1:4569',
-		}
-	: { region: awsRegion }
+export const presignRoleArn = process.env.PRESIGN_ROLE_ARN || ''

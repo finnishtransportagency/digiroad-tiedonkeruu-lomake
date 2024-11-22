@@ -108,6 +108,11 @@ const serverlessConfiguration: ServerlessConfiguration = {
 		presignPost: {
 			handler: 'src/presignLambda.handler',
 			iamRoleStatements: [],
+			environment: {
+				PRESIGN_ROLE_ARN: {
+					'Fn::GetAtt': ['PresignRole', 'Arn'],
+				},
+			},
 			events: offline
 				? [
 						{
@@ -330,6 +335,57 @@ const serverlessConfiguration: ServerlessConfiguration = {
 							},
 						],
 					},
+					PublicAccessBlockConfiguration: {
+						BlockPublicAcls: true,
+						BlockPublicPolicy: false,
+						IgnorePublicAcls: true,
+						RestrictPublicBuckets: true,
+					},
+					Tags: tags,
+				},
+			},
+			PresignRole: {
+				Type: 'AWS::IAM::Role',
+				Properties: {
+					AssumeRolePolicyDocument: {
+						Version: '2012-10-17',
+						Statement: [
+							{
+								Effect: 'Allow',
+								Principal: {
+									Service: ['lambda.amazonaws.com'],
+								},
+								Action: ['sts:AssumeRole'],
+							},
+						],
+					},
+					Policies: [
+						{
+							PolicyName: 'PresignPolicy',
+							PolicyDocument: {
+								Version: '2012-10-17',
+								Statement: [
+									{
+										Effect: 'Allow',
+										Action: ['s3:PutObject', 's3:GetBucketLocation'],
+										Resource: [
+											{ 'Fn::GetAtt': ['S3BucketDrtiedonkeruuvirusscannerhosting', 'Arn'] },
+											{
+												'Fn::Join': [
+													'',
+													[
+														{ 'Fn::GetAtt': ['S3BucketDrtiedonkeruuvirusscannerhosting', 'Arn'] },
+														'/attachments/*',
+													],
+												],
+											},
+										],
+									},
+								],
+							},
+						},
+					],
+					RoleName: 'presign-role',
 					Tags: tags,
 				},
 			},
@@ -342,6 +398,26 @@ const serverlessConfiguration: ServerlessConfiguration = {
 					PolicyDocument: {
 						Statement: [
 							{
+								Sid: 'AllowUploadsWithPresignedPost',
+								Effect: 'Allow',
+								Principal: {
+									AWS: {
+										'Fn::GetAtt': ['PresignRole', 'Arn'],
+									},
+								},
+								Action: 's3:PutObject',
+								Resource: {
+									'Fn::Join': [
+										'',
+										[
+											{ 'Fn::GetAtt': ['S3BucketDrtiedonkeruuvirusscannerhosting', 'Arn'] },
+											'/attachments/*',
+										],
+									],
+								},
+							},
+							{
+								Sid: 'AllowVirusScanLambdaActions',
 								Effect: 'Allow',
 								Principal: {
 									AWS: '${self:custom.virusScanRole}',
@@ -540,6 +616,12 @@ const serverlessConfiguration: ServerlessConfiguration = {
 			},
 		},
 		Outputs: {
+			PresignRoleArn: {
+				Description: 'ARN of the presign role',
+				Value: {
+					'Fn::GetAtt': 'PresignRole.Arn',
+				},
+			},
 			FrontendS3BucketName: {
 				Description: 'Name of the frontend S3 bucket',
 				Value: {
