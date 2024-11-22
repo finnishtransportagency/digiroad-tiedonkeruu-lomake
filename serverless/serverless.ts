@@ -16,7 +16,12 @@ type FunctionWithRoles = Exclude<AWS['functions'], undefined>[string] & {
 	iamRoleStatements: Array<{
 		Effect: 'Allow' | 'Deny'
 		Action: Array<string>
-		Resource: Array<string>
+		Resource: Array<
+			| string
+			| {
+					'Fn::GetAtt': string[]
+			  }
+		>
 	}>
 }
 
@@ -107,7 +112,13 @@ const serverlessConfiguration: ServerlessConfiguration = {
 	functions: {
 		presignPost: {
 			handler: 'src/presignLambda.handler',
-			iamRoleStatements: [],
+			iamRoleStatements: [
+				{
+					Effect: 'Allow',
+					Action: ['sts:AssumeRole'],
+					Resource: [{ 'Fn::GetAtt': ['PresignRole', 'Arn'] }],
+				},
+			],
 			environment: {
 				PRESIGN_ROLE_ARN: {
 					'Fn::GetAtt': ['PresignRole', 'Arn'],
