@@ -364,7 +364,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 							{
 								Effect: 'Allow',
 								Principal: {
-									Service: ['lambda.amazonaws.com'],
+									AWS: `arn:aws:sts::\${env:AWS_ACCOUNT_ID}:assumed-role/${serviceName}-${stage}-presignPost-\${env:REGION}-lambdaRole/${serviceName}-${stage}-presignPost`,
 								},
 								Action: ['sts:AssumeRole'],
 							},
