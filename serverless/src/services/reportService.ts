@@ -129,10 +129,12 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 		}
 		if (attachment_names.length > 0) {
 			console.info('Waiting for virusscan lambda...')
-			setTimeout(() => {
+			// Wait 1 second before retrying
+			await new Promise(resolve => {
 				retrys++
 				console.info(`Retry number: ${retrys}`)
-			}, 1000)
+				setTimeout(resolve, 1000)
+			})
 		}
 	} while (attachment_names.length > 0 && retrys < 30)
 	return { infectedFileNames, cleanFileNames, notScannedFileNames: attachment_names, retrys }
