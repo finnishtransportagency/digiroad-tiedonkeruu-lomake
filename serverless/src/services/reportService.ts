@@ -80,15 +80,12 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 		console.warn('Deleting infected files:\n', scannedAttachments.infectedFileNames)
 		await deleteFiles(scannedAttachments.infectedFileNames)
 	} else {
-		console.info(`${scannedAttachments.cleanFileNames} files scanned: no infected files`)
+		console.info(`${scannedAttachments.cleanFileNames.length} file(s) scanned: no infected files`)
 	}
 
 	const cleanFiles: AttachmentArray = []
-	for (const attachmentName of scannedAttachments.cleanFileNames) {
-		const file = await s3Service.getFile(
-			virusScanBucket,
-			`attachments/${reportId}/${attachmentName}`
-		)
+	for (const fileName of scannedAttachments.cleanFileNames) {
+		const file = await s3Service.getFile(virusScanBucket, fileName)
 		if (file) cleanFiles.push(file)
 	}
 	schema.validateFiles(cleanFiles)
