@@ -78,7 +78,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 		console.warn('Deleting infected files:\n', scannedAttachments.infectedFileNames)
 		await deleteFiles(scannedAttachments.infectedFileNames)
 	} else {
-		console.info('Files scanned: no infected files')
+		console.info(`${scannedAttachments.cleanFileNames} files scanned: no infected files`)
 	}
 
 	const cleanFiles: AttachmentArray = []
@@ -109,10 +109,11 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 	const cleanFileNames: string[] = []
 	let retrys = 0
 	do {
-		for (const fileName of attachment_names) {
+		for (const attachmentName of attachment_names) {
+			const fileName = `attachments/${reportId}/${attachmentName}`
 			const fileTags = offline
 				? s3Service.simulateGetTags() // For local testing
-				: await s3Service.getTags(virusScanBucket, `attachments/${reportId}/${fileName}`)
+				: await s3Service.getTags(virusScanBucket, fileName)
 			const virusscan = fileTags.find(tag => tag.Key === 'viruscan')
 			if (!virusscan) continue
 			if (virusscan.Value === 'virus') {
