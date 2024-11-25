@@ -84,8 +84,11 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	}
 
 	const cleanFiles: AttachmentArray = []
-	for (const fileName of scannedAttachments.cleanFileNames) {
-		const file = await s3Service.getFile(virusScanBucket, fileName)
+	for (const attachmentName of scannedAttachments.cleanFileNames) {
+		const file = await s3Service.getFile(
+			virusScanBucket,
+			`attachments/${reportId}/${attachmentName}`
+		)
 		if (file) cleanFiles.push(file)
 	}
 	schema.validateFiles(cleanFiles)
