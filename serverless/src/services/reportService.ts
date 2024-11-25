@@ -56,7 +56,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	if (!reportJSON) return { status: 'notFound' }
 
 	if (reportJSON.attachment_names.length === 0) {
-		await deleteReport(reportId, [])
+		//await deleteReport(reportId, [])
 		return {
 			report: schema.validateReport(reportJSON),
 			status: 'scanned',
@@ -90,10 +90,10 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	}
 	schema.validateFiles(cleanFiles)
 
-	await deleteReport(reportId, scannedAttachments.cleanFileNames)
+	//await deleteReport(reportId, scannedAttachments.cleanFileNames)
 	return {
 		status: 'scanned',
-		report: reportJSON,
+		report: schema.validateReport(reportJSON),
 		attachments: cleanFiles,
 		retrys: scannedAttachments.retrys,
 	}
