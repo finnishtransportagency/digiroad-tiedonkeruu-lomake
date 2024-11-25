@@ -38,11 +38,16 @@ const saveReport = async (report: Report): Promise<string> => {
 const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<ScannedReportResult> => {
 	// Example key: reports/a26896ec-3693-4687-bc62-42e6e46b19f3.json
 	const reportId = (s3Details.object.key.match(
+		// returns [<original string>, <first group>, <second group>, ...]
 		/^reports\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).json$/
-	) ?? [null])[0]
-	if (!reportId) return { status: 'notFound' }
+	) ?? [null, null])[1]
+	if (!reportId) {
+		console.error('Report id not found in key: ', s3Details.object.key)
+		return { status: 'notFound' }
+	}
 	let reportJSON: Report | null = null
 	try {
+		console.info('Getting report: ', reportId)
 		reportJSON = await s3Service.getReportJSON(virusScanBucket, `reports/${reportId}.json`)
 	} catch (error) {
 		console.error('Error while getting report JSON: ', error)
@@ -61,8 +66,13 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	}
 
 	const scannedAttachments = await checkAttachments(reportId, reportJSON.attachment_names)
-	if (scannedAttachments.notScannedFileNames.length > 0)
+	if (scannedAttachments.notScannedFileNames.length > 0) {
+		console.error(
+			'File scans not completed after 30 retries:\n',
+			scannedAttachments.notScannedFileNames
+		)
 		return { status: 'notScanned', retrys: scannedAttachments.retrys }
+	}
 
 	if (scannedAttachments.infectedFileNames.length > 0) {
 		console.warn('Deleting infected files:\n', scannedAttachments.infectedFileNames)
