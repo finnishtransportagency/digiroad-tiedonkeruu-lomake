@@ -66,12 +66,12 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	}
 
 	const scannedAttachments = await checkAttachments(reportId, reportJSON.attachment_names)
-	if (scannedAttachments.notScannedFileNames.length > 0) {
+	if (scannedAttachments.notScannedAttachmentNames.length > 0) {
 		console.error(
 			`File scans not completed after ${attachmentRetryConfig.retryLimit} retries with ${
 				attachmentRetryConfig.retryInterval / 1000
 			}sec intervals:\n`,
-			scannedAttachments.notScannedFileNames
+			scannedAttachments.notScannedAttachmentNames
 		)
 		return { status: 'notScanned', retrys: scannedAttachments.retrys }
 	}
@@ -124,12 +124,12 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 			if (!virusscan) continue
 			if (virusscan.Value === 'virus') {
 				infectedFileNames.push(fileName)
-				attachment_names = attachment_names.filter(name => name !== fileName)
+				attachment_names = attachment_names.filter(name => name !== attachmentName)
 				continue
 			}
 			if (virusscan.Value === 'clean') {
 				cleanFileNames.push(fileName)
-				attachment_names = attachment_names.filter(name => name !== fileName)
+				attachment_names = attachment_names.filter(name => name !== attachmentName)
 				continue
 			}
 		}
@@ -143,7 +143,7 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 			})
 		}
 	} while (attachment_names.length > 0 && retrys < attachmentRetryConfig.retryLimit)
-	return { infectedFileNames, cleanFileNames, notScannedFileNames: attachment_names, retrys }
+	return { infectedFileNames, cleanFileNames, notScannedAttachmentNames: attachment_names, retrys }
 }
 
 const deleteReport = async (reportId: string, filenames: string[]) => {
