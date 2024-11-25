@@ -26,3 +26,7 @@ export const emailRecipient = process.env.SMTP_RECIPIENT || ''
 export const smtpEndpoint = process.env.SMTP_ENDPOINT || ''
 export const virusScanBucket = `${serviceName}-${stage}-virus-scanner-hosting`
 export const presignRoleArn = process.env.PRESIGN_ROLE_ARN || ''
+export const attachmentRetryConfig = {
+	retryLimit: 6,
+	retryInterval: 10 /*seconds*/ * 1000,
+}

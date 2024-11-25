@@ -226,6 +226,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 				SMTP_RECIPIENT: '${env:SMTP_RECIPIENT}',
 				VIRUS_SCAN_BUCKET: virusScanBucket,
 			},
+			timeout: 120,
 			/* events: [
 				{
 					schedule: {

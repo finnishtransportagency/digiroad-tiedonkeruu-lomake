@@ -1,4 +1,4 @@
-import { offline, virusScanBucket } from '../config'
+import { offline, virusScanBucket, attachmentRetryConfig } from '../config'
 import schema from '../schema'
 import { AttachmentArray, Report, ScannedReportResult } from '../types'
 import s3Service from './s3Service'
@@ -68,7 +68,9 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	const scannedAttachments = await checkAttachments(reportId, reportJSON.attachment_names)
 	if (scannedAttachments.notScannedFileNames.length > 0) {
 		console.error(
-			'File scans not completed after 30 retries:\n',
+			`File scans not completed after ${attachmentRetryConfig.retryLimit} retries with ${
+				attachmentRetryConfig.retryInterval / 1000
+			}sec intervals:\n`,
 			scannedAttachments.notScannedFileNames
 		)
 		return { status: 'notScanned', retrys: scannedAttachments.retrys }
@@ -114,6 +116,7 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 			const fileTags = offline
 				? s3Service.simulateGetTags() // For local testing
 				: await s3Service.getTags(virusScanBucket, fileName)
+			console.info(`${fileName} tags: `, fileTags)
 			const virusscan = fileTags.find(tag => tag.Key === 'viruscan')
 			if (!virusscan) continue
 			if (virusscan.Value === 'virus') {
@@ -129,14 +132,14 @@ const checkAttachments = async (reportId: string, attachment_names: string[]) =>
 		}
 		if (attachment_names.length > 0) {
 			console.info('Waiting for virusscan lambda...')
-			// Wait 1 second before retrying
+			// Wait before retrying
 			await new Promise(resolve => {
 				retrys++
 				console.info(`Retry number: ${retrys}`)
-				setTimeout(resolve, 1000)
+				setTimeout(resolve, attachmentRetryConfig.retryInterval)
 			})
 		}
-	} while (attachment_names.length > 0 && retrys < 30)
+	} while (attachment_names.length > 0 && retrys < attachmentRetryConfig.retryLimit)
 	return { infectedFileNames, cleanFileNames, notScannedFileNames: attachment_names, retrys }
 }
 
