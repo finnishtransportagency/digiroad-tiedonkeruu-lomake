@@ -47,15 +47,15 @@ export const filesSchema = z
 				}),
 			contentType: z.string().optional(),
 			content: z.instanceof(Buffer),
-			encoding: z.string(),
-		}),
+			encoding: z.string().optional(),
+		})
 	)
 	.refine(
 		files =>
 			files.reduce((totalSize: number, file) => {
 				return totalSize + file.content.length
 			}, 0) <= MAX_TOTAL_FILE_SIZE,
-		`File size too large`,
+		`File size too large`
 	)
 
 /**
@@ -88,10 +88,10 @@ export const reportSchema = z.object({
 		.string({ required_error: 'Missing opening date' })
 		.transform(value => new Date(value)),
 	description: z.string().optional(),
-	attachment_names: z.preprocess((value) => {
-		if (typeof value === "string") return JSON.parse(value)
+	attachment_names: z.preprocess(value => {
+		if (typeof value === 'string') return JSON.parse(value)
 		return value
-	}, z.array(z.string()).max(5).default([]))
+	}, z.array(z.string()).max(5).default([])),
 })
 
 /**
