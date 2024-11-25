@@ -120,11 +120,13 @@ export type FormValues = typeof defaultValues
 export const presignResponseSchema = z.object({
 	url: z.string(),
 	fields: z.object({
+		acl: z.string(),
+		key: z.string(),
 		bucket: z.string(),
 		'X-Amz-Algorithm': z.string(),
 		'X-Amz-Credential': z.string(),
 		'X-Amz-Date': z.string(),
-		key: z.string(),
+		'X-Amz-Security-Token': z.string(),
 		Policy: z.string(),
 		'X-Amz-Signature': z.string(),
 	}),
