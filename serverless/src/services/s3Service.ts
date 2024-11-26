@@ -125,7 +125,7 @@ const getFile = async (bucket: string, objectKey: string): Promise<Attachment | 
 	}
 
 	return {
-		filename: objectKey.substring(objectKey.indexOf('_') + 1),
+		filename: objectKey.split('/').pop() ?? objectKey,
 		contentType: s3Response.Metadata ? s3Response.Metadata['content-type'] : undefined,
 		content: Buffer.from(byteArray),
 		encoding: s3Response.Metadata ? s3Response.Metadata['content-encoding'] : '',
