@@ -138,7 +138,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								method: 'options',
 							},
 						},
-				  ]
+					]
 				: [
 						{
 							alb: {
@@ -154,7 +154,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								},
 							},
 						},
-				  ],
+					],
 		},
 		handlePost: {
 			handler: 'src/postLambda.handler',
@@ -183,7 +183,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								method: 'options',
 							},
 						},
-				  ]
+					]
 				: [
 						{
 							alb: {
@@ -199,7 +199,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 								},
 							},
 						},
-				  ],
+					],
 		},
 		sendEmail: {
 			handler: 'src/emailLambda.handler',
@@ -397,7 +397,7 @@ const serverlessConfiguration: ServerlessConfiguration = {
 							},
 						},
 					],
-					RoleName: 'presign-role',
+					RoleName: `${slsServiceStageStr}-presign-role`,
 					Tags: tags,
 				},
 			},
@@ -658,4 +658,5 @@ const serverlessConfiguration: ServerlessConfiguration = {
 	},
 }
 
+// @ts-ignore
 module.exports = serverlessConfiguration
