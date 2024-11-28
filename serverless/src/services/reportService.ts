@@ -48,7 +48,9 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	let reportJSON: Report | null = null
 	try {
 		console.info('Getting report: ', reportId)
-		reportJSON = await s3Service.getReportJSON(virusScanBucket, `reports/${reportId}.json`)
+		reportJSON = schema.validateReport(
+			await s3Service.getReportJSON(virusScanBucket, `reports/${reportId}.json`)
+		)
 	} catch (error) {
 		console.error('Error while getting report JSON: ', error)
 	}
@@ -58,7 +60,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	if (reportJSON.attachment_names.length === 0) {
 		//await deleteReport(reportId, [])
 		return {
-			report: schema.validateReport(reportJSON),
+			report: reportJSON,
 			status: 'scanned',
 			attachments: [],
 			retrys: 0,
@@ -93,7 +95,7 @@ const getScannedReport = async (s3Details: S3EventRecord['s3']): Promise<Scanned
 	//await deleteReport(reportId, scannedAttachments.cleanFileNames)
 	return {
 		status: 'scanned',
-		report: schema.validateReport(reportJSON),
+		report: reportJSON,
 		attachments: cleanFiles,
 		retrys: scannedAttachments.retrys,
 	}

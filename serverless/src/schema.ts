@@ -99,7 +99,8 @@ export const reportSchema = z.object({
  * If the lang field is missing or invalid, sets it to the first supported language.
  * If there are other missing fields, throws an error.
  */
-const validateReport = (input: object): Report => {
+const validateReport = (input: unknown): Report => {
+	if (typeof input !== 'object') throw new Error('Invalid input in validateReport')
 	const safeParseResult = reportSchema.safeParse(input)
 	if (safeParseResult.success) return safeParseResult.data
 	if (safeParseResult.error.issues.filter(issue => issue.path[0] === 'lang').length > 0)

@@ -103,7 +103,7 @@ const getObject = async (bucket: string, objectKey: string) =>
 		})
 	)
 
-const getReportJSON = async (bucket: string, objectKey: string): Promise<Report | null> => {
+const getReportJSON = async (bucket: string, objectKey: string): Promise<unknown | null> => {
 	const s3Response = await getObject(bucket, objectKey)
 	const objectBody = await s3Response.Body?.transformToString()
 	// TODO: Implement validation in schema.ts for JSON response

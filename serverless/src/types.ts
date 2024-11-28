@@ -36,6 +36,7 @@ export interface EmailOptions {
 		filename: string
 		contentType?: (typeof ACCEPTED_FILE_TYPES)[number]
 		content: Buffer
+		encoding?: string
 	}[]
 }
 
