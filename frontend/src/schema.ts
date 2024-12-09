@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 /**
- * Amazon SES supports emails with a message size of up to 40MB but
- * lambda function has a limit of 6MB for the invocation payload.
+ * Amazon SES supports emails with a message size of up to 40MB.
+ * Backend has a limit of 35MB to allow for other data in the request.
  */
-const MAX_TOTAL_FILE_SIZE = 1_100_000 // TEMPORARY LIMIT: Something (maybe loadbalancer) limits file size... //4_200_000 // 4.2MB leaving some room for other fields
+export const MAX_TOTAL_FILE_SIZE = 36_700_160 // 35 * 1024 * 1024 bytes
 export const ACCEPTED_FILE_TYPES = [
 	// Remember to update error messages if you change accepted file types
 	'.pdf',
@@ -36,7 +36,7 @@ export const ACCEPTED_FILE_TYPES = [
 ]
 // ^----------------------------------------------------------^
 
-const schema = z.object({
+const reportSchema = z.object({
 	reporter: z
 		.string({
 			required_error: 'errors.reporter.required',
@@ -117,4 +117,19 @@ export const defaultValues = {
 
 export type FormValues = typeof defaultValues
 
-export default schema
+export const presignResponseSchema = z.object({
+	url: z.string(),
+	fields: z.object({
+		acl: z.string(),
+		key: z.string(),
+		bucket: z.string(),
+		'X-Amz-Algorithm': z.string(),
+		'X-Amz-Credential': z.string(),
+		'X-Amz-Date': z.string(),
+		'X-Amz-Security-Token': z.string(),
+		Policy: z.string(),
+		'X-Amz-Signature': z.string(),
+	}),
+})
+
+export default reportSchema

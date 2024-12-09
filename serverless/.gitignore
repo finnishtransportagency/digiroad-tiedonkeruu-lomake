@@ -10,3 +10,4 @@ s3rver
 
 .env
 build
+local_test_report
