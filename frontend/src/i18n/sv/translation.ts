@@ -1,6 +1,11 @@
 const sv = {
+	tabs: {
+		construction: 'PLACEHOLDER: Rakentamisen aloitus',
+		opening: 'PLACEHOLDER: Liikenteelle avaus',
+	},
 	form: {
-		title: 'Anmäl start av gatubyggnation till Digiroad',
+		constructionTitle: 'Anmäl start av gatubyggnation till Digiroad',
+		openingTitle: 'Anmäl öppnandet av gatan för trafik till Digiroad',
 		reporter: 'Anmälarens namn',
 		email: 'Anmälarens e-post',
 		project: 'Namn på byggprojektet',

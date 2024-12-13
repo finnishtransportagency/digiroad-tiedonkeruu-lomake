@@ -16,6 +16,7 @@ const LanguageButton = styled(Button)<LanguageButtonProps>`
 	font-size: 0.9em;
 	padding: 0.65em 1.1em;
 	margin: 0;
+	margin-bottom: 1em;
 	border-radius: ${props => {
 		if (props.$first) return `${props.theme.borderRadius} 0 0 ${props.theme.borderRadius}`
 		if (props.$last) return `0 ${props.theme.borderRadius} ${props.theme.borderRadius} 0`

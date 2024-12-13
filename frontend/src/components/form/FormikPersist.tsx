@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useFormikContext } from 'formik'
 import isEqual from 'react-fast-compare'
 import { useDebouncedCallback } from 'use-debounce'
-import { FormValues } from '../../schema'
+import { ConstructionFormValues } from '../../schemas'
 
 /**
  * Preserves formik form values in local storage
@@ -10,12 +10,12 @@ import { FormValues } from '../../schema'
  * @param name The name of the local storage key
  */
 const FormikPersist = ({ name }: { name: string }) => {
-	const { values, setValues } = useFormikContext<FormValues>()
-	const prefValuesRef = useRef<FormValues>()
+	const { values, setValues } = useFormikContext<ConstructionFormValues>()
+	const prefValuesRef = useRef<ConstructionFormValues>()
 
-	const onSave = (values: FormValues) => {
+	const onSave = (values: ConstructionFormValues) => {
 		// File objects cannot be stringified, so we won't save them
-		const valuesWithoutFiles: Omit<FormValues, 'files'> = {
+		const valuesWithoutFiles: Omit<ConstructionFormValues, 'files'> = {
 			reporter: values.reporter,
 			email: values.email,
 			project: values.project,

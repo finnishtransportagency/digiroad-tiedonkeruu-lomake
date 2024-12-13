@@ -18,24 +18,23 @@ import Tooltip from '../components/Tooltip'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import Heading from '../components/Heading'
-import reportSchema, {
-	ACCEPTED_FILE_TYPES,
-	defaultValues,
-	FormValues,
-	presignResponseSchema,
-} from '../schema'
 import httpService from '../services/httpService'
 import { apiURL } from '../config'
 import { resources } from '../i18n/config'
 import municipalities from '../i18n/municipalities'
+import schemas, {
+	ACCEPTED_FILE_TYPES,
+	constructionDefaultValues,
+	ConstructionFormValues,
+} from '../schemas'
 
 import 'react-datepicker/dist/react-datepicker.css'
 
-type FormPageProps = {
+const ContructionReport = ({
+	setToastProps,
+}: {
 	setToastProps: Dispatch<SetStateAction<ToastProps>>
-}
-
-const FormPage = ({ setToastProps }: FormPageProps) => {
+}) => {
 	const { t, i18n } = useTranslation()
 	const fileInputRef = useRef<HTMLInputElement>()
 	const descriptionInputRef = useRef<HTMLTextAreaElement>()
@@ -59,7 +58,10 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 		setReCaptchaToken(token)
 	}, [])
 
-	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+	const handleSubmit = async (
+		values: ConstructionFormValues,
+		actions: FormikHelpers<ConstructionFormValues>,
+	) => {
 		const reportId = uuidv4()
 		if (values.files) {
 			for (const file of Object.values(values.files)) {
@@ -83,7 +85,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					}, 4000)
 					return
 				}
-				const presignData = presignResponseSchema.parse(presignResponse.response.data)
+				const presignData = schemas.presignResponseSchema.parse(presignResponse.response.data)
 				const attachmentFile = new FormData()
 				Object.entries(presignData.fields).forEach(([key, value]) => {
 					attachmentFile.append(key, value)
@@ -158,7 +160,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	return (
 		<Container>
 			<HorizontalGroup>
-				<Heading $level='h1'>{t('form.title')}</Heading>
+				<Heading $level='h1'>{t('form.constructionTitle')}</Heading>
 				<img
 					src='/vayla_alla_fi_sv_rgb.png'
 					alt='Väylävirasto-logo'
@@ -169,8 +171,8 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 			</HorizontalGroup>
 			<Formik
 				onSubmit={handleSubmit}
-				initialValues={defaultValues}
-				validationSchema={toFormikValidationSchema(reportSchema)}
+				initialValues={constructionDefaultValues}
+				validationSchema={toFormikValidationSchema(schemas.constructionReportSchema)}
 			>
 				{({
 					errors,
@@ -183,7 +185,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 					resetForm,
 				}) => (
 					<Form>
-						<FormikPersist name='form-values' />
+						<FormikPersist name='contruction-values' />
 						<VerticalGroup>
 							<FieldLabel htmlFor='reporter'>{t('form.reporter')}</FieldLabel>
 							<FormField
@@ -346,4 +348,4 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	)
 }
 
-export default FormPage
+export default ContructionReport

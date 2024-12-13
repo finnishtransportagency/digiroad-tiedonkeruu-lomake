@@ -1,6 +1,11 @@
 const fi = {
+	tabs: {
+		construction: 'Rakentamisen aloitus',
+		opening: 'Liikenteelle avaus',
+	},
 	form: {
-		title: 'Ilmoita kadun rakentamisen aloittamisesta Digiroadiin',
+		constructionTitle: 'Ilmoita kadun rakentamisen aloittamisesta Digiroadiin',
+		openingTitle: 'Ilmoita kadun avaamisesta liikenteelle Digiroadiin',
 		reporter: 'Ilmoittajan nimi',
 		email: 'Ilmoittajan sähköposti',
 		project: 'Rakennushankkeen nimi',

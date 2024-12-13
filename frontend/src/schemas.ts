@@ -36,7 +36,7 @@ export const ACCEPTED_FILE_TYPES = [
 ]
 // ^----------------------------------------------------------^
 
-const reportSchema = z.object({
+const constructionReportSchema = z.object({
 	reporter: z
 		.string({
 			required_error: 'errors.reporter.required',
@@ -105,7 +105,7 @@ const reportSchema = z.object({
 	description: z.string().optional(),
 })
 
-export const defaultValues = {
+export const constructionDefaultValues = {
 	reporter: '',
 	email: '',
 	project: '',
@@ -115,9 +115,66 @@ export const defaultValues = {
 	description: '',
 }
 
-export type FormValues = typeof defaultValues
+export type ConstructionFormValues = typeof constructionDefaultValues
 
-export const presignResponseSchema = z.object({
+// ------------------------------------------------------------
+
+const openingReportSchema = z.object({
+	reporter: z
+		.string({
+			required_error: 'errors.reporter.required',
+		})
+		.max(64, { message: 'errors.reporter.max' }),
+	email: z
+		.string({
+			required_error: 'errors.email.required',
+		})
+		.email({
+			message: 'errors.email.value',
+		})
+		.max(320, { message: 'errors.email.max' }),
+	project: z
+		.string({
+			required_error: 'errors.project.required',
+		})
+		.max(64, { message: 'errors.project.max' }),
+	municipality: z
+		.string({
+			required_error: 'errors.municipality.required',
+		})
+		.max(32, { message: 'errors.municipality.max' }),
+	opening_date: z
+		.date({
+			coerce: true,
+			errorMap: (issue, ctx) => {
+				// console.log(issue)
+				if (issue.code === 'invalid_type') {
+					return { message: 'errors.opening_date.required' }
+				}
+				if (issue.code === 'invalid_date') {
+					return { message: 'errors.opening_date.value' }
+				}
+				return { message: ctx.defaultError }
+			},
+		})
+		.min(new Date(new Date().setHours(0, 0, 0, 0)), 'errors.opening_date.min'),
+	description: z.string().optional(),
+})
+
+export const openingDefaultValues = {
+	reporter: '',
+	email: '',
+	project: '',
+	municipality: '',
+	opening_date: new Date().toString(),
+	description: '',
+}
+
+export type OpeningFormValues = typeof openingDefaultValues
+
+// ------------------------------------------------------------
+
+const presignResponseSchema = z.object({
 	url: z.string(),
 	fields: z.object({
 		acl: z.string(),
@@ -132,4 +189,6 @@ export const presignResponseSchema = z.object({
 	}),
 })
 
-export default reportSchema
+const schemas = { constructionReportSchema, openingReportSchema, presignResponseSchema }
+
+export default schemas
