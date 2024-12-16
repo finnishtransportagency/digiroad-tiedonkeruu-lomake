@@ -16,7 +16,7 @@ const fi = {
 		submit_success: 'Lomake lähetetty onnistuneesti!',
 	},
 	tooltips: {
-		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf, .dgn tai .gpkg. Tiedostojen yhteiskoko saa olla enintään 35MB. Lisää kaikki liitetiedostot yhdellä kertaa!',
+		file: 'Liitetiedosto voi olla muotoa .pdf, .dwg, .dxf, .dgn tai .gpkg. Tiedostojen yhteiskoko saa olla enintään 27MB. Lisää kaikki liitetiedostot yhdellä kertaa!',
 	},
 	errors: {
 		attachment: 'Liitetiedostojen lähetys epäonnistui',
@@ -43,8 +43,8 @@ const fi = {
 			min: 'Avaamisajankohdan tulee olla tulevaisuudessa!',
 		},
 		files: {
-			size: 'Liitetiedostojen yhteiskoko saa olla enintään 35MB!',
-			type: 'Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf ja .dgn',
+			size: 'Liitetiedostojen yhteiskoko saa olla enintään 27MB!',
+			type: 'Sallittuja tiedostomuotoja ovat: .pdf, .dwg, .dxf, .dgn ja .gpkg',
 		},
 		submit: 'Lomakkeen lähetys epäonnistui!',
 	},

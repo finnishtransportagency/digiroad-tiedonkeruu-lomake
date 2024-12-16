@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { awsRegion, offline, offlineVirusTag, presignRoleArn } from '../config'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
-import { Attachment, Report } from '../types'
+import { Attachment } from '../types'
 import stsService from './stsService'
 
 const getS3Client = async (presignRole: 'presign-role' | '' = ''): Promise<S3Client> => {
@@ -58,7 +58,7 @@ const getPresignedPostUrl = async (
 			{ bucket },
 			['starts-with', '$key', `attachments/${reportId}/`],
 			// { 'Content-MD5': checksum },
-			['content-length-range', 1024, 36_700_160], // file size limit 1KB-35MB
+			['content-length-range', 1024, 28_311_552], // file size limit 1KB-27MB
 			// ['starts-with', '$Content-Type', contentType],
 		],
 		Fields: {

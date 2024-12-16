@@ -6,7 +6,7 @@ import { AttachmentArray, PresignReq, Report } from './types'
  * Amazon SES supports emails with a message size of up to 40MB.
  * Backend has a limit of 35MB to allow for other data in the request.
  */
-export const MAX_TOTAL_FILE_SIZE = 36_700_160 // 35 * 1024 * 1024 bytes
+export const MAX_TOTAL_FILE_SIZE = 28_311_552 // 27 * 1024 * 1024 bytes
 export const ACCEPTED_FILE_TYPES = [
 	// Remember to update frontend also if you change these values
 	'.pdf',
