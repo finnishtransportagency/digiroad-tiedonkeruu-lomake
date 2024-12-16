@@ -15,7 +15,7 @@ const getS3Client = async (presignRole: 'presign-role' | '' = ''): Promise<S3Cli
 		case 'presign-role': {
 			const { AccessKeyId, SecretAccessKey, SessionToken } = await stsService.getRoleCredentials(
 				presignRoleArn,
-				'presign-s3-session'
+				'presign-s3-session',
 			)
 			return new S3Client({
 				region: awsRegion,
@@ -37,8 +37,8 @@ const getS3Client = async (presignRole: 'presign-role' | '' = ''): Promise<S3Cli
 								secretAccessKey: 'S3RVER',
 							},
 							endpoint: 'http://127.0.0.1:4569',
-					  }
-					: { region: awsRegion }
+						}
+					: { region: awsRegion },
 			)
 	}
 }
@@ -46,7 +46,7 @@ const getS3Client = async (presignRole: 'presign-role' | '' = ''): Promise<S3Cli
 const getPresignedPostUrl = async (
 	bucket: string,
 	fileName: string,
-	reportId: string
+	reportId: string,
 	// contentType: string
 	// checksum: string // TODO: Add MD5 hash check to the conditions for more security
 ) =>
@@ -58,7 +58,7 @@ const getPresignedPostUrl = async (
 			{ bucket },
 			['starts-with', '$key', `attachments/${reportId}/`],
 			// { 'Content-MD5': checksum },
-			['content-length-range', 1024, 10485760], // file size limit 1KB-10MB
+			['content-length-range', 1024, 36_700_160], // file size limit 1KB-35MB
 			// ['starts-with', '$Content-Type', contentType],
 		],
 		Fields: {
@@ -76,7 +76,7 @@ const putObject = async (
 	contentType: string,
 	objectBody: Buffer,
 	encoding: string,
-	reportId: string
+	reportId: string,
 ) =>
 	await (
 		await getS3Client()
@@ -90,7 +90,7 @@ const putObject = async (
 				'content-encoding': encoding,
 				reportid: reportId,
 			},
-		})
+		}),
 	)
 
 const getObject = async (bucket: string, objectKey: string) =>
@@ -100,7 +100,7 @@ const getObject = async (bucket: string, objectKey: string) =>
 		new GetObjectCommand({
 			Bucket: bucket,
 			Key: objectKey,
-		})
+		}),
 	)
 
 const getReportJSON = async (bucket: string, objectKey: string): Promise<unknown | null> => {
@@ -137,7 +137,7 @@ const getTags = async (bucket: string, objectKey: string) => {
 		new GetObjectTaggingCommand({
 			Bucket: bucket,
 			Key: objectKey,
-		})
+		}),
 	)
 
 	return objectTags.TagSet ?? []
@@ -156,7 +156,7 @@ const deleteObject = async (bucket: string, objectKey: string) => {
 		new DeleteObjectCommand({
 			Bucket: bucket,
 			Key: objectKey,
-		})
+		}),
 	)
 }
 
