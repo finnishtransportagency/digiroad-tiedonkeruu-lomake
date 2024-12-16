@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test
       - development
 
 permissions:
@@ -38,7 +39,7 @@ jobs:
           role-session-name: ServerlessDeployment
           aws-region: ${{ vars.REGION }}
       - name: Install serverless globally
-        run: npm i -g serverless@3.x
+        run: npm i -g serverless@3.39.0
       - name: Copy UI build to serverless folder
         run: npm run cp:ui
       - name: Deploy WAF
@@ -65,7 +66,7 @@ jobs:
           AWS_CLOUDFORMATION_ROLE: ${{ secrets.AWS_CLOUDFORMATION_ROLE }}
           SMTP_CREDENTIALS_NAME: ${{ secrets.SMTP_CREDENTIALS_NAME }}
           RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
-          VIRUS_SCAN_LAMBDA: ${{ secrets.VIRUS_SCAN_LAMBDA }}
+          VIRUS_SCAN_ARN: ${{ secrets.VIRUS_SCAN_LAMBDA }}
           VIRUS_SCAN_ROLE: ${{ secrets.VIRUS_SCAN_ROLE }}
           WEB_ACL_ID: ${{ env.WEB_ACL_ID }}
           PROXY: ${{ secrets.PROXY }}

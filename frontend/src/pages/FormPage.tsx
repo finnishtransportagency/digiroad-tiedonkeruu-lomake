@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import { GoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { v4 as uuidv4 } from 'uuid'
 import Form from '../components/form/Form'
 import FieldLabel from '../components/form/FieldLabel'
 import FormField from '../components/form/FormField'
@@ -17,7 +18,12 @@ import Tooltip from '../components/Tooltip'
 import Button from '../components/Button'
 import Container from '../components/Container'
 import Heading from '../components/Heading'
-import schema, { ACCEPTED_FILE_TYPES, defaultValues, FormValues } from '../schema'
+import reportSchema, {
+	ACCEPTED_FILE_TYPES,
+	defaultValues,
+	FormValues,
+	presignResponseSchema,
+} from '../schema'
 import httpService from '../services/httpService'
 import { apiURL } from '../config'
 import { resources } from '../i18n/config'
@@ -54,35 +60,85 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 	}, [])
 
 	const handleSubmit = async (values: FormValues, actions: FormikHelpers<FormValues>) => {
+		const reportId = uuidv4()
+		if (values.files) {
+			for (const file of Object.values(values.files)) {
+				setToastProps({
+					$visible: true,
+					message: `${t('form.submitting_attachment')}: ${file.name}`,
+					type: 'loading',
+				})
+				const attachmentInfo = new FormData()
+				attachmentInfo.append('reportId', reportId)
+				attachmentInfo.append('fileName', file.name)
+				const presignResponse = await httpService.post(`${apiURL}/api/presign`, attachmentInfo)
+				if (!presignResponse.success) {
+					setToastProps({
+						$visible: true,
+						message: `${t('errors.attachment')}: ${file.name}`,
+						type: 'error',
+					})
+					setTimeout(() => {
+						setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+					}, 4000)
+					return
+				}
+				const presignData = presignResponseSchema.parse(presignResponse.response.data)
+				const attachmentFile = new FormData()
+				Object.entries(presignData.fields).forEach(([key, value]) => {
+					attachmentFile.append(key, value)
+				})
+				attachmentFile.append('file', file, presignData.fields.key)
+				const uploadResponse = await httpService.post(presignData.url, attachmentFile)
+				console.log('Upload response:', uploadResponse)
+				if (!uploadResponse.success) {
+					setToastProps({
+						$visible: true,
+						message: `${t('errors.attachment')}: ${file.name}`,
+						type: 'error',
+					})
+					setTimeout(() => {
+						setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+					}, 4000)
+					return
+				}
+			}
+		}
 		setToastProps({ $visible: true, message: t('form.submitting'), type: 'loading' })
-		const formData = new FormData()
 
+		const formData = new FormData()
+		formData.append('report_id', reportId)
 		formData.append('lang', i18n.language)
 		formData.append('reporter', values.reporter)
 		formData.append('email', values.email)
 		formData.append('project', values.project)
 		formData.append('municipality', values.municipality)
 		formData.append('opening_date', values.opening_date)
-		if (values.files)
-			Object.values(values.files).forEach(file => {
-				formData.append(`file/${file.name}`, file)
-			})
 		formData.append('description', values.description)
+		if (values.files)
+			formData.append(
+				'attachment_names',
+				JSON.stringify(Object.values(values.files).map(file => file.name)),
+			)
 
-		if (await httpService.post(`${apiURL}/api/postData`, formData, reCaptchaToken)) {
+		if (
+			(
+				await httpService.post(`${apiURL}/api/postData`, formData, {
+					'g-recaptcha-response': reCaptchaToken,
+				})
+			).success
+		) {
 			// Successfull submit
 			resetAllInputs(actions.resetForm)
 			setToastProps({ $visible: true, message: t('form.submit_success'), type: 'success' })
-			setTimeout(() => {
-				setToastProps(oldProps => ({ ...oldProps, $visible: false }))
-			}, 3000)
 		} else {
 			// Failed submit
 			setToastProps({ $visible: true, message: t('errors.submit'), type: 'error' })
-			setTimeout(() => {
-				setToastProps(oldProps => ({ ...oldProps, $visible: false }))
-			}, 3000)
 		}
+
+		setTimeout(() => {
+			setToastProps(oldProps => ({ ...oldProps, $visible: false }))
+		}, 3000)
 		setRefreshReCaptcha(r => !r)
 	}
 
@@ -114,7 +170,7 @@ const FormPage = ({ setToastProps }: FormPageProps) => {
 			<Formik
 				onSubmit={handleSubmit}
 				initialValues={defaultValues}
-				validationSchema={toFormikValidationSchema(schema)}
+				validationSchema={toFormikValidationSchema(reportSchema)}
 			>
 				{({
 					errors,

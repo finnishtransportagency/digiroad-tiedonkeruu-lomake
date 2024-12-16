@@ -1,9 +1,9 @@
-import { Report } from '../../schema'
 import { Translations } from '../../translations'
+import { Report } from '../../types'
 
 const renderEmailContents = (report: Report, translations: Translations) => {
-  // STYLES FOR THE EMAIL
-  const head = `
+	// STYLES FOR THE EMAIL
+	const head = `
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,8 +46,8 @@ const renderEmailContents = (report: Report, translations: Translations) => {
       </style>
     </head>`
 
-  // ACTUAL CONTENT OF THE EMAIL
-  const body = `
+	// ACTUAL CONTENT OF THE EMAIL
+	const body = `
     <body>
       <div id="email-content">
         <h1>${translations.title}</h1>
@@ -73,35 +73,35 @@ const renderEmailContents = (report: Report, translations: Translations) => {
             <td>${report.opening_date.toLocaleDateString(report.lang)}</td>
           </tr>
           ${
-            report.description
-              ? `
+						report.description
+							? `
           <tr>
             <th><b>${translations.description}</b></th>
             <td>${report.description}</td>
           </tr>`
-              : ''
-          }
+							: ''
+					}
         </table>
       </div>
     </body>`
 
-  const html = `
+	const html = `
     <!DOCTYPE html>
     <html lang="${report.lang}">
       ${head}
       ${body}
     </html>`
 
-  // TEXT VERSION OF THE EMAIL
-  const text =
-    `${translations.title}\n` +
-    `${translations.reporter}: ${report.reporter}\n` +
-    `${translations.email}: ${report.email}\n` +
-    `${translations.project}: ${report.project}\n` +
-    `${translations.municipality}: ${report.municipality}\n` +
-    `${translations.opening_date}: ${report.opening_date.toLocaleDateString(report.lang)}`
+	// TEXT VERSION OF THE EMAIL
+	const text =
+		`${translations.title}\n` +
+		`${translations.reporter}: ${report.reporter}\n` +
+		`${translations.email}: ${report.email}\n` +
+		`${translations.project}: ${report.project}\n` +
+		`${translations.municipality}: ${report.municipality}\n` +
+		`${translations.opening_date}: ${report.opening_date.toLocaleDateString(report.lang)}`
 
-  return { html, text }
+	return { html, text }
 }
 
 export default { renderEmailContents }
